@@ -1,0 +1,72 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.wiztrip'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
+    //AWS S3
+//    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    // mysql
+    implementation 'mysql:mysql-connector-java:8.0.32'
+
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+
+    //Mapstruct, Lombok
+    implementation "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
+    annotationProcessor "org.projectlombok:lombok"
+    implementation 'org.mapstruct:mapstruct:1.4.1.Final'
+    implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.4.1.Final"
+
+    //H2 Database
+    runtimeOnly 'com.h2database:h2'
+
+    //Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    //Spring Security Test
+    testImplementation group: 'org.springframework.security', name: 'spring-security-test'
+    //jwt
+    implementation 'com.auth0:java-jwt:4.2.1'
+
+    implementation 'javax.xml.bind:jaxb-api:2.3.1' // 최신 버전으로 업데이트 가능
+
+    //oAuth2
+//    implementation 'com.google.code.gson:gson:2.8.7'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    //JUnit4 추가
+    testImplementation("org.junit.vintage:junit-vintage-engine") {
+        exclude group: "org.hamcrest", module: "hamcrest-core"
+    }
+    //Mockito 추가
+    testImplementation 'org.mockito:mockito-core:4.2.0'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
