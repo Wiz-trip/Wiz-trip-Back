@@ -19,6 +19,9 @@ public class Address {
     private String ro;      //로
     private String gil;     //길
 
+    private Double latitude;    //위도
+    private Double longitude;   //경도
+
     protected Address() {
     } //무분별한 생성을 막기 위해 protected로 선언
 
