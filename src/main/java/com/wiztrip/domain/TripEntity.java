@@ -23,7 +23,7 @@ public class TripEntity {
     private LocalDate finishDate;
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserTripEntity> userTripEntityList = new ArrayList<>();
+    private List<TripUserEntity> tripUserEntityList = new ArrayList<>();
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlanEntity> planEntityList = new ArrayList<>();

@@ -1,10 +1,10 @@
 package com.wiztrip.repository;
 
-import com.wiztrip.domain.UserTripEntity;
+import com.wiztrip.domain.TripUserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserTripRepository extends JpaRepository<UserTripEntity,Long> {
+public interface TripUserRepository extends JpaRepository<TripUserEntity,Long> {
 
 }

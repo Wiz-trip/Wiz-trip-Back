@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class UserTripEntity {
+public class TripUserEntity {
 
     @Id
     @Column(name = "user_trip_id")
