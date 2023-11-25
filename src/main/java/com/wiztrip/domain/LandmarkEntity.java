@@ -3,6 +3,7 @@ package com.wiztrip.domain;
 import com.wiztrip.constant.Address;
 import com.wiztrip.constant.Image;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,14 +13,14 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class LandmarkEntity { //todo: PlanEntity와 연관관계를 가질건지?
+public class LandmarkEntity {
 
     @Id
     @Column(name = "landmark_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-//    @NotNull
+    @NotNull
     private String name;
 
     @Embedded

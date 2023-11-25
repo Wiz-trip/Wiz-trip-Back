@@ -22,8 +22,6 @@ public class TripEntity {
 
     private LocalDate finishDate;
 
-    private Integer userNum; //여행에 참여하는 유저 수 todo: 굳이 없어도 될듯? userTripEntityList.size()로 대체 가능할듯
-
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserTripEntity> userTripEntityList = new ArrayList<>();
 

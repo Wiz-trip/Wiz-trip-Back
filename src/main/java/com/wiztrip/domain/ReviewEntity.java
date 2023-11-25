@@ -32,11 +32,6 @@ public class ReviewEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "plan_id")
-    private PlanEntity plan;
-
-    //todo: 왜 연관관계가 필요?
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id")
     private TripEntity trip;
 
