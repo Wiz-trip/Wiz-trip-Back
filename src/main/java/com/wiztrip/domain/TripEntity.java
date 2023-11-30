@@ -27,4 +27,8 @@ public class TripEntity {
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlanEntity> planEntityList = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemoEntity> memoEntityList = new ArrayList<>();
 }
