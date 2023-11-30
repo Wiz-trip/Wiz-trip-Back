@@ -2,6 +2,7 @@ package com.wiztrip.domain;
 
 import com.wiztrip.constant.Category;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,8 @@ public class MemoEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 200)
+    @NotNull
     private String title;
 
     @Column(columnDefinition = "TEXT")
