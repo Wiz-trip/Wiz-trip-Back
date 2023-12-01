@@ -30,7 +30,7 @@ public abstract class PlanMapper {
             @Mapping(target = "trip", source = "tripId", qualifiedByName = "tripIdToTripEntity")
 
     })
-    public abstract PlanEntity toEntity(PlanDto.PlanPostDto planPostDto);
+    public abstract PlanEntity toEntity(PlanDto.PlanPostDto planPostDto, Long tripId);
 
     @Mappings({
             @Mapping(target = "planId", source = "id"),
