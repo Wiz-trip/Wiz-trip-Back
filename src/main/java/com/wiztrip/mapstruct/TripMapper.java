@@ -37,6 +37,7 @@ public abstract class TripMapper {
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "planEntityList", ignore = true),
+            @Mapping(target = "memoEntityList", ignore = true), //todo: 나중에 수정해야함!!!!
             @Mapping(target = "tripUserEntityList", source = "userIdList", qualifiedByName = "userIdListToTripUserEntityList"),
     })
     abstract TripEntity _toEntity(TripDto.TripPostDto tripPostDto);
@@ -58,6 +59,7 @@ public abstract class TripMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "memoEntityList", ignore = true), //todo: 나중에 수정해야함!!!!
             @Mapping(target = "tripUserEntityList", source = "userIdList", qualifiedByName = "userIdListToTripUserEntityList"),
             @Mapping(target = "planEntityList", source = "planIdList", qualifiedByName = "planIdListToPlanEntityList")
     })
