@@ -7,8 +7,7 @@ import lombok.*;
 import java.util.List;
 
 
-@Getter
-@Setter
+
 public class LandmarkDto {
 
     @Getter

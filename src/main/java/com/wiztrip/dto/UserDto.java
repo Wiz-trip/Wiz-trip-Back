@@ -1,10 +1,10 @@
 package com.wiztrip.dto;
 
 import com.wiztrip.constant.Image;
+import com.wiztrip.domain.LikeEntity;
 import lombok.*;
 
-@Getter
-@Setter
+
 public class UserDto {
 
     @Getter
@@ -24,6 +24,8 @@ public class UserDto {
 
         private String nickname; // 회원 닉네임
 
+        private LikeEntity like;
+
     }
 
     @Getter
@@ -42,6 +44,8 @@ public class UserDto {
         private Image image; // 프로필 사진
 
         private String nickname; // 회원 닉네임
+
+        private LikeEntity like;
 
     }
 }
