@@ -2,11 +2,13 @@ package com.wiztrip.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class TripUserEntity {
 
     @Id
@@ -21,4 +23,8 @@ public class TripUserEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id")
     private TripEntity trip;
+
+    public TripUserEntity(UserEntity user) {
+        this.user = user;
+    }
 }
