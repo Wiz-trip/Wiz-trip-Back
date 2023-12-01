@@ -30,5 +30,5 @@ public class MemoEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id")
-    private TripEntity tripEntity;
+    private TripEntity trip;
 }
