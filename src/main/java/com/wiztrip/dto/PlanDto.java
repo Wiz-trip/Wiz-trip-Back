@@ -2,6 +2,7 @@ package com.wiztrip.dto;
 
 import com.wiztrip.constant.Address;
 import com.wiztrip.constant.Category;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalTime;
@@ -25,8 +26,6 @@ public class PlanDto {
         private String content; //plan 설명
 
         private Category category;
-
-        private Long tripId;
 
 //        private Long user; //등록한 유저 //@AuthenticationPrincipal로 처리 가능
     }
@@ -62,6 +61,7 @@ public class PlanDto {
     @NoArgsConstructor
     @Builder
     public static class PlanPatchDto {
+        @NotNull
         private Long planId;
 
         private String name; //계획 이름. ~~식당, ~~호텔 등
