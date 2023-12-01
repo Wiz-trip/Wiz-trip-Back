@@ -1,6 +1,6 @@
 package com.wiztrip.controller;
 
-import com.wiztrip.Dto.UserDto;
+import com.wiztrip.dto.UserDto;
 import com.wiztrip.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

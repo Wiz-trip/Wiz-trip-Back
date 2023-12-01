@@ -1,4 +1,4 @@
-package com.wiztrip.Dto;
+package com.wiztrip.dto;
 
 import com.wiztrip.constant.Address;
 import com.wiztrip.constant.Image;

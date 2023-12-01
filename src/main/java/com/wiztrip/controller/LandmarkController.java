@@ -1,6 +1,6 @@
 package com.wiztrip.controller;
 
-import com.wiztrip.Dto.LandmarkDto;
+import com.wiztrip.dto.LandmarkDto;
 import com.wiztrip.service.LandmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

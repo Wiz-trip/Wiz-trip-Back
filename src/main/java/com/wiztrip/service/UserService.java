@@ -1,6 +1,6 @@
 package com.wiztrip.service;
 
-import com.wiztrip.Dto.UserDto;
+import com.wiztrip.dto.UserDto;
 import com.wiztrip.domain.UserEntity;
 import com.wiztrip.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
