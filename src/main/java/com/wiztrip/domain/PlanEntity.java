@@ -34,7 +34,7 @@ public class PlanEntity { //Trip의 세부 사항. 장소, 시간, 예산 등
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user; //등록한 유저
 
