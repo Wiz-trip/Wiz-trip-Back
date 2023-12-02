@@ -18,6 +18,8 @@ public class TripDto {
 
         private LocalDate finishDate;
 
+        private String destination; //목적지
+
         private List<Long> userIdList = new ArrayList<>();
     }
 
@@ -32,6 +34,8 @@ public class TripDto {
         private LocalDate startDate;
 
         private LocalDate finishDate;
+
+        private String destination; //목적지
 
         private List<Long> userIdList = new ArrayList<>();
 
@@ -49,6 +53,8 @@ public class TripDto {
         private LocalDate startDate;
 
         private LocalDate finishDate;
+
+        private String destination; //목적지
 
         private List<Long> userIdList = new ArrayList<>(); //참여중인 유저가 변동될 경우 필요
 
