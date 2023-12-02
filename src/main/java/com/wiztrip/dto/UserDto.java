@@ -24,7 +24,7 @@ public class UserDto {
 
         private String nickname; // 회원 닉네임
 
-        private LikeEntity like;
+        private LikeDto like;
 
     }
 
@@ -45,7 +45,7 @@ public class UserDto {
 
         private String nickname; // 회원 닉네임
 
-        private LikeEntity like;
+        private LikeDto like;
 
     }
 }

@@ -32,21 +32,6 @@ public class LandmarkService {
         return convertToDto(landmark);
     }
 
-    // 여행지 좋아요 생성
-    @Transactional
-    public void likeLandmark(Long landmarkId) {
-        // 좋아요 생성 구현
-
-
-    }
-
-    // 여행지 좋아요 삭제
-    @Transactional
-    public void unlikeLandmark(Long landmarkId) {
-        // 좋아요 삭제 구현
-
-    }
-
     // LandmarkEntity를 LandmarkDto로 변환
     private LandmarkDto convertToDto(LandmarkEntity landmarkEntity) {
         // LandmarkEntity의 필드를 LandmarkDto에 매핑

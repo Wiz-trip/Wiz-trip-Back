@@ -30,18 +30,6 @@ public class LandmarkController {
         return ResponseEntity.ok().body(landmarkService.getLandmarkById(landmarkId));
     }
 
-    // 여행지 좋아요 생성
-    @PostMapping("/{landmarkId}/like")
-    public ResponseEntity<LandmarkLikeDto> likeLandmark(@RequestParam Long landmarkId) {
-        landmarkService.likeLandmark(landmarkId);
-        return ResponseEntity.ok().build(); // 본문 없이 상태 코드만 반환
-    }
 
-    // 여행지 좋아요 삭제
-    @DeleteMapping("/{landmarkId}/like")
-    public ResponseEntity<LandmarkLikeDto> unlikeLandmark(@RequestParam Long landmarkId) {
-        landmarkService.unlikeLandmark(landmarkId);
-        return ResponseEntity.ok().build(); // 본문 없이 상태 코드만 반환
-    }
 
 }
