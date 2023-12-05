@@ -1,6 +1,5 @@
 package com.wiztrip.service;
 
-import com.wiztrip.constant.Category;
 import com.wiztrip.domain.MemoEntity;
 import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.MemoDto;
@@ -18,16 +17,22 @@ public class MemoService {
     private MemoRepository memoRepository;
 
     public MemoDto.MemoResponseDto createMemo(Long tripId, MemoDto.MemoPostDto memoPostDto) {
-
+        return memoMapper.toResponseDto(memoRepository.save(memoMapper.toEntity(memoPostDto, tripId)));
     }
 
     // 원하는 데이터 담아서 변환해준 후, ListDto를 통해 리스트화 필요
-    public ListDto getMemoByCategory(Long tripId, Category category) {
-
+    public ListDto getMemoAll(Long tripId) {
+        return new ListDto(memoRepository.findAllByTripId(tripId).stream().map(o -> {
+            checkValid(o, tripId);
+            return memoMapper.toResponseDto(o);
+        }).toList());
     }
 
-    public MemoDto.MemoResponseDto updateMemo(Long tripId, Long memoId, MemoDto.MemoPatchDto memoPatchDto) {
-
+    public MemoDto.MemoResponseDto updateMemo(Long tripId, MemoDto.MemoPatchDto memoPatchDto) {
+        MemoEntity memo = memoRepository.findById(memoPatchDto.getMemoId()).orElseThrow();
+        checkValid(memo, tripId);
+        memoMapper.updateFromPatchDto(memoPatchDto, memo);
+        return memoMapper.toResponseDto(memoRepository.findById(memoPatchDto.getMemoId()).orElseThrow());
     }
 
     public String deleteMemo(Long tripId, Long memoId) {

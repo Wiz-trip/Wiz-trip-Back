@@ -16,13 +16,21 @@ public class ReviewService {
     private ReviewRepository reviewRepository;
 
 
-    public ReviewDto.ReviewResponseDto createReview(Long tripId, ReviewDto.ReviewPostDto reviewRequestDto) {
+    public ReviewDto.ReviewResponseDto createReview(Long tripId, ReviewDto.ReviewPostDto reviewPostDto) {
+        return reviewMapper.toResponseDto(reviewRepository.save(reviewMapper.toEntity(reviewPostDto, tripId)));
     }
 
     public ReviewDto.ReviewResponseDto getReview(Long tripId, Long reviewId) {
+        ReviewEntity review = reviewRepository.findById(reviewId).orElseThrow();
+        checkValid(review, tripId);
+        return reviewMapper.toResponseDto(review);
     }
 
-    public ReviewDto.ReviewResponseDto updateReview(Long tripId, Long reviewId, ReviewDto.ReviewPatchDto reviewRequestDto) {
+    public ReviewDto.ReviewResponseDto updateReview(Long tripId, ReviewDto.ReviewPatchDto reviewPatchDto) {
+        ReviewEntity review = reviewRepository.findById(reviewPatchDto.getReviewId()).orElseThrow();
+        checkValid(review, tripId);
+        reviewMapper.updateFromPatchDto(reviewPatchDto, review);
+        return reviewMapper.toResponseDto(reviewRepository.findById(reviewPatchDto.getReviewId()).orElseThrow());
     }
 
     public String deleteReview(Long tripId, Long reviewId) {

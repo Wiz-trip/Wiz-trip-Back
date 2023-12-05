@@ -1,7 +1,9 @@
 package com.wiztrip.dto;
 
-import com.wiztrip.constant.Category;
+import com.wiztrip.constant.Image;
 import lombok.*;
+
+import java.util.List;
 
 public class ReviewDto {
 
@@ -10,23 +12,9 @@ public class ReviewDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public class ReviewPostDto {
+    public static class ReviewPostDto {
 
-        // 이미지 기능 구현 후 추가
-        // private List<Image> imageList;
-
-        private String content;
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public class ReviewPatchDto {
-
-        // 이미지 기능 구현 후 추가
-        // private List<Image> imageList;
+        private List<Image> imageList;
 
         private String content;
     }
@@ -36,7 +24,21 @@ public class ReviewDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public class ReviewResponseDto {
+    public static class ReviewPatchDto {
+
+        private Long reviewId;
+
+        private List<Image> imageList;
+
+        private String content;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class ReviewResponseDto {
 
         private Long reviewId;
 
@@ -44,8 +46,7 @@ public class ReviewDto {
 
         private Long userId;
 
-        // 이미지 기능 구현 후 추가
-        // private List<Image> imageList;
+        private List<Image> imageList;
 
         private String content;
     }

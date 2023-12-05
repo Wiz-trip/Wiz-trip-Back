@@ -15,20 +15,20 @@ public class ReviewController {
 
     // 후기글 생성
     @PostMapping
-    public ResponseEntity<ReviewDto.ReviewResponseDto> createReview(@PathVariable("trip_id") Long tripId, @RequestBody ReviewDto.ReviewPostDto reviewRequestDto) {
-        return ResponseEntity.ok().body(reviewService.createReview(tripId, reviewRequestDto));
+    public ResponseEntity<ReviewDto.ReviewResponseDto> createReview(@PathVariable("trip_id") Long tripId, @RequestBody ReviewDto.ReviewPostDto reviewPostDto) {
+        return ResponseEntity.ok().body(reviewService.createReview(tripId, reviewPostDto));
     }
 
     // 후기글 조회 (세부 사항)
     @GetMapping("/{reviewId}")
     public ResponseEntity<ReviewDto.ReviewResponseDto> getReview(@PathVariable("trip_id") Long tripId, @PathVariable("review_id") Long reviewId) {
-        return ResponseEntity.ok().body(reviewService.getReview(tripId, reviewId);
+        return ResponseEntity.ok().body(reviewService.getReview(tripId, reviewId));
     }
 
     // 후기글 수정
-    @PatchMapping("/{reviewId}")
-    public ResponseEntity<ReviewDto.ReviewResponseDto> updateReview(@PathVariable("trip_id") Long tripId, @PathVariable("review_id") Long reviewId, @RequestBody ReviewDto.ReviewPatchDto reviewRequestDto) {
-        return ResponseEntity.ok().body(reviewService.updateReview(tripId, reviewId, reviewRequestDto));
+    @PatchMapping
+    public ResponseEntity<ReviewDto.ReviewResponseDto> updateReview(@PathVariable("trip_id") Long tripId, @RequestBody ReviewDto.ReviewPatchDto reviewPatchDto) {
+        return ResponseEntity.ok().body(reviewService.updateReview(tripId, reviewPatchDto));
     }
 
     // 후기글 삭제
