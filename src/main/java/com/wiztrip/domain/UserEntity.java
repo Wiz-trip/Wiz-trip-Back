@@ -17,13 +17,15 @@ public class UserEntity {
     private Long id;
 
     @NotNull
+    @Column(unique = true)      // 값이 중복되지 않도록 설정
     private String username; //로그인 아이디
 
     @NotNull
-    private String password;
+    private String password;       // 회원가입 시 필요
 
     @NotNull
-    private String email;
+    @Column(unique = true)      // 값이 중복되지 않도록 설정
+    private String email;       // 회원가입 시 필요
 
     @Embedded
     private Image image; //프로필 사진

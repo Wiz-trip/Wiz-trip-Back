@@ -36,6 +36,7 @@ dependencies {
 
     //Mapstruct, Lombok
     implementation "org.projectlombok:lombok"
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
     annotationProcessor "org.projectlombok:lombok"
     implementation 'org.mapstruct:mapstruct:1.4.1.Final'
