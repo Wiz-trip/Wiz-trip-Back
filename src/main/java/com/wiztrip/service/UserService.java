@@ -5,6 +5,7 @@ import com.wiztrip.domain.UserEntity;
 import com.wiztrip.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 사용자 조회
     public UserDto.UserResponseDto getUserById(Long userId) {
@@ -52,6 +54,16 @@ public class UserService {
                 .image(userEntity.getImage()) // 프로필 사진
                 .nickname(userEntity.getNickname()) // 회원 닉네임
                 .build();
+    }
+
+    // 회원가입
+    public UserEntity create(String username, String email, String password) {
+        UserEntity user = new UserEntity();
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password)); //passwordEncoder 빈으로 주입받아 사용
+        this.userRepository.save(user);
+        return user;
     }
 
 }

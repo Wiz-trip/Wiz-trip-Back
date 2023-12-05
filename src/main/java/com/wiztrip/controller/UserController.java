@@ -2,9 +2,12 @@ package com.wiztrip.controller;
 
 import com.wiztrip.dto.UserDto;
 import com.wiztrip.service.UserService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -31,6 +34,26 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@RequestParam @NotNull Long userId) {
         return ResponseEntity.ok().body(userService.deleteUser(userId));
+    }
+
+
+    // 회원가입 폼 페이지 반환
+    @GetMapping("/signup")
+    public String signup(Model model) {
+        model.addAttribute("userCreateForm", new UserCreateForm());
+        return "signup";
+    }
+
+
+    // 회원가입 처리
+    @PostMapping("/signup")
+    public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "signup"; // 유효성 검사 실패 시, 다시 회원가입 양식 페이지로 이동
+        }
+
+        userService.create(userCreateForm.getNickname(), userCreateForm.getEmail(), userCreateForm.getPassword());
+        return "redirect:/login"; // 회원가입 성공 시, 로그인 페이지로 리디렉션
     }
 
 }

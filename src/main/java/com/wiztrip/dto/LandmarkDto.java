@@ -22,7 +22,7 @@ public class LandmarkDto {
 
         private Address address;
 
-        private List<Image> imageList;
+        private List<String> imageList;
 
     }
 
@@ -38,7 +38,7 @@ public class LandmarkDto {
 
         private Address address;
 
-        private List<Image> imageList;
+        private List<String> imageList;
 
     }
 
