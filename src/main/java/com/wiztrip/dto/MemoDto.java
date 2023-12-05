@@ -10,7 +10,7 @@ public class MemoDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public class MemoPostDto {
+    public static class MemoPostDto {
 
         private String title;
 
@@ -26,13 +26,17 @@ public class MemoDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public class MemoPatchDto {
+    public static class MemoPatchDto {
+
+        private Long memoId;
 
         private String title;
 
         private String content;
 
         private String url;
+
+        private Category category;
     }
 
     @Getter
@@ -40,9 +44,11 @@ public class MemoDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public class MemoResponseDto {
+    public static class MemoResponseDto {
 
         private Long memoId;
+
+        private Long tripId;
 
         private String title;
 
