@@ -46,8 +46,8 @@ dependencies {
     //H2 Database
     runtimeOnly 'com.h2database:h2'
 
-//    //Spring Security
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    //Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 //    //Spring Security Test
 //    testImplementation group: 'org.springframework.security', name: 'spring-security-test'
     //jwt
