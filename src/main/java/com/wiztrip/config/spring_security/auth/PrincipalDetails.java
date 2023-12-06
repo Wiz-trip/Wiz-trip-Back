@@ -48,9 +48,6 @@ public class PrincipalDetails implements UserDetails {
         return true;
     }
 
-    /**
-     * 잘 작동하는지 확인해야함
-     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
