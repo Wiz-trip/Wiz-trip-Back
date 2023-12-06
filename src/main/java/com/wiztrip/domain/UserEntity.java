@@ -31,7 +31,4 @@ public class UserEntity {
     private Image image; //프로필 사진
 
     private String nickname; //회원 닉네임
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private LikeEntity like; //좋아요 누른 랜드마크
 }
