@@ -43,7 +43,7 @@ jobs:
           mkdir -p ./src/main/resources  # 디렉토리가 없다면 생성
           cd ./src/main/resources
           touch ./application.yml
-          echo "${{ secrets.APPLICATION_CI }}" > ./application.yml
+          echo "${{ secrets.APPLICATION_CI }}" > ./application.properties
         shell: bash
 
       - name: Run chmod to make gradlew executable
