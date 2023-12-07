@@ -18,14 +18,17 @@ public class FtpTestController {
     @Autowired
     private FtpTool ftpTool;
 
+    @Autowired
+    private Base64Tool base64Tool;
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void uploadFile(@RequestPart MultipartFile multipartFile)  {
         ftpTool.uploadMultipartFile(multipartFile);
     }
 
     @GetMapping
-    public Base64Tool.Base64Dto getFile(@RequestParam String filename) {
-        return Base64Tool.base64StringToDto(filename,Base64Tool.inputStreamToBase64String(ftpTool.downloadFile(filename)));
+    public Base64Dto getFile(@RequestParam String filename) {
+        return base64Tool.base64StringToDto(filename,base64Tool.inputStreamToBase64String(ftpTool.downloadFile(filename)));
     }
 
     /**
