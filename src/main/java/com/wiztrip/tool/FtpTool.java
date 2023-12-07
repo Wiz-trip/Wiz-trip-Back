@@ -3,6 +3,7 @@ package com.wiztrip.tool;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class FtpTool {
@@ -31,22 +33,23 @@ public class FtpTool {
 
     private final FTPClient ftpClient = new FTPClient();
 
+    @Autowired
+    private Base64Tool base64Tool;
 
     /**
      * 파일 업로드
      */
     public void uploadMultipartFile(MultipartFile multipartFile) {
-        try {
-            connect();
-            InputStream inputStream = multipartFile.getInputStream();
+        connect();
+        try (InputStream inputStream = multipartFile.getInputStream()) {
             if (!ftpClient.storeFile(multipartFile.getOriginalFilename(), inputStream))
                 throw new Exception("FTP서버 업로드실패");
-            disconnect();
         } catch (Exception e) {
             if (e.getMessage().contains("not open")) {
                 throw new RuntimeException("FTP서버 연결실패");
             }
         }
+        disconnect();
     }
 
     /**
@@ -65,6 +68,32 @@ public class FtpTool {
         disconnect();
     }
 
+    public void uploadInputStream(String filename, InputStream inputStream) {
+        connect();
+        try {
+            if (!ftpClient.storeFile(filename, inputStream))
+                throw new Exception("FTP서버 업로드실패");
+        } catch (Exception e) {
+            if (e.getMessage().contains("not open")) {
+                throw new RuntimeException("FTP서버 연결실패");
+            }
+        }
+        disconnect();
+    }
+
+    public void uploadInputStreamList(Map<String, InputStream> filenameInputStreamMap) {
+        connect();
+        filenameInputStreamMap.keySet().forEach(o -> {
+            try (InputStream inputStream = filenameInputStreamMap.get(o)) {
+                if (!ftpClient.storeFile(o, inputStream))
+                    throw new RuntimeException("FTP서버 업로드 실패");
+            } catch (IOException e) {
+                throw new RuntimeException("파일 오류");
+            }
+        });
+        disconnect();
+    }
+
 
     /**
      * 파일 다운로드
@@ -73,7 +102,6 @@ public class FtpTool {
      */
     public InputStream downloadFile(String filename) {
         connect();
-
         try (InputStream inputStream = ftpClient.retrieveFileStream(filename)) {
             disconnect();
             return inputStream;
@@ -87,9 +115,9 @@ public class FtpTool {
      * @param filename -> 다운로드가 필요한 파일의 이름.
      * @return -> Base64String
      */
-    public String downloadFileInBase64String(String filename) {
+    public String downloadFileAndConvertToBase64String(String filename) {
         try (InputStream inputStream = downloadFile(filename)) {
-            return Base64Tool.inputStreamToBase64String(inputStream);
+            return base64Tool.inputStreamToBase64String(inputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -100,10 +128,10 @@ public class FtpTool {
      * @param filename -> 다운로드가 필요한 파일의 이름.
      * @return -> Base64Dto
      */
-    public Base64Tool.Base64Dto downloadFileInBase64Dto(String filename) {
+    public Base64Dto downloadFileAndConvertToBase64Dto(String filename) {
         try (InputStream inputStream = downloadFile(filename)) {
-            String base64String = Base64Tool.inputStreamToBase64String(inputStream);
-            return Base64Tool.base64StringToDto(filename, base64String);
+            String base64String = base64Tool.inputStreamToBase64String(inputStream);
+            return base64Tool.base64StringToDto(filename, base64String);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
