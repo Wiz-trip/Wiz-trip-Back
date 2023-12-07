@@ -55,5 +55,6 @@ public class UserController {
         userService.create(userCreateForm.getNickname(), userCreateForm.getEmail(), userCreateForm.getPassword());
         return "redirect:/login"; // 회원가입 성공 시, 로그인 페이지로 리디렉션
     }
+    // pull 테스트 중입니다
 
 }
