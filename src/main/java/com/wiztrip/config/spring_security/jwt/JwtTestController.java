@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("test")
-public class TestController {
+public class JwtTestController {
 
     @PostMapping("/getToken")
     public ResponseEntity<String> returnAuthentication(HttpServletRequest request) {

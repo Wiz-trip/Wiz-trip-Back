@@ -60,6 +60,9 @@ dependencies {
 //    implementation 'com.google.code.gson:gson:2.8.7'
 //    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+    //FTP
+    implementation 'commons-net:commons-net:3.9.0'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     //JUnit4 추가
     testImplementation("org.junit.vintage:junit-vintage-engine") {
