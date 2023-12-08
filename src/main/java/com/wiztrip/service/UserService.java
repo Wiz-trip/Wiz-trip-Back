@@ -2,6 +2,7 @@ package com.wiztrip.service;
 
 import com.wiztrip.dto.UserDto;
 import com.wiztrip.domain.UserEntity;
+import com.wiztrip.dto.UserRegisterDto;
 import com.wiztrip.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -56,14 +57,24 @@ public class UserService {
                 .build();
     }
 
-    // 회원가입
-    public UserEntity create(String username, String email, String password) {
-        UserEntity user = new UserEntity();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password)); //passwordEncoder 빈으로 주입받아 사용
-        this.userRepository.save(user);
-        return user;
+
+
+    // 회원가입 처리
+    public UserEntity createUser(UserRegisterDto registrationDto) {
+        if (!registrationDto.getPassword().equals(registrationDto.getConfirmPassword())) {
+            throw new IllegalArgumentException("Password 가 맞지 않습니다");
+        }
+
+        // 비밀번호 일치 시, 새로운 UserEntity 생성 및 저장
+        UserEntity newUser = new UserEntity();
+        newUser.setEmail(registrationDto.getEmail());
+        newUser.setNickname(registrationDto.getNickname());
+        newUser.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+
+        // db 에 저장
+        return userRepository.save(newUser);
     }
 
 }
+
+

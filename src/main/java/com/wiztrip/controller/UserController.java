@@ -1,6 +1,7 @@
 package com.wiztrip.controller;
 
 import com.wiztrip.dto.UserDto;
+import com.wiztrip.dto.UserRegisterDto;
 import com.wiztrip.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -37,24 +38,12 @@ public class UserController {
     }
 
 
-    // 회원가입 폼 페이지 반환
-    @GetMapping("/signup")
-    public String signup(Model model) {
-        model.addAttribute("userCreateForm", new UserCreateForm());
-        return "signup";
-    }
-
-
     // 회원가입 처리
     @PostMapping("/signup")
-    public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "signup"; // 유효성 검사 실패 시, 다시 회원가입 양식 페이지로 이동
-        }
-
-        userService.create(userCreateForm.getNickname(), userCreateForm.getEmail(), userCreateForm.getPassword());
-        return "redirect:/login"; // 회원가입 성공 시, 로그인 페이지로 리디렉션
+    public ResponseEntity<?> registerUser(@RequestBody UserRegisterDto registrationDto) {
+        userService.createUser(registrationDto);
+        return ResponseEntity.ok("회원가입이 성공적으로 완료");
     }
-    // pull 테스트 중입니다
+
 
 }
