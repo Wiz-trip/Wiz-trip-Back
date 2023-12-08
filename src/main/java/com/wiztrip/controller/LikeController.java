@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("like")
 public class LikeController {
 
-     private LikeService likeService;
+     private final LikeService likeService;
 
      // 여행지 좋아요 기능 //한개만 가능
      @PostMapping

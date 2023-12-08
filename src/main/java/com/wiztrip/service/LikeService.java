@@ -28,6 +28,7 @@ public class LikeService {
 
     private final LandmarkLikeRepository landmarkLikeRepository;
 
+    @Transactional
     public LikeEntity createLike(UserEntity user) {
         //만약 user에게 LikeEntity가 배정이 안되어 있다면
         if (!likeRepository.existsByUserId(user.getId())) {
@@ -39,6 +40,7 @@ public class LikeService {
     }
 
     // 여행지 좋아요 기능 //하나씩 가능
+    @Transactional
     public String addLike(UserEntity user, LikeDto.LikePostDto likePostDto) {
         LikeEntity like = likeRepository.findByUserId(user.getId()).orElse(createLike(user));
         LandmarkEntity landmark = landmarkRepository.findById(likePostDto.getLandmarkId()).orElseThrow();
@@ -47,6 +49,7 @@ public class LikeService {
     }
 
     // 여행지 좋아요 기능 //여러개 가능
+    @Transactional
     public String addAllLike(UserEntity user, LikeDto.LikeAllPostDto likeAllPostDto) {
         LikeEntity like = likeRepository.findByUserId(user.getId()).orElse(createLike(user));
         likeAllPostDto.getLandmarkIdList().forEach(o->{
@@ -65,6 +68,7 @@ public class LikeService {
     }
 
     // 여행지 좋아요 취소 기능
+    @Transactional
     public String deleteLike(UserEntity user, Long landmarkId) {
         LikeEntity like = likeRepository.findByUserId(user.getId()).orElse(createLike(user));
         landmarkLikeRepository.deleteById(like.getLandmarkLikeEntityList().stream()
