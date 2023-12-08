@@ -18,6 +18,10 @@ public class Base64Tool {
         }
     }
 
+    public String byteArrayToBase64String(byte[] bytes) {
+        return Base64.encodeBase64String(bytes);
+    }
+
 
     public Base64Dto base64StringToDto(String filename, String base64String) {
         return Base64Dto.builder()
