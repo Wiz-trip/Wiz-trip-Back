@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LandmarkLikeEntity {
+public class LandmarkLikeEntity extends TimeStamp{
 
     @Id
     @Column(name = "landmark_like_entity")

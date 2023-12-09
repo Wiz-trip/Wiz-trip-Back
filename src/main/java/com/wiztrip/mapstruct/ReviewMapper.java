@@ -29,7 +29,9 @@ public abstract class ReviewMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target ="user", ignore = true),
+            @Mapping(target = "user", ignore = true),
+            @Mapping(target = "createAt", ignore = true),
+            @Mapping(target = "modifiedAt",ignore = true),
             @Mapping(target = "trip", source = "tripId", qualifiedByName = "tripIdToTripEntity"),
             @Mapping(target = "imageList", source = "reviewPostDto.imageList")
     })
@@ -48,6 +50,8 @@ public abstract class ReviewMapper {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "user",ignore = true),
             @Mapping(target = "trip", ignore = true),
+            @Mapping(target = "createAt", ignore = true),
+            @Mapping(target = "modifiedAt",ignore = true),
             @Mapping(target = "imageList", source = "reviewPatchDto.imageList")
     })
     public abstract void updateFromPatchDto(ReviewDto.ReviewPatchDto reviewPatchDto, @MappingTarget ReviewEntity review);
