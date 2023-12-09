@@ -97,14 +97,16 @@ public class FtpTool {
 
     /**
      * 파일 다운로드
+     *
      * @param filename -> 다운로드가 필요한 파일의 이름.
-     * @return -> InputStream.
+     * @return -> byte[]
      */
-    public InputStream downloadFile(String filename) {
+    public byte[] downloadFile(String filename) {
         connect();
         try (InputStream inputStream = ftpClient.retrieveFileStream(filename)) {
+            byte[] bytes = inputStream.readAllBytes();
             disconnect();
-            return inputStream;
+            return bytes;
         } catch (Exception e) {
             throw new RuntimeException("다운로드 실패");
         }
@@ -112,29 +114,24 @@ public class FtpTool {
 
     /**
      * 파일 다운로드
+     *
      * @param filename -> 다운로드가 필요한 파일의 이름.
      * @return -> Base64String
      */
     public String downloadFileAndConvertToBase64String(String filename) {
-        try (InputStream inputStream = downloadFile(filename)) {
-            return base64Tool.inputStreamToBase64String(inputStream);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        byte[] bytes = downloadFile(filename);
+        return base64Tool.byteArrayToBase64String(bytes);
     }
 
     /**
      * 파일 다운로드
+     *
      * @param filename -> 다운로드가 필요한 파일의 이름.
      * @return -> Base64Dto
      */
     public Base64Dto downloadFileAndConvertToBase64Dto(String filename) {
-        try (InputStream inputStream = downloadFile(filename)) {
-            String base64String = base64Tool.inputStreamToBase64String(inputStream);
-            return base64Tool.base64StringToDto(filename, base64String);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        String base64String = downloadFileAndConvertToBase64String(filename);
+        return new Base64Dto(filename, base64String);
     }
 
 
