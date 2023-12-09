@@ -63,6 +63,13 @@ dependencies {
     //FTP
     implementation 'commons-net:commons-net:3.9.0'
 
+    //webp 변환
+    implementation 'org.imgscalr:imgscalr-lib:4.2'
+
+    //ImageIO에서 webp형식 지원
+    implementation 'org.sejda.imageio:webp-imageio:0.1.6'
+
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     //JUnit4 추가
     testImplementation("org.junit.vintage:junit-vintage-engine") {
