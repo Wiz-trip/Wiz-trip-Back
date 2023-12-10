@@ -1,4 +1,4 @@
-package com.wiztrip.tool;
+package com.wiztrip.tool.file;
 
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.imgscalr.Scalr;
