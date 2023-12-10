@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import com.wiztrip.dto.LandmarkLikeDto;
 
 
 @RequiredArgsConstructor
@@ -20,10 +21,13 @@ public class LandmarkController {
     @GetMapping
     public ResponseEntity<List<LandmarkEntity>> getAllLandmarks() {
         List<LandmarkEntity> landmarks = landmarkService.getAllLandmarks();
+
+        return ResponseEntity.ok(landmarks);
     }
 
     // 여행지 상세 조회
     @GetMapping("/{landmarkId}")
     public ResponseEntity<LandmarkDto> getLandmark(@RequestParam Long landmarkId) {
         return ResponseEntity.ok().body(landmarkService.getLandmarkById(landmarkId));
+    }
 }
