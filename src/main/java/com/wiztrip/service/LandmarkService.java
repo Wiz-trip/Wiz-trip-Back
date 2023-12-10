@@ -2,8 +2,6 @@ package com.wiztrip.service;
 
 import com.wiztrip.dto.LandmarkDto;
 import com.wiztrip.domain.LandmarkEntity;
-import com.wiztrip.dto.LandmarkLikeDto;
-import com.wiztrip.mapstruct.LandmarkMapper;
 import com.wiztrip.repository.LandmarkLikeRepository;
 import com.wiztrip.repository.LandmarkRepository;
 import jakarta.persistence.EntityNotFoundException;
