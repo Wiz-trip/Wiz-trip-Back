@@ -16,7 +16,8 @@ public class LandmarkDto {
     @NoArgsConstructor
     @Builder
     public static class LandmarkAllResponseDto {
-        private Long id;
+
+        private Long landmarkId;
 
         private String name;
 
@@ -32,15 +33,15 @@ public class LandmarkDto {
     @NoArgsConstructor
     @Builder
     public static class LandmarkDetailResponseDto {
-        private Long id;
+        private Long landmarkId;
 
         private String name;
+
+        private String content;     // 여행지 눌렀을 때 상세 설명
 
         private Address address;
 
         private List<String> imageList;
 
     }
-
-
 }

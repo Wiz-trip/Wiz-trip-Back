@@ -23,6 +23,9 @@ public class LandmarkEntity {
     @NotNull
     private String name;
 
+    @Lob
+    private String content;
+
     @Embedded
     private Address address;
 
