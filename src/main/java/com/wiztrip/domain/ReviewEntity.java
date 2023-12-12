@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class ReviewEntity {
+public class ReviewEntity extends TimeStamp{
 
     @Id
     @Column(name = "review_id")
