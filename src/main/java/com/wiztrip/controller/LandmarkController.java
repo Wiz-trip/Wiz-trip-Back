@@ -19,15 +19,16 @@ public class LandmarkController {
 
     // 모든 여행지 조회
     @GetMapping
-    public ResponseEntity<List<LandmarkEntity>> getAllLandmarks() {
-        List<LandmarkEntity> landmarks = landmarkService.getAllLandmarks();
-
+    public ResponseEntity<List<LandmarkDto.LandmarkAllResponseDto>> getAllLandmarks() {
+        List<LandmarkDto.LandmarkAllResponseDto> landmarks = landmarkService.getAllLandmarks();
         return ResponseEntity.ok(landmarks);
     }
 
     // 여행지 상세 조회
     @GetMapping("/{landmarkId}")
-    public ResponseEntity<LandmarkDto> getLandmark(@RequestParam Long landmarkId) {
-        return ResponseEntity.ok().body(landmarkService.getLandmarkById(landmarkId));
+    public ResponseEntity<LandmarkDto.LandmarkDetailResponseDto> getLandmark(@PathVariable Long landmarkId) {
+        LandmarkDto.LandmarkDetailResponseDto landmark = landmarkService.getLandmarkById(landmarkId);
+        return ResponseEntity.ok().body(landmark);
     }
+
 }
