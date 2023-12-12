@@ -54,7 +54,7 @@ public class GlobalExceptionAdvice {
     }
 
     // NullPointerException: 실제 값이 아닌 null을 가지고 있는 변수 혹은 객체를 호출할 경우
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handleNullPointerException(NullPointerException e) {
 
@@ -94,7 +94,7 @@ public class GlobalExceptionAdvice {
     }
 
     // MethodArgumentNotValidException: 전달된 값이 유효하지 않은 경우
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
 
