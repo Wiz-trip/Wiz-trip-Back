@@ -3,12 +3,16 @@ package com.wiztrip.exception;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @Getter
 public class ErrorResponse {
 
-    private final int status;
-    private final String error;
-    private final String message;
+    private LocalDateTime timeStamp;
+    private int status;
+    private String error;
+    private String message;
 
 }
+

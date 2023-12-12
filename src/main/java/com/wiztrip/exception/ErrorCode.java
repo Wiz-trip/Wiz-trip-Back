@@ -11,7 +11,7 @@ import static org.springframework.http.HttpStatus.*;
 public enum ErrorCode {
 
     // 400 BAD_REQUEST: 잘못된 요청
-    INVALID_PARAMETER(BAD_REQUEST, "파라미터 값을 확인해주세요."),
+    INVALID_PARAMETER(BAD_REQUEST, "입력 값을 확인해주세요."),
 
     // 401 UNAUTHORIZED: 인증되지 않은 사용자
     UNAUTHORIZED_MEMBER(UNAUTHORIZED, "존재하지 않는 회원입니다."),
@@ -24,9 +24,10 @@ public enum ErrorCode {
     DUPLICATE_EMAIL(CONFLICT, "해당 이메일은 이미 존재합니다."),
 
     // 500 INTERNAL SERVER ERROR
-    SERVER_ERROR(INTERNAL_SERVER_ERROR, "서버 에러입니다.");
+    SERVER_ERROR(INTERNAL_SERVER_ERROR, "내부 서버 에러입니다.");
 
 
     private final HttpStatus httpStatus;
     private final String message;
+
 }
