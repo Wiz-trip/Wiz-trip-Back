@@ -3,8 +3,9 @@ package com.wiztrip.config.spring_security.auth;
 import com.wiztrip.domain.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
+
+
 
 public class PrincipalDetails implements UserDetails {
 
@@ -52,4 +53,10 @@ public class PrincipalDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
+
+
+
+
+
+
 }

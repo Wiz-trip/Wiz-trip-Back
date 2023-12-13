@@ -6,9 +6,11 @@ import com.wiztrip.config.spring_security.jwt.JwtAuthorizationFilter;
 import com.wiztrip.config.spring_security.jwt.JwtExceptionHandlerFilter;
 import com.wiztrip.config.spring_security.jwt.TokenUtils;
 import com.wiztrip.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity // 시큐리티 활성화 -> 기본 스프링 필터체인에 등록
 public class SecurityConfig {
@@ -44,20 +47,37 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
 
+//        return http
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .sessionManagement((sessionManagement) ->
+//                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                )
+//                .httpBasic(AbstractHttpConfigurer::disable)
+//                .addFilter(corsConfig.corsFilter())
+//                .addFilter(new JwtAuthenticationFilter(authenticationManager, tokenUtils))
+//                .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository, principalDetailsService, tokenUtils))
+//                .addFilterBefore(new JwtExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class)
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers("test/**")
+//                        .authenticated()
+//                        .anyRequest().permitAll())
+//                .build();
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement((sessionManagement) ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .addFilter(corsConfig.corsFilter())
                 .addFilter(new JwtAuthenticationFilter(authenticationManager, tokenUtils))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository, principalDetailsService, tokenUtils))
                 .addFilterBefore(new JwtExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("test/**")
-                        .authenticated()
+                        .dispatcherTypeMatchers(HttpMethod.valueOf("/login/oauth2/code/kakao")).permitAll() // Kakao OAuth2 엔드포인트에 대한 접근 허용
+                        .requestMatchers("test/**").authenticated()
                         .anyRequest().permitAll())
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("/loginSuccess", true) // OAuth2 로그인 성공 시 리다이렉션 경로
+                        .failureUrl("/loginFailure")) // OAuth2 로그인 실패 시 경로
                 .build();
     }
 }

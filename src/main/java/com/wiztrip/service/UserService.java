@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -73,6 +75,23 @@ public class UserService {
 
         // db 에 저장
         return userRepository.save(newUser);
+    }
+
+    public UserDto.UserResponseDto registerOrUpdateUser(Map<String, Object> kakaoAttributes) {
+        // Kakao 사용자 정보 추출
+        // 예시로, "id"와 "email" 필드를 사용
+        String kakaoId = String.valueOf(kakaoAttributes.get("id"));
+        String email = (String) kakaoAttributes.get("email");
+
+        // 사용자 조회 또는 생성
+        UserEntity user = userRepository.findByKakaoId(kakaoId)
+                .orElseGet(() -> new UserEntity(kakaoId, email));
+
+        // 사용자 저장
+        userRepository.save(user);
+
+        // UserDto로 변환하여 반환
+        return convertToUserResponseDto(user);
     }
 
 }

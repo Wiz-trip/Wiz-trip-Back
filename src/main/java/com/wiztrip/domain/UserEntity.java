@@ -11,6 +11,15 @@ import lombok.Setter;
 @Setter
 public class UserEntity extends TimeStamp {
 
+    // 기본 생성자
+    public UserEntity() {}
+
+    // kakaoId와 email을 매개변수로 받는 생성자
+    public UserEntity(String kakaoId, String email) {
+        this.kakaoId = kakaoId;
+        this.email = email;
+    }
+
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,4 +40,7 @@ public class UserEntity extends TimeStamp {
     private Image image; //프로필 사진
 
     private String nickname; //회원 닉네임
+
+    private String kakaoId;
+
 }
