@@ -2,6 +2,7 @@ package com.wiztrip.mapstruct;
 
 import com.wiztrip.domain.PlanEntity;
 import com.wiztrip.domain.TripEntity;
+import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.PlanDto;
 import com.wiztrip.repository.PlanRepository;
 import com.wiztrip.repository.TripRepository;
@@ -26,11 +27,11 @@ public abstract class PlanMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "user", ignore = true),
+            @Mapping(target = "user", source = "user"),
             @Mapping(target = "trip", source = "tripId", qualifiedByName = "tripIdToTripEntity")
 
     })
-    public abstract PlanEntity toEntity(PlanDto.PlanPostDto planPostDto, Long tripId);
+    public abstract PlanEntity toEntity(PlanDto.PlanPostDto planPostDto, Long tripId, UserEntity user);
 
     @Mappings({
             @Mapping(target = "planId", source = "id"),

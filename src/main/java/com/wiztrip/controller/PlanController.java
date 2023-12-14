@@ -1,5 +1,6 @@
 package com.wiztrip.controller;
 
+import com.wiztrip.config.spring_security.auth.PrincipalDetails;
 import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.PlanDto;
 import com.wiztrip.service.PlanService;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,8 +19,8 @@ public class PlanController {
     private final PlanService planService;
 
     @PostMapping
-    public ResponseEntity<PlanDto.PlanResponseDto> createPlan(@PathVariable("trip_id") @NotNull Long tripId, @RequestBody PlanDto.PlanPostDto planPostDto) {
-        return ResponseEntity.ok().body(planService.createPlan(tripId, planPostDto));
+    public ResponseEntity<PlanDto.PlanResponseDto> createPlan(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable("trip_id") @NotNull Long tripId, @RequestBody PlanDto.PlanPostDto planPostDto) {
+        return ResponseEntity.ok().body(planService.createPlan(principalDetails.getUser(), tripId, planPostDto));
     }
 
     @GetMapping
@@ -26,7 +28,7 @@ public class PlanController {
         return ResponseEntity.ok().body(planService.getPlan(tripId, planId));
     }
 
-    @GetMapping(headers = "range=all")
+    @GetMapping("/all")
     public ResponseEntity<ListDto> getAllPlan(@PathVariable("trip_id") Long tripId) {
         return ResponseEntity.ok().body(planService.getAllPlan(tripId));
     }
@@ -39,7 +41,7 @@ public class PlanController {
 
     @DeleteMapping
     public ResponseEntity<String> deletePlan(@PathVariable("trip_id") Long tripId, @RequestParam @NotNull @Min(1) Long planId) {
-        return ResponseEntity.ok().body(planService.deletePlan(tripId,planId));
+        return ResponseEntity.ok().body(planService.deletePlan(tripId, planId));
     }
 
 }
