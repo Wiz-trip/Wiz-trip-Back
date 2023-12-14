@@ -1,5 +1,6 @@
 package com.wiztrip.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -7,12 +8,18 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ListDto {
-    Integer listSize;
-    List<?> list = new ArrayList<>();
+public class ListDto<T> {
+    @Schema(description = "list의 generic type",example = "~~ResponseDto")
+    String type;
 
-    public ListDto(List<?> list) {
-        this.list = list;
+    Integer listSize;
+
+    @Schema(description = "response data list")
+    List<T> list = new ArrayList<>();
+
+    public ListDto(List<T> list) {
+        this.type = !list.isEmpty()?list.get(0).getClass().getSimpleName():null;
         this.listSize = list.size();
+        this.list = list;
     }
 }

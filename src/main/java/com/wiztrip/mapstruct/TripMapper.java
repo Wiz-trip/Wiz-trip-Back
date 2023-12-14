@@ -30,6 +30,7 @@ public abstract class TripMapper {
     public TripEntity toEntity(TripDto.TripPostDto tripPostDto) {
         TripEntity trip = _toEntity(tripPostDto);
         if(trip.getTripUserEntityList()==null) throw new RuntimeException("Trip에 속한 User가 없습니다.");
+        trip.getTripUserEntityList().forEach(o->o.setTrip(trip));
         trip.getPlanEntityList().forEach(o->o.setTrip(trip)); //연관관계 처리
         return trip;
     }
