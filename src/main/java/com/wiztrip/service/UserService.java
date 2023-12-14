@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
 
     // 사용자 조회
     public UserDto.UserResponseDto getUserById(Long userId) {
@@ -65,8 +65,8 @@ public class UserService {
             throw new IllegalArgumentException("Password 가 맞지 않습니다");
         }
 
-        // 비밀번호 일치 시, 새로운 UserEntity 생성 및 저장
         UserEntity newUser = new UserEntity();
+        
         newUser.setEmail(registrationDto.getEmail());
         newUser.setNickname(registrationDto.getNickname());
         newUser.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
