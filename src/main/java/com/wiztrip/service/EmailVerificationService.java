@@ -1,6 +1,9 @@
 package com.wiztrip.service;
 
 
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
+import com.wiztrip.repository.UserRepository;
 import com.wiztrip.tool.email.EmailTool;
 import com.wiztrip.tool.redis.RedisTool;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,8 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class EmailVerificationService {
 
+    private final UserRepository userRepository;
+
     private final RedisTool redisTool;
 
     private final EmailTool emailTool;
@@ -27,6 +32,10 @@ public class EmailVerificationService {
     private long authCodeExpirationMillis;
 
     public void sendCodeToEmail(String toEmail) {
+        //이메일 중복 검사
+        if(userRepository.existsByEmail(toEmail)) throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
+
+        //인증코드 생성, 저장 및 이메일 전송
         String title = "WIZ-TRIP 이메일 인증 번호";
         String authCode = this.createCode();
         // 이메일 인증 요청 시 인증 번호 Redis에 저장
