@@ -68,11 +68,11 @@ public class LikeService {
     }
     //좋아요한 랜드마크의 id List 리턴
 
-    public ListDto getLikeList(UserEntity user) {
+    public ListDto<Long> getLikeList(UserEntity user) {
         LikeEntity like = likeRepository.findByUserId(user.getId()).orElse(createLike(user));
         List<Long> list = like.getLandmarkLikeEntityList().stream()
                 .map(o -> o.getLandmark().getId()).sorted().toList(); //todo: 좋아요한 시간의 내림차순으로 정렬해야함
-        return new ListDto(list);
+        return new ListDto<>(list);
     }
 
     //todo: getLikeListWithLandmarkDetails() 만들어야할듯 --> LandmarkMapper 생성 후
