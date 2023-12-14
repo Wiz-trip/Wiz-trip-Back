@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository, principalDetailsService, tokenUtils))
                 .addFilterBefore(new JwtExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("test/**")
+                        .requestMatchers("jwt-test/**")
                         .authenticated()
                         .anyRequest().permitAll())
                 .build();

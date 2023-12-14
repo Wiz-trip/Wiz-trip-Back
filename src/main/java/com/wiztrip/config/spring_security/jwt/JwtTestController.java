@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("test")
+@RequestMapping("jwt-test")
 public class JwtTestController {
 
     @PostMapping("/getToken")
