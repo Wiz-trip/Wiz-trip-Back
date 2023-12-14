@@ -58,6 +58,9 @@ public class SecurityConfig {
                         .requestMatchers("test/**")
                         .authenticated()
                         .anyRequest().permitAll())
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("/loginSuccess", true) // OAuth2 로그인 성공 시 리다이렉션 경로
+                        .failureUrl("/loginFailure")) // OAuth2 로그인 실패 시 경로
                 .build();
     }
 }

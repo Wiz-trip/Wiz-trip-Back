@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -73,6 +75,30 @@ public class UserService {
 
         // db 에 저장
         return userRepository.save(newUser);
+    }
+
+
+    // kakao
+    public UserDto.UserResponseDto registerOrUpdateUser(Map<String, Object> kakaoAttributes) {
+
+        String kakaoId = String.valueOf(kakaoAttributes.get("id"));
+        String email = (String) ((Map<String, Object>) kakaoAttributes.get("kakao_account")).get("email");
+
+        // kakao id 가 있는지 체크
+        UserEntity user = userRepository.findByKakaoId(kakaoId)
+                .orElseGet(() -> {
+                    UserEntity newUser = new UserEntity();
+                    newUser.setKakaoId(kakaoId);
+                    newUser.setEmail(email);
+
+                    newUser.setPassword(passwordEncoder.encode("defaultPassword"));
+                    return newUser;
+                });
+
+        user.setEmail(email); // Example: updating email
+        UserEntity savedUser = userRepository.save(user);
+
+        return convertToUserResponseDto(savedUser);
     }
 
 }

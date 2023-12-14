@@ -58,7 +58,7 @@ dependencies {
 
     //oAuth2
 //    implementation 'com.google.code.gson:gson:2.8.7'
-//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     //FTP
     implementation 'commons-net:commons-net:3.9.0'
