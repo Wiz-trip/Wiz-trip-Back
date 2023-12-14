@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("ftptest")
+@RequestMapping("ftp-test")
 public class FtpTestController {
 
     @Autowired

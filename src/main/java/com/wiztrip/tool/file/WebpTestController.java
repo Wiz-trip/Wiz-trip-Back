@@ -12,7 +12,7 @@ import java.io.InputStream;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("webptest")
+@RequestMapping("webp-test")
 public class WebpTestController {
 
     private final WebpConvertTool webpConvertTool;

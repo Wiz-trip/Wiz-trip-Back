@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,14 +15,24 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
-//    @Bean
-//    public GroupedOpenApi group1() {
-//        return GroupedOpenApi.builder()
-//                .group("1.ALL")
-//                .pathsToMatch("/**")
-//                // .packagesToScan("com.example.swagger") // package 필터 설정
-//                .build();
-//    }
+    @Bean
+    public GroupedOpenApi group1() {
+        return GroupedOpenApi.builder()
+                .group("API")
+//                .pathsToMatch()
+                .pathsToExclude("/jwt-test/**","/webp-test/**","/ftp-test/**")
+                // .packagesToScan("com.example.swagger") // package 필터 설정
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi group2() {
+        return GroupedOpenApi.builder()
+                .group("TEST")
+                .pathsToMatch("/jwt-test/**","/webp-test/**","/ftp-test/**")
+                // .packagesToScan("com.example.swagger") // package 필터 설정
+                .build();
+    }
 
     @Bean
     public OpenAPI openAPI() {
