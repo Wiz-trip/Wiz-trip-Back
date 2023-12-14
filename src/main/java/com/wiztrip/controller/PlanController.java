@@ -29,7 +29,7 @@ public class PlanController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ListDto> getAllPlan(@PathVariable("trip_id") Long tripId) {
+    public ResponseEntity<ListDto<PlanDto.PlanResponseDto>> getAllPlan(@PathVariable("trip_id") Long tripId) {
         return ResponseEntity.ok().body(planService.getAllPlan(tripId));
     }
 

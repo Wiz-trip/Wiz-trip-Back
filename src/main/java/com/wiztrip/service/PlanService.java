@@ -32,8 +32,8 @@ public class PlanService {
         return planMapper.toResponseDto(plan);
     }
 
-    public ListDto getAllPlan(Long tripId) {
-        return new ListDto(planRepository.findAllByTripId(tripId).stream().map(o -> {
+    public ListDto<PlanDto.PlanResponseDto> getAllPlan(Long tripId) {
+        return new ListDto<>(planRepository.findAllByTripId(tripId).stream().map(o -> {
             checkValid(o, tripId);
             return planMapper.toResponseDto(o);
         }).toList());
