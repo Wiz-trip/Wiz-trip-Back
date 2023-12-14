@@ -25,7 +25,6 @@ public class TripController {
         return ResponseEntity.ok().body(tripService.getTrip(tripId));
     }
 
-    // todo: 잘 작동하는지 확인 필요!!!!
     @PatchMapping
     public ResponseEntity<TripDto.TripResponseDto> updateTrip(@RequestBody TripDto.TripPatchDto tripPatchDto) {
         return ResponseEntity.ok().body(tripService.updateTrip(tripPatchDto));
