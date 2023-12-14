@@ -18,6 +18,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+
     // 사용자 조회
     public UserDto.UserResponseDto getUserById(Long userId) {
         UserEntity userEntity = userRepository.findById(userId)
@@ -60,18 +61,26 @@ public class UserService {
 
 
     // 회원가입 처리
+    @Transactional
     public UserEntity createUser(UserRegisterDto registrationDto) {
         if (!registrationDto.getPassword().equals(registrationDto.getConfirmPassword())) {
-            throw new IllegalArgumentException("Password 가 맞지 않습니다");
+            throw new IllegalArgumentException("Passwords do not match.");
         }
 
-        // 비밀번호 일치 시, 새로운 UserEntity 생성 및 저장
-        UserEntity newUser = new UserEntity();
-        newUser.setEmail(registrationDto.getEmail());
-        newUser.setNickname(registrationDto.getNickname());
-        newUser.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+        // username과 email의 중복 체크
+//        userRepository.findByUsername(registrationDto.getUsername()).ifPresent(u -> {
+//            throw new IllegalArgumentException("Username already in use.");
+//        });
+//        userRepository.findByEmail(registrationDto.getEmail()).ifPresent(u -> {
+//            throw new IllegalArgumentException("Email already in use.");
+//        });
 
-        // db 에 저장
+        UserEntity newUser = new UserEntity();
+        newUser.setUsername(registrationDto.getUsername());
+        newUser.setEmail(registrationDto.getEmail());
+        newUser.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+        newUser.setNickname(registrationDto.getNickname());
+
         return userRepository.save(newUser);
     }
 

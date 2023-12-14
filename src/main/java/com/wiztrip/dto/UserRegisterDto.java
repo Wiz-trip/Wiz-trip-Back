@@ -12,6 +12,8 @@ import lombok.*;
 public class UserRegisterDto {
 // 회원가입 시 필요 : 이메일, 닉네임, 비밀번호(+재확인)
 
+    private String username;
+
     private String email;
 
     private String password;
