@@ -32,6 +32,4 @@ public class TripEntity {
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemoEntity> memoEntityList = new ArrayList<>();
-
-    //todo: 숙소, 식당 등에 대한 메모 엔티티 하다 더 파야함
 }
