@@ -33,10 +33,16 @@ public class LikeController {
     }
 
     // 좋아요 표시한 랜드마크의 id list 리턴
-    @Operation(summary = "Like list 조회", description = "Like한 Landmark의 id list 조회. JWT Token 입력 필수!!!")
+    @Operation(summary = "Like landmark id list 조회", description = "Like한 Landmark의 id list 조회. JWT Token 입력 필수!!!")
     @GetMapping
     public ResponseEntity<ListDto<Long>> getLikeList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ResponseEntity.ok().body(likeService.getLikeList(principalDetails.getUser()));
+    }
+
+    @Operation(summary = "like landmark detail list 조회",description = "Like한 Landmark의 details 조회. JWT Token 입력 필수!!!")
+    @GetMapping("/with-details")
+    public ResponseEntity<LikeDto.LikeDetailResponseDto> getLikeListWithLandmarkDetails(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ResponseEntity.ok().body(likeService.getLikeListWithLandmarkDetails(principalDetails.getUser()));
     }
 
     @Operation(summary = "Like 취소", description = "landmark id를 통한 Like 취소. JWT Token 입력 필수!!!")

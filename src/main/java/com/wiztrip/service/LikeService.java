@@ -5,8 +5,10 @@ import com.wiztrip.domain.LandmarkEntity;
 import com.wiztrip.domain.LandmarkLikeEntity;
 import com.wiztrip.domain.LikeEntity;
 import com.wiztrip.domain.UserEntity;
+import com.wiztrip.dto.LandmarkDto;
 import com.wiztrip.dto.LikeDto;
 import com.wiztrip.dto.ListDto;
+import com.wiztrip.mapstruct.LandmarkMapper;
 import com.wiztrip.repository.LandmarkLikeRepository;
 import com.wiztrip.repository.LandmarkRepository;
 import com.wiztrip.repository.LikeRepository;
@@ -27,6 +29,8 @@ public class LikeService {
     private final LandmarkRepository landmarkRepository;
 
     private final LandmarkLikeRepository landmarkLikeRepository;
+
+    private final LandmarkMapper landmarkMapper;
 
 
     // 여행지 좋아요 기능 //하나씩 가능
@@ -75,9 +79,17 @@ public class LikeService {
         return new ListDto<>(list);
     }
 
-    //todo: getLikeListWithLandmarkDetails() 만들어야할듯 --> LandmarkMapper 생성 후
-    // 여행지 좋아요 취소 기능
+    public LikeDto.LikeDetailResponseDto getLikeListWithLandmarkDetails(UserEntity user) {
+        LikeEntity like = likeRepository.findByUserId(user.getId()).orElse(createLike(user));
+        ListDto<LandmarkDto.LandmarkDetailResponseDto> listDto = new ListDto<>(like.getLandmarkLikeEntityList().stream()
+                .map(o -> landmarkMapper.entityToDetailResponseDto(o.getLandmark())).toList());
 
+        return LikeDto.LikeDetailResponseDto.builder()
+                .likeId(like.getId())
+                .landmarkDetailResponseDtoList(listDto).build();
+    }
+
+    // 여행지 좋아요 취소 기능
     @Transactional
     public String deleteLike(UserEntity user, Long landmarkId) {
         List<LandmarkLikeEntity> landmarkLikeEntityList = likeRepository.findByUserId(user.getId()).orElseThrow().getLandmarkLikeEntityList();
