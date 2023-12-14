@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -23,9 +23,9 @@ public class PlanEntity { //Trip의 세부 사항. 장소, 시간, 예산 등
     @Embedded
     private Address address;
 
-    private LocalTime startTime;
+    private LocalDateTime startTime;
 
-    private LocalTime finishTime;
+    private LocalDateTime finishTime;
 
     @Lob
     @Column(columnDefinition = "TEXT")
