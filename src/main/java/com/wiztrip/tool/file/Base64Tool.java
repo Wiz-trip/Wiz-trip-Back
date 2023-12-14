@@ -1,4 +1,4 @@
-package com.wiztrip.tool;
+package com.wiztrip.tool.file;
 
 import org.apache.commons.net.util.Base64;
 import org.springframework.stereotype.Component;

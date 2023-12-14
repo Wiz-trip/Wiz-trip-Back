@@ -1,4 +1,4 @@
-package com.wiztrip.tool;
+package com.wiztrip.tool.file;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
