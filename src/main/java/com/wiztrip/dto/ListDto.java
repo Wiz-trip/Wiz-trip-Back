@@ -11,7 +11,10 @@ import java.util.List;
 public class ListDto<T> {
     @Schema(description = "list의 generic type",example = "~~ResponseDto")
     String type;
+
     Integer listSize;
+
+    @Schema(description = "response data list")
     List<T> list = new ArrayList<>();
 
     public ListDto(List<T> list) {
