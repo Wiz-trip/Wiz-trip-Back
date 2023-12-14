@@ -2,6 +2,7 @@ package com.wiztrip.dto;
 
 
 import com.wiztrip.domain.UserEntity;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class LikeDto {
     @NoArgsConstructor
     @Builder
     public static class LikePostDto {
+        @Schema(description = "like할 landmark id", example = "1")
         private Long landmarkId;
     }
 
@@ -24,6 +26,9 @@ public class LikeDto {
     @NoArgsConstructor
     @Builder
     public static class LikeAllPostDto {
+        @Schema(description = "like할 landmark id의 list", example = "[\n" +
+                "    1\n" +
+                "  ]")
         private List<Long> landmarkIdList = new ArrayList<>();
     }
 
@@ -34,10 +39,15 @@ public class LikeDto {
     @NoArgsConstructor
     @Builder
     public static class LikeResponseDto {
-        private Long id;
+        @Schema(description = "like id", example = "1")
+        private Long likeId;
 
+        @Schema(description = "user id", example = "1")
         private UserEntity userId;
 
+        @Schema(description = "like할 landmark id의 list", example = "[\n" +
+                "    1\n" +
+                "  ]")
         private List<Long> landmarkIdList = new ArrayList<>();
     }
 
@@ -47,10 +57,13 @@ public class LikeDto {
     @NoArgsConstructor
     @Builder
     public static class LikeDetailResponseDto {
-        private Long id;
+        @Schema(description = "like id", example = "1")
+        private Long likeId;
 
+        @Schema(description = "user id", example = "1")
         private UserEntity userId;
 
+        @Schema(description = "landmark detail list")
         private List<LandmarkDto.LandmarkDetailResponseDto> landmarkDetailResponseDtoList = new ArrayList<>();
     }
 }
