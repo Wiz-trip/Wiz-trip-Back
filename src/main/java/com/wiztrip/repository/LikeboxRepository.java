@@ -1,6 +1,6 @@
 package com.wiztrip.repository;
 
-import com.wiztrip.domain.LikeEntity;
+import com.wiztrip.domain.LikeboxEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,9 +8,9 @@ import java.util.Optional;
 
 
 @Repository
-public interface LikeRepository extends JpaRepository<LikeEntity,Long> {
+public interface LikeboxRepository extends JpaRepository<LikeboxEntity,Long> {
 
     boolean existsByUserId(Long userId);
 
-    Optional<LikeEntity> findByUserId(Long userId);
+    Optional<LikeboxEntity> findByUserId(Long userId);
 }

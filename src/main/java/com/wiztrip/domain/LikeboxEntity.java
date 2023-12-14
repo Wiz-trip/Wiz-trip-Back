@@ -12,10 +12,10 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LikeEntity {
+public class LikeboxEntity {
 
     @Id
-    @Column(name = "like_id")
+    @Column(name = "likebox_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -23,10 +23,10 @@ public class LikeEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "like", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LandmarkLikeEntity> landmarkLikeEntityList = new ArrayList<>();
+    @OneToMany(mappedBy = "likebox", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LandmarkLikeboxEntity> landmarkLikeboxEntityList = new ArrayList<>();
 
-    public LikeEntity(UserEntity user) {
+    public LikeboxEntity(UserEntity user) {
         this.user = user;
     }
 

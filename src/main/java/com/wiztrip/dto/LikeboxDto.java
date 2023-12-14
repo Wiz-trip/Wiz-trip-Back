@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LikeDto {
+public class LikeboxDto {
 
     @Getter
     @Setter
@@ -38,8 +38,8 @@ public class LikeDto {
     @NoArgsConstructor
     @Builder
     public static class LikeResponseDto {
-        @Schema(description = "like id", example = "1")
-        private Long likeId;
+        @Schema(description = "likebox id", example = "1")
+        private Long likeboxId;
 
         @Schema(description = "like할 landmark id의 list", example = "[\n" +
                 "    1\n" +
@@ -53,8 +53,8 @@ public class LikeDto {
     @NoArgsConstructor
     @Builder
     public static class LikeDetailResponseDto {
-        @Schema(description = "like id", example = "1")
-        private Long likeId;
+        @Schema(description = "likebox id", example = "1")
+        private Long likeboxId;
 
         @Schema(description = "landmark detail list")
         private ListDto<LandmarkDto.LandmarkDetailResponseDto> landmarkDetailResponseDtoList;

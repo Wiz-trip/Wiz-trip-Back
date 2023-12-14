@@ -9,10 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LandmarkLikeEntity extends TimeStamp{
+public class LandmarkLikeboxEntity extends TimeStamp{
 
     @Id
-    @Column(name = "landmark_like_entity")
+    @Column(name = "landmark_likebox_entity")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -21,11 +21,11 @@ public class LandmarkLikeEntity extends TimeStamp{
     private LandmarkEntity landmark;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "like_id")
-    private LikeEntity like;
+    @JoinColumn(name = "likebox_id")
+    private LikeboxEntity likebox;
 
-    public LandmarkLikeEntity(LandmarkEntity landmark, LikeEntity like) {
+    public LandmarkLikeboxEntity(LandmarkEntity landmark, LikeboxEntity likebox) {
         this.landmark = landmark;
-        this.like = like;
+        this.likebox = likebox;
     }
 }

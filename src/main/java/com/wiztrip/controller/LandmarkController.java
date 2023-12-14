@@ -1,13 +1,11 @@
 package com.wiztrip.controller;
 
-import com.wiztrip.domain.LandmarkEntity;
 import com.wiztrip.dto.LandmarkDto;
 import com.wiztrip.service.LandmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import com.wiztrip.dto.LandmarkLikeDto;
 
 
 @RequiredArgsConstructor

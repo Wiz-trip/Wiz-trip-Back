@@ -1,7 +1,6 @@
 package com.wiztrip.dto;
 
 import com.wiztrip.constant.Image;
-import com.wiztrip.domain.LikeEntity;
 import lombok.*;
 
 
@@ -24,7 +23,7 @@ public class UserDto {
 
         private String nickname; // 회원 닉네임
 
-        private LikeDto like;
+        private LikeboxDto like;
 
     }
 
@@ -45,7 +44,7 @@ public class UserDto {
 
         private String nickname; // 회원 닉네임
 
-        private LikeDto like;
+        private LikeboxDto like;
 
     }
 }

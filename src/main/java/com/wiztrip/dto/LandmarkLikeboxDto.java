@@ -1,11 +1,10 @@
 package com.wiztrip.dto;
 
 import com.wiztrip.domain.LandmarkEntity;
-import com.wiztrip.domain.LikeEntity;
-import jakarta.persistence.*;
+import com.wiztrip.domain.LikeboxEntity;
 import lombok.*;
 
-public class LandmarkLikeDto {
+public class LandmarkLikeboxDto {
 
     @Getter
     @Setter
@@ -18,7 +17,7 @@ public class LandmarkLikeDto {
 
         private LandmarkEntity landmark;
 
-        private LikeEntity like;
+        private LikeboxEntity like;
 
     }
 
