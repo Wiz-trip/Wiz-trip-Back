@@ -1,6 +1,7 @@
 package com.wiztrip.service;
 
 import com.wiztrip.domain.PlanEntity;
+import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.PlanDto;
 import com.wiztrip.mapstruct.PlanMapper;
@@ -21,8 +22,8 @@ public class PlanService {
     private final PlanRepository planRepository;
 
     @Transactional
-    public PlanDto.PlanResponseDto createPlan(Long tripId, PlanDto.PlanPostDto planPostDto) {
-        return planMapper.toResponseDto(planRepository.save(planMapper.toEntity(planPostDto, tripId)));
+    public PlanDto.PlanResponseDto createPlan(UserEntity user, Long tripId, PlanDto.PlanPostDto planPostDto) {
+        return planMapper.toResponseDto(planRepository.save(planMapper.toEntity(planPostDto, tripId, user)));
     }
 
     public PlanDto.PlanResponseDto getPlan(Long tripId, Long planId) {
