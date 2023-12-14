@@ -22,7 +22,7 @@ public class LikeController {
           return ResponseEntity.ok().body(likeService.addLike(principalDetails.getUser(), likePostDto));
      }
 
-     @PostMapping(headers = "range=all")
+     @PostMapping("/all")
      // 여행지 좋아요 기능 //여러개 가능
      public ResponseEntity<String> addAllLike(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody LikeDto.LikeAllPostDto likeAllPostDto) {
           return ResponseEntity.ok().body(likeService.addAllLike(principalDetails.getUser(), likeAllPostDto));
