@@ -12,7 +12,7 @@ import lombok.Setter;
 public class TripUserEntity {
 
     @Id
-    @Column(name = "user_trip_id")
+    @Column(name = "trip_user_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
