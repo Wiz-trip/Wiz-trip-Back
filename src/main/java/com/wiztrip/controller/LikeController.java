@@ -30,7 +30,7 @@ public class LikeController {
 
      // 좋아요 표시한 랜드마크의 id list 리턴
      @GetMapping
-     public ResponseEntity<ListDto> getLikeList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+     public ResponseEntity<ListDto<Long>> getLikeList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
           return ResponseEntity.ok().body(likeService.getLikeList(principalDetails.getUser()));
      }
 
