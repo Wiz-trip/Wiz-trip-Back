@@ -73,19 +73,20 @@ public class LikeboxService {
     //좋아요한 랜드마크의 id List 리턴
 
     public ListDto<Long> getLikeList(UserEntity user) {
-        LikeboxEntity likebox = likeboxRepository.findByUserId(user.getId()).orElse(createLikebox(user));
-        List<Long> list = likebox.getLandmarkLikeboxEntityList().stream()
-                .map(o -> o.getLandmark().getId()).sorted().toList(); //todo: 좋아요한 시간의 내림차순으로 정렬해야함
+        Long likeboxId = likeboxRepository.findByUserId(user.getId()).orElse(createLikebox(user)).getId();
+        List<Long> list = landmarkRepository.findAllIdByLikeboxId(likeboxId);
         return new ListDto<>(list);
     }
 
     public LikeboxDto.LikeDetailResponseDto getLikeListWithLandmarkDetails(UserEntity user) {
-        LikeboxEntity likebox = likeboxRepository.findByUserId(user.getId()).orElse(createLikebox(user));
-        ListDto<LandmarkDto.LandmarkDetailResponseDto> listDto = new ListDto<>(likebox.getLandmarkLikeboxEntityList().stream()
-                .map(o -> landmarkMapper.entityToDetailResponseDto(o.getLandmark())).toList());
+        Long likeboxId = likeboxRepository.findByUserId(user.getId()).orElse(createLikebox(user)).getId();
+
+        ListDto<LandmarkDto.LandmarkDetailResponseDto> listDto =
+                new ListDto<>(landmarkRepository.findAllByLikeboxId(likeboxId)
+                        .stream().map(landmarkMapper::entityToDetailResponseDto).toList());
 
         return LikeboxDto.LikeDetailResponseDto.builder()
-                .likeboxId(likebox.getId())
+                .likeboxId(likeboxId)
                 .landmarkDetailResponseDtoList(listDto).build();
     }
 
