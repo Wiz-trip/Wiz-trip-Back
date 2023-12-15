@@ -62,7 +62,7 @@ public class LikeController {
         return ResponseEntity.ok().body(likeboxService.getLikeListWithLandmarkDetails(principalDetails.getUser()));
     }
 
-    @Operation(summary = "like landmark detail list 조회", description = "Like한 Landmark의 details 조회. JWT Token 입력 필수!!!")
+    @Operation(summary = "like landmark detail list 조회 - Page", description = "Like한 Landmark의 details 조회. JWT Token 입력 필수!!!")
     @GetMapping("/with-details/page")
     public ResponseEntity<Page<LandmarkDto.LandmarkDetailResponseDto>> getLikeListWithLandmarkDetailsPage(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
