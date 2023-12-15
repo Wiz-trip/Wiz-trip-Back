@@ -90,7 +90,7 @@ public class GlobalExceptionAdvice {
 
     }
 
-    // 예상하지 못한 모든 예외를 처리 (
+    // 예상하지 못한 모든 예외를 처리
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {

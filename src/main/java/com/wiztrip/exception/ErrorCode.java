@@ -29,6 +29,10 @@ public enum ErrorCode {
     FORBIDDEN_DELETE_MEMO_USER(FORBIDDEN, "메모 삭제 권한이 없는 사용자입니다."),
     FORBIDDEN_UPDATE_REVIEW_USER(FORBIDDEN, "후기글 수정 권한이 없는 사용자입니다."),
     FORBIDDEN_DELETE_REVIEW_USER(FORBIDDEN, "후기글 삭제 권한이 없는 사용자입니다."),
+    NOT_IN_TRIP_MEMO(FORBIDDEN, "해당 전체 여행 계획에 속한 메모가 아닙니다."),
+    NOT_IN_TRIP_PLAN(FORBIDDEN, "해당 전체 여행 계획에 속한 세부 여행 계획이 아닙니다."),
+    NOT_IN_TRIP_REVIEW(FORBIDDEN, "해당 전체 여행 계획에 속한 후기글이 아닙니다."),
+
 
     // 404 NOT_FOUND: 잘못된 리소스 접근
     REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "로그아웃 된 사용자입니다"),
@@ -46,6 +50,8 @@ public enum ErrorCode {
 
     // 409 CONFLICT: 중복된 리소스 (요청이 현재 서버 상태와 충돌될 때)
     DUPLICATE_EMAIL(CONFLICT, "이미 존재하는 이메일입니다."),
+    DUPLICATE_LANDMARK_LIKE(CONFLICT, "사용자가 이미 좋아요에 추가한 여행지입니다."),
+    NO_LANDMARK_LIKE_EXIST(CONFLICT, "사용자가 좋아요에 추가하지 않은 여행지입니다."),
 
     // 500 INTERNAL SERVER ERROR
     SERVER_ERROR(INTERNAL_SERVER_ERROR, "내부 서버 에러입니다.");
