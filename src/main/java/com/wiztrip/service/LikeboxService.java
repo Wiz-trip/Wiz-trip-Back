@@ -21,7 +21,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-//@Transactional(readOnly = true)
+@Transactional(readOnly = true)
 public class LikeboxService {
 
     private final LikeboxRepository likeboxRepository;
@@ -42,8 +42,7 @@ public class LikeboxService {
         if (isExistsByLandmarkIdAndLikeboxId(landmark.getId(), likebox.getId()))
             throw new RuntimeException("이미 좋아요 됨");
 
-        LandmarkLikeboxEntity landmarkLikebox = new LandmarkLikeboxEntity(landmark, likebox);
-        likebox.getLandmarkLikeboxEntityList().add(landmarkLikebox);
+        likebox.getLandmarkLikeboxEntityList().add(new LandmarkLikeboxEntity(landmark, likebox));
 
         return "userId: " + user.getId() + "\n"
                 + "landmarkId: " + likePostDto.getLandmarkId() + " like 추가 완료";
@@ -73,21 +72,17 @@ public class LikeboxService {
 
     //좋아요한 랜드마크의 id List 리턴
     public ListDto<Long> getLikeList(UserEntity user) {
-        Long likeboxId = findOrCreateLikebox(user).getId();
-        List<Long> list = landmarkRepository.findAllIdByLikeboxId(likeboxId);
-        return new ListDto<>(list);
+        if (!likeboxRepository.existsByUserId(user.getId())) return new ListDto<>(new ArrayList<>());
+
+        Long likeboxId = likeboxRepository.findByUserId(user.getId()).orElseThrow().getId();
+        return new ListDto<>(landmarkRepository.findAllIdByLikeboxId(likeboxId));
     }
 
-    public LikeboxDto.LikeDetailResponseDto getLikeListWithLandmarkDetails(UserEntity user) {
-        Long likeboxId = findOrCreateLikebox(user).getId();
+    public ListDto<LandmarkDto.LandmarkDetailResponseDto> getLikeListWithLandmarkDetails(UserEntity user) {
+        if (!likeboxRepository.existsByUserId(user.getId())) return new ListDto<>(new ArrayList<>());
 
-        ListDto<LandmarkDto.LandmarkDetailResponseDto> listDto =
-                new ListDto<>(landmarkRepository.findAllByLikeboxId(likeboxId)
-                        .stream().map(landmarkMapper::entityToDetailResponseDto).toList());
-
-        return LikeboxDto.LikeDetailResponseDto.builder()
-                .likeboxId(likeboxId)
-                .landmarkDetailResponseDtoList(listDto).build();
+        return new ListDto<>(landmarkRepository.findAllByLikeboxId(likeboxRepository.findByUserId(user.getId()).orElseThrow().getId())
+                .stream().map(landmarkMapper::entityToDetailResponseDto).toList());
     }
 
     // 여행지 좋아요 취소 기능
