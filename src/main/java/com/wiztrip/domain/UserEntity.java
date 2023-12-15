@@ -18,7 +18,7 @@ public class UserEntity extends TimeStamp {
 
     @NotNull
     @Column(unique = true)      // 값이 중복되지 않도록 설정
-    private String username; //로그인 아이디
+    private String username; //로그인 아이디 (카카오 로그인시 kakaoId)
 
     @NotNull
     private String password;       // 회원가입 시 필요
@@ -32,5 +32,4 @@ public class UserEntity extends TimeStamp {
 
     private String nickname; //회원 닉네임
 
-    private String kakaoId;
 }

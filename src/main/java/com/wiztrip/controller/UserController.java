@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -47,7 +48,7 @@ public class UserController {
 
 
     // 회원가입 처리
-    @Operation(summary = "카카오 로그인",description = "카카오 로그인을 처리합니다.")
+    @Operation(summary = "회원 가입",description = "회원가입을 처리합니다.")
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserRegisterDto registrationDto) {
         userService.createUser(registrationDto);
@@ -58,6 +59,10 @@ public class UserController {
     @Operation(summary = "카카오 로그인",description = "카카오 로그인을 처리합니다.")
     @GetMapping("login/kakao")
     public ResponseEntity<?> kakaoLogin(@AuthenticationPrincipal OAuth2User oauth2User) {
+        if (oauth2User == null) {
+            // 사용자가 인증되지 않은 경우의 처리
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
         // Kakao 사용자 정보 추출
         Map<String, Object> kakaoAttributes = oauth2User.getAttributes();
         // 필요한 사용자 정보를 사용하여 등록 또는 업데이트 처리

@@ -81,21 +81,21 @@ public class UserService {
     // kakao
     public UserDto.UserResponseDto registerOrUpdateUser(Map<String, Object> kakaoAttributes) {
 
-        String kakaoId = String.valueOf(kakaoAttributes.get("id"));
+        String username = String.valueOf(kakaoAttributes.get("id"));
         String email = (String) ((Map<String, Object>) kakaoAttributes.get("kakao_account")).get("email");
 
         // kakao id 가 있는지 체크
-        UserEntity user = userRepository.findByKakaoId(kakaoId)
+        UserEntity user = userRepository.findByUsername(username)
                 .orElseGet(() -> {
                     UserEntity newUser = new UserEntity();
-                    newUser.setKakaoId(kakaoId);
+                    newUser.setUsername(username);
                     newUser.setEmail(email);
-
                     newUser.setPassword(passwordEncoder.encode("defaultPassword"));
                     return newUser;
                 });
 
-        user.setEmail(email); // Example: updating email
+        user.setEmail(email);
+
         UserEntity savedUser = userRepository.save(user);
 
         return convertToUserResponseDto(savedUser);
