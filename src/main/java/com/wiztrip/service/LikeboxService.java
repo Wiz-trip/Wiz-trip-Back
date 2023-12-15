@@ -13,6 +13,8 @@ import com.wiztrip.repository.LandmarkLikeboxRepository;
 import com.wiztrip.repository.LandmarkRepository;
 import com.wiztrip.repository.LikeboxRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,12 +61,12 @@ public class LikeboxService {
         landmarkRepository.findAllById(likeAllPostDto.getLandmarkIdList()).forEach(o -> {
             if (isExistsByLandmarkIdAndLikeboxId(o.getId(), likebox.getId())) addFailedlandmarkIdList.add(o.getId());
             else {
-                likebox.getLandmarkLikeboxEntityList().add(new LandmarkLikeboxEntity(o,likebox));
+                likebox.getLandmarkLikeboxEntityList().add(new LandmarkLikeboxEntity(o, likebox));
                 addSuccesslandmarkIdList.add(o.getId());
             }
         });
 
-        if(addSuccesslandmarkIdList.isEmpty()) throw new RuntimeException();
+        if (addSuccesslandmarkIdList.isEmpty()) throw new RuntimeException();
         return "userId: " + user.getId() + "\n"
                 + "landmarkId: " + addSuccesslandmarkIdList + " like 추가 완료\n"
                 + "landmarkId: " + addFailedlandmarkIdList + "likebox에 이미 있음";
@@ -78,11 +80,25 @@ public class LikeboxService {
         return new ListDto<>(landmarkRepository.findAllIdByLikeboxId(likeboxId));
     }
 
+    public Page<Long> getLikeListPage(UserEntity user, Pageable pageable) {
+        if (!likeboxRepository.existsByUserId(user.getId())) return Page.empty(pageable);
+
+        Long likeboxId = likeboxRepository.findByUserId(user.getId()).orElseThrow().getId();
+        return landmarkRepository.findAllIdByLikeboxId(likeboxId, pageable);
+    }
+
     public ListDto<LandmarkDto.LandmarkDetailResponseDto> getLikeListWithLandmarkDetails(UserEntity user) {
         if (!likeboxRepository.existsByUserId(user.getId())) return new ListDto<>(new ArrayList<>());
 
         return new ListDto<>(landmarkRepository.findAllByLikeboxId(likeboxRepository.findByUserId(user.getId()).orElseThrow().getId())
                 .stream().map(landmarkMapper::entityToDetailResponseDto).toList());
+    }
+
+    public Page<LandmarkDto.LandmarkDetailResponseDto> getLikeListWithLandmarkDetailsPage(UserEntity user, Pageable pageable) {
+        if (!likeboxRepository.existsByUserId(user.getId())) return Page.empty(pageable);
+
+        Long likeboxId = likeboxRepository.findByUserId(user.getId()).orElseThrow().getId();
+        return landmarkRepository.findAllByLikeboxId(likeboxId,pageable).map(landmarkMapper::entityToDetailResponseDto);
     }
 
     // 여행지 좋아요 취소 기능
@@ -95,7 +111,7 @@ public class LikeboxService {
     }
 
     private boolean isExistsByLandmarkIdAndLikeboxId(Long landmarkId, Long likeId) {
-        return landmarkLikeboxRepository.existsByLandmarkIdAndLikeboxId(likeId,landmarkId);
+        return landmarkLikeboxRepository.existsByLandmarkIdAndLikeboxId(likeId, landmarkId);
     }
 
     private LikeboxEntity findOrCreateLikebox(UserEntity user) {
