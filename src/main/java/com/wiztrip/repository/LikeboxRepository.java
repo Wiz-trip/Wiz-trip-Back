@@ -10,5 +10,7 @@ import java.util.Optional;
 @Repository
 public interface LikeboxRepository extends JpaRepository<LikeboxEntity,Long> {
 
+    boolean existsByUserId(Long userId);
+
     Optional<LikeboxEntity> findByUserId(Long userId);
 }
