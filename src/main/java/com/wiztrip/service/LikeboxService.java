@@ -86,7 +86,7 @@ public class LikeboxService {
     public String deleteLike(UserEntity user, Long landmarkId) {
         List<LandmarkLikeboxEntity> landmarkLikeboxEntityList = likeboxRepository.findByUserId(user.getId()).orElseThrow().getLandmarkLikeboxEntityList();
         if (!landmarkLikeboxEntityList.removeIf(o -> o.getLandmark().getId().equals(landmarkId)))
-            return "userId: " + user.getId() + "\nlandmarkId: " + landmarkId + "\nlike 가 존재하지 않습니다.";
+            return "userId: " + user.getId() + "\nlandmarkId: " + landmarkId + "\nlike 가 존재하지 않습니다."; //todo: throw로 바꾸기
         return "userId: " + user.getId() + "\nlandmarkId: " + landmarkId + "\nlike 삭제 완료";
     }
 
