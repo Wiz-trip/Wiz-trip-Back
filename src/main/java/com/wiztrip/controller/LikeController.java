@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Tag(name = "Like(좋아요)")
 @RestController
 @RequiredArgsConstructor
@@ -24,18 +26,11 @@ public class LikeController {
 
     private final LikeboxService likeboxService;
 
-    // 여행지 좋아요 기능 //한개만 가능
-    @Operation(summary = "Like 추가", description = "LikePostDto를 통한 Like 추가. JWT Token 입력 필수!!!")
-    @PostMapping
-    public ResponseEntity<String> addLike(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody LikeboxDto.LikePostDto likePostDto) {
-        return ResponseEntity.ok().body(likeboxService.addLike(principalDetails.getUser(), likePostDto));
-    }
-
     @Operation(summary = "Like 여러개 추가", description = "LikeAllPostDto를 통한 Like 한번에 여러개 추가. JWT Token 입력 필수!!!")
-    @PostMapping("/all")
+    @PostMapping
     // 여행지 좋아요 기능 //여러개 가능
-    public ResponseEntity<String> addAllLike(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody LikeboxDto.LikeAllPostDto likeAllPostDto) {
-        return ResponseEntity.ok().body(likeboxService.addAllLike(principalDetails.getUser(), likeAllPostDto));
+    public ResponseEntity<Map<Long, String>> addLike(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody LikeboxDto.LikePostDto likePostDto) {
+        return ResponseEntity.ok().body(likeboxService.addLike(principalDetails.getUser(), likePostDto));
     }
 
     // 좋아요 표시한 랜드마크의 id list 리턴
