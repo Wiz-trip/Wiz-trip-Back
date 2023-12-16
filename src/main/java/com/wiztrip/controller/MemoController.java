@@ -28,8 +28,7 @@ public class MemoController {
     // 메모 조회 (전체 전달)
     @GetMapping
     @Operation(summary = "Memo 조회",
-            description = "trip_id를 사용해 카테고리 상관 없이 해당 Trip(전체 여행 계획)에 작성된 모든 Memo를 전달합니다. " +
-                    "만약 아직 작성된 Memo가 없을 경우, NOT_FOUND(404) 예외를 보내도록 처리했습니다.")
+            description = "trip_id를 사용해 카테고리 상관 없이 해당 Trip(전체 여행 계획)에 작성된 모든 Memo를 전달합니다. ")
     public ResponseEntity<ListDto<MemoDto.MemoResponseDto>> getMemoAll(@PathVariable("trip_id") Long tripId) {
         return ResponseEntity.ok().body(memoService.getMemoAll(tripId));
     }
@@ -43,10 +42,10 @@ public class MemoController {
     }
 
     // 메모 삭제
-    @DeleteMapping("/{memo_id}")
+    @DeleteMapping
     @Operation(summary = "Memo 삭제",
             description = "trip_id와 memo_id를 사용해 해당 Memo를 삭제합니다.")
-    public ResponseEntity<String> deleteMemo(@PathVariable("trip_id") Long tripId, @PathVariable("memo_id") Long memoId) {
+    public ResponseEntity<String> deleteMemo(@PathVariable("trip_id") Long tripId, @RequestParam("memo_id") Long memoId) {
         return ResponseEntity.ok().body(memoService.deleteMemo(tripId, memoId));
     }
 }
