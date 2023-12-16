@@ -33,7 +33,6 @@ public enum ErrorCode {
     NOT_IN_TRIP_PLAN(FORBIDDEN, "해당 전체 여행 계획에 속한 세부 여행 계획이 아닙니다."),
     NOT_IN_TRIP_REVIEW(FORBIDDEN, "해당 전체 여행 계획에 속한 후기글이 아닙니다."),
 
-
     // 404 NOT_FOUND: 잘못된 리소스 접근
     REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "로그아웃 된 사용자입니다"),
     MEMBER_NOT_FOUND(NOT_FOUND, "해당 회원 정보를 찾을 수 없습니다."),
@@ -43,10 +42,6 @@ public enum ErrorCode {
     MEMO_NOT_FOUND(NOT_FOUND, "해당 메모를 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(NOT_FOUND, "해당 후기글을 찾을 수 없습니다."),
     LANDMARK_NOT_EXIST(NOT_FOUND, "저장된 여행지 정보가 아직 없습니다."),
-    TRIP_NOT_EXIST(NOT_FOUND,"예정된 전체 여행 계획이 아직 없습니다."),
-    PLAN_NOT_EXIST(NOT_FOUND, "작성된 세부 여행 계획이 아직 없습니다."),
-    MEMO_NOT_EXIST(NOT_FOUND, "작성된 메모가 아직 없습니다."),
-    REVIEW_NOT_EXIST(NOT_FOUND,"작성된 후기글이 아직 없습니다."),
 
     // 409 CONFLICT: 중복된 리소스 (요청이 현재 서버 상태와 충돌될 때)
     DUPLICATE_EMAIL(CONFLICT, "이미 존재하는 이메일입니다."),

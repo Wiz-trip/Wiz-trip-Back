@@ -33,11 +33,6 @@ public class MemoService {
     public ListDto<MemoDto.MemoResponseDto> getMemoAll(Long tripId) {
         List<MemoEntity> memoList = memoRepository.findAllByTripId(tripId);
 
-        // 작성된 Memo가 없는 경우(null)
-        if (memoList.isEmpty()) {
-            throw new CustomException(ErrorCode.MEMO_NOT_EXIST);
-        }
-
         return new ListDto<>(memoList.stream().map(o -> {
             checkValid(o, tripId);
             return memoMapper.toResponseDto(o);
