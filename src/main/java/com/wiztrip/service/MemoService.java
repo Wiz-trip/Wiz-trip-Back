@@ -2,7 +2,6 @@ package com.wiztrip.service;
 
 import com.wiztrip.constant.Category;
 import com.wiztrip.domain.MemoEntity;
-import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.MemoDto;
 import com.wiztrip.exception.CustomException;
 import com.wiztrip.exception.ErrorCode;
@@ -34,7 +33,6 @@ public class MemoService {
         return memoMapper.toResponseDto(memoRepository.save(memoMapper.toEntity(memoPostDto, tripId)));
     }
 
-    // 원하는 데이터 담아서 변환해준 후, ListDto를 통해 리스트화 필요
     public Map<String, Object> getMemoByCategory(Long tripId, Category category, PageRequest pageRequest) {
         Page<MemoEntity> memoPage = memoRepository.findAllByTripIdAndCategory(tripId, category, pageRequest);
 
