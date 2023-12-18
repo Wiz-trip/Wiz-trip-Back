@@ -1,5 +1,6 @@
 package com.wiztrip.service;
 
+import com.wiztrip.constant.Category;
 import com.wiztrip.domain.MemoEntity;
 import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.MemoDto;
@@ -9,10 +10,14 @@ import com.wiztrip.mapstruct.MemoMapper;
 import com.wiztrip.repository.MemoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,13 +35,22 @@ public class MemoService {
     }
 
     // 원하는 데이터 담아서 변환해준 후, ListDto를 통해 리스트화 필요
-    public ListDto<MemoDto.MemoResponseDto> getMemoAll(Long tripId) {
-        List<MemoEntity> memoList = memoRepository.findAllByTripId(tripId);
+    public Map<String, Object> getMemoByCategory(Long tripId, Category category, PageRequest pageRequest) {
+        Page<MemoEntity> memoPage = memoRepository.findAllByTripIdAndCategory(tripId, category, pageRequest);
 
-        return new ListDto<>(memoList.stream().map(o -> {
-            checkValid(o, tripId);
-            return memoMapper.toResponseDto(o);
-        }).toList());
+        List<MemoDto.MemoResponseDto> memoList = memoPage.getContent().stream()
+                .map(o -> {
+                    checkValid(o, tripId);
+                    return memoMapper.toResponseDto(o);
+                })
+                .toList();
+
+        Map<String, Object> memoResponse = new HashMap<>();
+        memoResponse.put("totalElement", memoPage.getTotalElements());
+        memoResponse.put("totalPage", memoPage.getTotalPages());
+        memoResponse.put("list", memoList);
+
+        return memoResponse;
     }
 
     @Transactional
