@@ -14,10 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,22 +29,13 @@ public class MemoService {
         return memoMapper.toResponseDto(memoRepository.save(memoMapper.toEntity(memoPostDto, tripId)));
     }
 
-    public Map<String, Object> getMemoByCategory(Long tripId, Category category, PageRequest pageRequest) {
+    public Page<MemoDto.MemoResponseDto> getMemoByCategory(Long tripId, Category category, PageRequest pageRequest) {
         Page<MemoEntity> memoPage = memoRepository.findAllByTripIdAndCategory(tripId, category, pageRequest);
 
-        List<MemoDto.MemoResponseDto> memoList = memoPage.getContent().stream()
-                .map(o -> {
-                    checkValid(o, tripId);
-                    return memoMapper.toResponseDto(o);
-                })
-                .toList();
-
-        Map<String, Object> memoResponse = new HashMap<>();
-        memoResponse.put("totalElement", memoPage.getTotalElements());
-        memoResponse.put("totalPage", memoPage.getTotalPages());
-        memoResponse.put("list", memoList);
-
-        return memoResponse;
+        return memoPage.map(o -> {
+            checkValid(o, tripId);
+            return memoMapper.toResponseDto(o);
+        });
     }
 
     @Transactional
