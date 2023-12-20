@@ -40,7 +40,7 @@ public class TripController {
 
     @Operation(summary = "User가 속한 Trip id 조회 - Page",description = "User가 속한 Trip의 id를 담은 Page 조회. JWT Token 필수!!!")
     @GetMapping("/page")
-    public ResponseEntity<Page<Long>> getUsersTripIdPage(
+    public ResponseEntity<Page<Long>> getTripIdPageByUser(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam(defaultValue = "0") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize,
@@ -53,7 +53,7 @@ public class TripController {
 
     @Operation(summary = "User가 속한 Trip detail 조회 - Page",description = "User가 속한 Trip의 Detail을 담은 Page 조회. JWT Token 필수!!!")
     @GetMapping("/with-details/page")
-    public ResponseEntity<Page<TripDto.TripResponseDto>> getUsersTripDetailsPage(
+    public ResponseEntity<Page<TripDto.TripResponseDto>> getTripDetailsPageByUser(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam(defaultValue = "0") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize,
