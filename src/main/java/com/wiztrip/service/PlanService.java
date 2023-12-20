@@ -8,6 +8,8 @@ import com.wiztrip.mapstruct.PlanMapper;
 import com.wiztrip.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +34,19 @@ public class PlanService {
         return planMapper.toResponseDto(plan);
     }
 
-    public ListDto<PlanDto.PlanResponseDto> getAllPlan(Long tripId) {
+    public ListDto<PlanDto.PlanResponseDto> getAllPlanByTripId(Long tripId) {
         return new ListDto<>(planRepository.findAllByTripId(tripId).stream().map(o -> {
             checkValid(o, tripId);
             return planMapper.toResponseDto(o);
         }).toList());
+    }
+
+    public Page<Long> getPlanIdPageByTripId(Long tripId, Pageable pageable) {
+        return planRepository.findAllIdByTripId(tripId, pageable);
+    }
+
+    public Page<PlanDto.PlanResponseDto> getAllPlanPageByTripId(Long tripId, Pageable pageable) {
+        return planRepository.findAllByTripId(tripId, pageable).map(planMapper::toResponseDto);
     }
 
 
