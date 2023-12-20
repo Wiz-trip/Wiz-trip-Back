@@ -1,5 +1,6 @@
 package com.wiztrip.controller;
 
+import com.wiztrip.config.spring_security.auth.PrincipalDetails;
 import com.wiztrip.dto.TripDto;
 import com.wiztrip.service.TripService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,7 +9,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Trip")
@@ -31,6 +36,32 @@ public class TripController {
             @Schema(description = "trip id", example = "1")
             @RequestParam @NotNull @Min(1) Long tripId) {
         return ResponseEntity.ok().body(tripService.getTrip(tripId));
+    }
+
+    @Operation(summary = "User가 속한 Trip id 조회 - Page",description = "User가 속한 Trip의 id를 담은 Page 조회. JWT Token 필수!!!")
+    @GetMapping("/page")
+    public ResponseEntity<Page<Long>> getUsersTripIdPage(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(defaultValue = "0") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
+            @RequestParam(defaultValue = "startDate") String... sortBy
+    ) {
+        PageRequest pageRequest = PageRequest.of(pageNum, pageSize, sortDirection, sortBy);
+        return ResponseEntity.ok().body(tripService.getTripIdPageByUser(principalDetails.getUser(), pageRequest));
+    }
+
+    @Operation(summary = "User가 속한 Trip detail 조회 - Page",description = "User가 속한 Trip의 Detail을 담은 Page 조회. JWT Token 필수!!!")
+    @GetMapping("/with-details/page")
+    public ResponseEntity<Page<TripDto.TripResponseDto>> getUsersTripDetailsPage(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(defaultValue = "0") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
+            @RequestParam(defaultValue = "startDate") String... sortBy
+    ) {
+        PageRequest pageRequest = PageRequest.of(pageNum, pageSize, sortDirection, sortBy);
+        return ResponseEntity.ok().body(tripService.getTripDetailsPageByUser(principalDetails.getUser(), pageRequest));
     }
 
     @Operation(summary = "Trip 수정", description = "TripPatchDto를 통해 Trip 수정. TripPatchDto.userIdList, TripPatchDto.planIdList를 조정해 참여중인 User, 포함된 Plan을 추가, 삭제 할 수 있음. 수정하고싶은 attribute만 포함해서 보내야함!! ")
