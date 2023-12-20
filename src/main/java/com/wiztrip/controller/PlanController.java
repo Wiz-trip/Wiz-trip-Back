@@ -38,24 +38,27 @@ public class PlanController {
     @Operation(summary = "Plan 조회", description = "trip id와 plan id를 사용해 Plan 조회")
     @GetMapping
     public ResponseEntity<PlanDto.PlanResponseDto> getPlan(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Schema(description = "trip id", example = "1")
             @PathVariable("trip_id") Long tripId,
             @Schema(description = "plan id", example = "1")
             @RequestParam @NotNull @Min(1) Long planId) {
-        return ResponseEntity.ok().body(planService.getPlan(tripId, planId));
+        return ResponseEntity.ok().body(planService.getPlan(principalDetails.getUser(), tripId, planId));
     }
 
     @Operation(summary = "Trip의 모든 Plan 조회", description = "trip id와 plan id를 사용해 Trip의 모든 Plan 조회")
     @GetMapping("/all")
     public ResponseEntity<ListDto<PlanDto.PlanResponseDto>> getAllPlan(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Schema(description = "trip id", example = "1")
             @PathVariable("trip_id") Long tripId) {
-        return ResponseEntity.ok().body(planService.getAllPlanByTripId(tripId));
+        return ResponseEntity.ok().body(planService.getAllPlanByTripId(principalDetails.getUser(), tripId));
     }
 
     @Operation(summary = "Trip의 모든 Plan id Page 조회", description = "trip id와 plan id를 사용해 Trip의 모든 Plan id Page 조회")
     @GetMapping("/page")
     public ResponseEntity<Page<Long>> getPlanIdPageByTripId(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Schema(description = "trip id", example = "1")
             @PathVariable("trip_id") Long tripId,
             @RequestParam(defaultValue = "0") Integer pageNum,
@@ -64,12 +67,13 @@ public class PlanController {
             @RequestParam(defaultValue = "startTime") String... sortBy
     ) {
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize, sortDirection, sortBy);
-        return ResponseEntity.ok().body(planService.getPlanIdPageByTripId(tripId, pageRequest));
+        return ResponseEntity.ok().body(planService.getPlanIdPageByTripId(principalDetails.getUser(), tripId, pageRequest));
     }
 
     @Operation(summary = "Trip의 모든 Plan Page 조회", description = "trip id와 plan id를 사용해 Trip의 모든 Plan Page 조회")
     @GetMapping("/with-details/page")
     public ResponseEntity<Page<PlanDto.PlanResponseDto>> getPlanPageByTripId(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Schema(description = "trip id", example = "1")
             @PathVariable("trip_id") Long tripId,
             @RequestParam(defaultValue = "0") Integer pageNum,
@@ -78,28 +82,30 @@ public class PlanController {
             @RequestParam(defaultValue = "startTime") String... sortBy
     ) {
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize, sortDirection, sortBy);
-        return ResponseEntity.ok().body(planService.getAllPlanPageByTripId(tripId, pageRequest));
+        return ResponseEntity.ok().body(planService.getAllPlanPageByTripId(principalDetails.getUser(), tripId, pageRequest));
     }
 
 
     @Operation(summary = "Plan 수정", description = "trip id와 PlanPatchDto를 사용해 Plan 수정. PlanPatchDto에서 수정할 attribute만 담아서 보내야 함!!")
     @PatchMapping
     public ResponseEntity<PlanDto.PlanResponseDto> updatePlan(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Schema(description = "trip id", example = "1")
             @PathVariable("trip_id") Long tripId,
             @RequestBody PlanDto.PlanPatchDto planPatchDto) {
-        return ResponseEntity.ok().body(planService.updatePlan(tripId, planPatchDto));
+        return ResponseEntity.ok().body(planService.updatePlan(principalDetails.getUser(), tripId, planPatchDto));
 
     }
 
     @Operation(summary = "Plan 삭제", description = "trip id와 plan id를 사용해 Plan 삭제")
     @DeleteMapping
     public ResponseEntity<String> deletePlan(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Schema(description = "trip id", example = "1")
             @PathVariable("trip_id") Long tripId,
             @Schema(description = "plan id", example = "1")
             @RequestParam @NotNull @Min(1) Long planId) {
-        return ResponseEntity.ok().body(planService.deletePlan(tripId, planId));
+        return ResponseEntity.ok().body(planService.deletePlan(principalDetails.getUser(), tripId, planId));
     }
 
 }

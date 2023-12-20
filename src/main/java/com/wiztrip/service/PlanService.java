@@ -6,6 +6,7 @@ import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.PlanDto;
 import com.wiztrip.mapstruct.PlanMapper;
 import com.wiztrip.repository.PlanRepository;
+import com.wiztrip.repository.TripUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,50 +24,64 @@ public class PlanService {
 
     private final PlanRepository planRepository;
 
+    private final TripUserRepository tripUserRepository;
+
     @Transactional
     public PlanDto.PlanResponseDto createPlan(UserEntity user, Long tripId, PlanDto.PlanPostDto planPostDto) {
+        checkValidByUserIdAndTripId(user.getId(), tripId);
         return planMapper.toResponseDto(planRepository.save(planMapper.toEntity(planPostDto, tripId, user)));
     }
 
-    public PlanDto.PlanResponseDto getPlan(Long tripId, Long planId) {
+    public PlanDto.PlanResponseDto getPlan(UserEntity user, Long tripId, Long planId) {
+        checkValidByUserIdAndTripId(user.getId(),tripId);
         PlanEntity plan = planRepository.findById(planId).orElseThrow();
-        checkValid(plan,tripId);
+        checkValidByPlanAndTripId(plan, tripId);
         return planMapper.toResponseDto(plan);
     }
 
-    public ListDto<PlanDto.PlanResponseDto> getAllPlanByTripId(Long tripId) {
+    public ListDto<PlanDto.PlanResponseDto> getAllPlanByTripId(UserEntity user, Long tripId) {
+        checkValidByUserIdAndTripId(user.getId(),tripId);
         return new ListDto<>(planRepository.findAllByTripId(tripId).stream().map(o -> {
-            checkValid(o, tripId);
+            checkValidByPlanAndTripId(o, tripId);
             return planMapper.toResponseDto(o);
         }).toList());
     }
 
-    public Page<Long> getPlanIdPageByTripId(Long tripId, Pageable pageable) {
+    public Page<Long> getPlanIdPageByTripId(UserEntity user, Long tripId, Pageable pageable) {
+        checkValidByUserIdAndTripId(user.getId(),tripId);
         return planRepository.findAllIdByTripId(tripId, pageable);
     }
 
-    public Page<PlanDto.PlanResponseDto> getAllPlanPageByTripId(Long tripId, Pageable pageable) {
+    public Page<PlanDto.PlanResponseDto> getAllPlanPageByTripId(UserEntity user, Long tripId, Pageable pageable) {
+        checkValidByUserIdAndTripId(user.getId(),tripId);
         return planRepository.findAllByTripId(tripId, pageable).map(planMapper::toResponseDto);
     }
 
 
     @Transactional
-    public PlanDto.PlanResponseDto updatePlan(Long tripId, PlanDto.PlanPatchDto planPatchDto) {
+    public PlanDto.PlanResponseDto updatePlan(UserEntity user, Long tripId, PlanDto.PlanPatchDto planPatchDto) {
+        checkValidByUserIdAndTripId(user.getId(),tripId);
         PlanEntity plan = planRepository.findById(planPatchDto.getPlanId()).orElseThrow();
-        checkValid(plan,tripId);
+        checkValidByPlanAndTripId(plan, tripId);
         planMapper.updateFromPatchDto(planPatchDto, plan); //dirty checking을 활용한 update
         return planMapper.toResponseDto(planRepository.findById(planPatchDto.getPlanId()).orElseThrow());
     }
 
     @Transactional
-    public String deletePlan(Long tripId, Long planId) {
+    public String deletePlan(UserEntity user, Long tripId, Long planId) {
+        checkValidByUserIdAndTripId(user.getId(),tripId);
         if (!planRepository.existsById(planId)) return "planId: " + planId + "  존재하지 않는 plan입니다.";
-        checkValid(planRepository.findById(planId).orElseThrow(),tripId);
+        checkValidByPlanAndTripId(planRepository.findById(planId).orElseThrow(), tripId);
         planRepository.deleteById(planId);
         return "planId: " + planId + " 삭제 완료";
     }
 
-    private static void checkValid(PlanEntity plan, Long tripId) {
+    private void checkValidByPlanAndTripId(PlanEntity plan, Long tripId) { //plan이 trip에 속하는지 확인
         if (!plan.getTrip().getId().equals(tripId)) throw new RuntimeException("Permission denied");
     }
+
+    private void checkValidByUserIdAndTripId(Long userId, Long tripId) { //user가 trip에 속하는지 확인
+        if(!tripUserRepository.existsByUserIdAndTripId(userId,tripId)) throw new RuntimeException("Permission denied");
+    }
+
 }
