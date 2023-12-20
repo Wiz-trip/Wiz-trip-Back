@@ -24,7 +24,7 @@ public class TripController {
 
     private final TripService tripService;
 
-    @Operation(summary = "Trip 생성", description = "TripPostDto를 사용해 Trip 생성. TripPostDto.userIdList에 자신의 id 꼭 포함해야함!!!")
+    @Operation(summary = "Trip 생성", description = "TripPostDto를 사용해 Trip 생성.")
     @PostMapping
     public ResponseEntity<TripDto.TripResponseDto> createTrip(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody TripDto.TripPostDto tripPostDto) {
         return ResponseEntity.ok().body(tripService.createTrip(principalDetails.getUser(), tripPostDto));
