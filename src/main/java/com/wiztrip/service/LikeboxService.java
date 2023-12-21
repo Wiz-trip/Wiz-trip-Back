@@ -8,6 +8,8 @@ import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.LandmarkDto;
 import com.wiztrip.dto.LikeboxDto;
 import com.wiztrip.dto.ListDto;
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.mapstruct.LandmarkMapper;
 import com.wiztrip.repository.LandmarkLikeboxRepository;
 import com.wiztrip.repository.LandmarkRepository;
@@ -56,37 +58,37 @@ public class LikeboxService {
     public ListDto<Long> getLikeList(UserEntity user) {
         if (!likeboxRepository.existsByUserId(user.getId())) return new ListDto<>(new ArrayList<>());
 
-        Long likeboxId = likeboxRepository.findByUserId(user.getId()).orElseThrow().getId();
+        Long likeboxId = likeboxRepository.findByUserId(user.getId()).orElseThrow(()->new CustomException(ErrorCode.SERVER_ERROR)).getId();
         return new ListDto<>(landmarkRepository.findAllIdByLikeboxId(likeboxId));
     }
 
     public Page<Long> getLikeListPage(UserEntity user, Pageable pageable) {
         if (!likeboxRepository.existsByUserId(user.getId())) return Page.empty(pageable);
 
-        Long likeboxId = likeboxRepository.findByUserId(user.getId()).orElseThrow().getId();
+        Long likeboxId = likeboxRepository.findByUserId(user.getId()).orElseThrow(()->new CustomException(ErrorCode.SERVER_ERROR)).getId();
         return landmarkRepository.findAllIdByLikeboxId(likeboxId, pageable);
     }
 
     public ListDto<LandmarkDto.LandmarkDetailResponseDto> getLikeListWithLandmarkDetails(UserEntity user) {
         if (!likeboxRepository.existsByUserId(user.getId())) return new ListDto<>(new ArrayList<>());
 
-        return new ListDto<>(landmarkRepository.findAllByLikeboxId(likeboxRepository.findByUserId(user.getId()).orElseThrow().getId())
+        return new ListDto<>(landmarkRepository.findAllByLikeboxId(likeboxRepository.findByUserId(user.getId()).orElseThrow(()->new CustomException(ErrorCode.SERVER_ERROR)).getId())
                 .stream().map(landmarkMapper::entityToDetailResponseDto).toList());
     }
 
     public Page<LandmarkDto.LandmarkDetailResponseDto> getLikeListWithLandmarkDetailsPage(UserEntity user, Pageable pageable) {
         if (!likeboxRepository.existsByUserId(user.getId())) return Page.empty(pageable);
 
-        Long likeboxId = likeboxRepository.findByUserId(user.getId()).orElseThrow().getId();
+        Long likeboxId = likeboxRepository.findByUserId(user.getId()).orElseThrow(()->new CustomException(ErrorCode.SERVER_ERROR)).getId();
         return landmarkRepository.findAllByLikeboxId(likeboxId,pageable).map(landmarkMapper::entityToDetailResponseDto);
     }
 
     // 여행지 좋아요 취소 기능
     @Transactional
     public String deleteLike(UserEntity user, Long landmarkId) {
-        List<LandmarkLikeboxEntity> landmarkLikeboxEntityList = likeboxRepository.findByUserId(user.getId()).orElseThrow().getLandmarkLikeboxEntityList();
+        List<LandmarkLikeboxEntity> landmarkLikeboxEntityList = likeboxRepository.findByUserId(user.getId()).orElseThrow(()->new CustomException(ErrorCode.LIKE_NOT_FOUND)).getLandmarkLikeboxEntityList();
         if (!landmarkLikeboxEntityList.removeIf(o -> o.getLandmark().getId().equals(landmarkId)))
-            return "userId: " + user.getId() + "\nlandmarkId: " + landmarkId + "\nlike 가 존재하지 않습니다."; //todo: throw로 바꾸기
+            throw new CustomException(ErrorCode.LIKE_NOT_FOUND);
         return "userId: " + user.getId() + "\nlandmarkId: " + landmarkId + "\nlike 삭제 완료";
     }
 

@@ -1,5 +1,7 @@
 package com.wiztrip.tool.file;
 
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import org.apache.commons.net.util.Base64;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,7 @@ public class Base64Tool {
             byte[] bytes = inputStream.readAllBytes();
             return Base64.encodeBase64String(bytes);
         } catch (IOException e) {
-            throw new RuntimeException("변환 실패");
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
     }
 

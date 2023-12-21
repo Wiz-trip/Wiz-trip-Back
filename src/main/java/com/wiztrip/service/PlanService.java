@@ -4,6 +4,8 @@ import com.wiztrip.domain.PlanEntity;
 import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.PlanDto;
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.mapstruct.PlanMapper;
 import com.wiztrip.repository.PlanRepository;
 import com.wiztrip.repository.TripUserRepository;
@@ -34,7 +36,7 @@ public class PlanService {
 
     public PlanDto.PlanResponseDto getPlan(UserEntity user, Long tripId, Long planId) {
         checkValidByUserIdAndTripId(user.getId(),tripId);
-        PlanEntity plan = planRepository.findById(planId).orElseThrow();
+        PlanEntity plan = planRepository.findById(planId).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND));
         checkValidByPlanAndTripId(plan, tripId);
         return planMapper.toResponseDto(plan);
     }
@@ -61,27 +63,26 @@ public class PlanService {
     @Transactional
     public PlanDto.PlanResponseDto updatePlan(UserEntity user, Long tripId, PlanDto.PlanPatchDto planPatchDto) {
         checkValidByUserIdAndTripId(user.getId(),tripId);
-        PlanEntity plan = planRepository.findById(planPatchDto.getPlanId()).orElseThrow();
+        PlanEntity plan = planRepository.findById(planPatchDto.getPlanId()).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND));
         checkValidByPlanAndTripId(plan, tripId);
         planMapper.updateFromPatchDto(planPatchDto, plan); //dirty checking을 활용한 update
-        return planMapper.toResponseDto(planRepository.findById(planPatchDto.getPlanId()).orElseThrow());
+        return planMapper.toResponseDto(planRepository.findById(planPatchDto.getPlanId()).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND)));
     }
 
     @Transactional
     public String deletePlan(UserEntity user, Long tripId, Long planId) {
         checkValidByUserIdAndTripId(user.getId(),tripId);
-        if (!planRepository.existsById(planId)) return "planId: " + planId + "  존재하지 않는 plan입니다.";
-        checkValidByPlanAndTripId(planRepository.findById(planId).orElseThrow(), tripId);
+        checkValidByPlanAndTripId(planRepository.findById(planId).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND)), tripId);
         planRepository.deleteById(planId);
         return "planId: " + planId + " 삭제 완료";
     }
 
     private void checkValidByPlanAndTripId(PlanEntity plan, Long tripId) { //plan이 trip에 속하는지 확인
-        if (!plan.getTrip().getId().equals(tripId)) throw new RuntimeException("Permission denied");
+        if (!plan.getTrip().getId().equals(tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_PLAN);
     }
 
     private void checkValidByUserIdAndTripId(Long userId, Long tripId) { //user가 trip에 속하는지 확인
-        if(!tripUserRepository.existsByUserIdAndTripId(userId,tripId)) throw new RuntimeException("Permission denied");
+        if(!tripUserRepository.existsByUserIdAndTripId(userId,tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_USER);
     }
 
 }

@@ -4,6 +4,8 @@ import com.wiztrip.domain.PlanEntity;
 import com.wiztrip.domain.TripEntity;
 import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.PlanDto;
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.repository.PlanRepository;
 import com.wiztrip.repository.TripRepository;
 import org.mapstruct.*;
@@ -50,6 +52,6 @@ public abstract class PlanMapper {
 
     @Named("tripIdToTripEntity")
     TripEntity tripIdToTripEntity(Long tripId) {
-        return tripRepository.findById(tripId).orElseThrow();
+        return tripRepository.findById(tripId).orElseThrow(() -> new CustomException(ErrorCode.TRIP_NOT_FOUND));
     }
 }

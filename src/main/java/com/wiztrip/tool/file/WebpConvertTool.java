@@ -1,5 +1,7 @@
 package com.wiztrip.tool.file;
 
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.imgscalr.Scalr;
 import org.springframework.stereotype.Component;
@@ -18,7 +20,7 @@ public class WebpConvertTool {
         try {
             return inputStreamToWebpByteArray(multipartFile.getInputStream());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CustomException(ErrorCode.WRONG_MULTIPARTFILE);
         }
     }
 
@@ -26,7 +28,7 @@ public class WebpConvertTool {
         try {
             return inputStreamToWebpInputStream(multipartFile.getInputStream());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CustomException(ErrorCode.WRONG_MULTIPARTFILE);
         }
     }
 
@@ -42,7 +44,7 @@ public class WebpConvertTool {
 
             return byteArrayOutputStream.toByteArray();
         } catch (Exception e) {
-            throw new RuntimeException("inputstream을 다시 확인해주세요");
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
     }
 

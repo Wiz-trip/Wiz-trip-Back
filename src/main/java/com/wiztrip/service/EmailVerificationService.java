@@ -60,8 +60,7 @@ public class EmailVerificationService {
             }
             return builder.toString();
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("create code 오류");
+            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
-        return null;
     }
 }

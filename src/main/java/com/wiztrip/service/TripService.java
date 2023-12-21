@@ -3,6 +3,8 @@ package com.wiztrip.service;
 import com.wiztrip.domain.TripEntity;
 import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.TripDto;
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.mapstruct.TripMapper;
 import com.wiztrip.repository.TripRepository;
 import com.wiztrip.repository.TripUserRepository;
@@ -33,7 +35,7 @@ public class TripService {
     }
 
     public TripDto.TripResponseDto getTrip(UserEntity user, Long tripId) {
-        TripEntity trip = tripRepository.findById(tripId).orElseThrow();
+        TripEntity trip = tripRepository.findById(tripId).orElseThrow(()->new CustomException(ErrorCode.TRIP_NOT_FOUND));
         checkValid(user.getId(), trip.getId());
         return tripMapper.toResponseDto(trip);
     }
@@ -48,21 +50,21 @@ public class TripService {
 
     @Transactional
     public TripDto.TripResponseDto updateTrip(UserEntity user, TripDto.TripPatchDto tripPatchDto) {
-        TripEntity trip = tripRepository.findById(tripPatchDto.getTripId()).orElseThrow();
+        TripEntity trip = tripRepository.findById(tripPatchDto.getTripId()).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND));
         checkValid(user.getId(), trip.getId());
         tripMapper.updateFromPatchDto(tripPatchDto, trip);
-        return tripMapper.toResponseDto(tripRepository.findById(tripPatchDto.getTripId()).orElseThrow());
+        return tripMapper.toResponseDto(tripRepository.findById(tripPatchDto.getTripId()).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND)));
     }
 
     @Transactional
     public String deleteTrip(UserEntity user, Long tripId) {
-        if (!tripRepository.existsById(tripId)) return "tripId: "+tripId+" 존재하지 않는 trip입니다.";
+        if (!tripRepository.existsById(tripId)) throw new CustomException(ErrorCode.TRIP_NOT_FOUND);
         checkValid(user.getId(),tripId);
         tripRepository.deleteById(tripId);
         return "tripId: " + tripId + " 삭제 완료";
     }
 
     private void checkValid(Long userId, Long tripId) {
-        if(!tripUserRepository.existsByUserIdAndTripId(userId,tripId)) throw new RuntimeException("Permission denied");
+        if(!tripUserRepository.existsByUserIdAndTripId(userId,tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_USER);
     }
 }
