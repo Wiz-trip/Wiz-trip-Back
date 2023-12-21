@@ -7,6 +7,7 @@ import com.wiztrip.service.PlanService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class PlanController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Schema(description = "trip id", example = "1")
             @PathVariable("trip_id") @NotNull Long tripId,
-            @RequestBody PlanDto.PlanPostDto planPostDto) {
+            @RequestBody @Valid PlanDto.PlanPostDto planPostDto) {
         return ResponseEntity.ok().body(planService.createPlan(principalDetails.getUser(), tripId, planPostDto));
     }
 
@@ -92,7 +93,7 @@ public class PlanController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Schema(description = "trip id", example = "1")
             @PathVariable("trip_id") Long tripId,
-            @RequestBody PlanDto.PlanPatchDto planPatchDto) {
+            @RequestBody @Valid PlanDto.PlanPatchDto planPatchDto) {
         return ResponseEntity.ok().body(planService.updatePlan(principalDetails.getUser(), tripId, planPatchDto));
 
     }

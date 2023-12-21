@@ -6,6 +6,7 @@ import com.wiztrip.service.TripService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,9 @@ public class TripController {
 
     private final TripService tripService;
 
-    @Operation(summary = "Trip 생성", description = "TripPostDto를 사용해 Trip 생성.")
+    @Operation(summary = "Trip 생성", description = "TripPostDto를 사용해 Trip 생성. userIdList에 본인은 넣지 않아도 됨.")
     @PostMapping
-    public ResponseEntity<TripDto.TripResponseDto> createTrip(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody TripDto.TripPostDto tripPostDto) {
+    public ResponseEntity<TripDto.TripResponseDto> createTrip(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody @Valid TripDto.TripPostDto tripPostDto) {
         return ResponseEntity.ok().body(tripService.createTrip(principalDetails.getUser(), tripPostDto));
     }
 
@@ -67,7 +68,7 @@ public class TripController {
 
     @Operation(summary = "Trip 수정", description = "TripPatchDto를 통해 Trip 수정. TripPatchDto.userIdList, TripPatchDto.planIdList를 조정해 참여중인 User, 포함된 Plan을 추가, 삭제 할 수 있음. 수정하고싶은 attribute만 포함해서 보내야함!! ")
     @PatchMapping
-    public ResponseEntity<TripDto.TripResponseDto> updateTrip(@AuthenticationPrincipal PrincipalDetails principalDetails,@RequestBody TripDto.TripPatchDto tripPatchDto) {
+    public ResponseEntity<TripDto.TripResponseDto> updateTrip(@AuthenticationPrincipal PrincipalDetails principalDetails,@RequestBody @Valid TripDto.TripPatchDto tripPatchDto) {
         return ResponseEntity.ok().body(tripService.updateTrip(principalDetails.getUser(),tripPatchDto));
     }
 
