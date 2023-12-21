@@ -3,6 +3,8 @@ package com.wiztrip.mapstruct;
 import com.wiztrip.domain.MemoEntity;
 import com.wiztrip.domain.TripEntity;
 import com.wiztrip.dto.MemoDto;
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.repository.MemoRepository;
 import com.wiztrip.repository.TripRepository;
 import org.mapstruct.*;
@@ -25,6 +27,8 @@ public abstract class MemoMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "createAt", ignore = true),
+            @Mapping(target = "modifiedAt",ignore = true),
             @Mapping(target = "trip", source = "tripId", qualifiedByName = "tripIdToTripEntity")
     })
     public abstract MemoEntity toEntity(MemoDto.MemoPostDto memoPostDto, Long tripId);
@@ -38,12 +42,16 @@ public abstract class MemoMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "createAt", ignore = true),
+            @Mapping(target = "modifiedAt",ignore = true),
             @Mapping(target = "trip", ignore = true)
     })
     public abstract void updateFromPatchDto(MemoDto.MemoPatchDto memoPatchDto, @MappingTarget MemoEntity memo);
 
     @Named("tripIdToTripEntity")
+    // TRIP_NOT_FOUND
     TripEntity tripIdToTripEntity(Long tripId) {
-        return tripRepository.findById(tripId).orElseThrow();
+        return tripRepository.findById(tripId)
+                .orElseThrow(() -> new CustomException(ErrorCode.TRIP_NOT_FOUND));
     }
 }
