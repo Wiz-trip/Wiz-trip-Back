@@ -32,17 +32,19 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewDto.ReviewResponseDto updateReview(Long tripId, ReviewDto.ReviewPatchDto reviewPatchDto) {
+    public ReviewDto.ReviewResponseDto updateReview(UserEntity user, Long tripId, ReviewDto.ReviewPatchDto reviewPatchDto) {
         ReviewEntity review = reviewRepository.findById(reviewPatchDto.getReviewId()).orElseThrow();
         checkValid(review, tripId);
+        checkUser(user, review);
         reviewMapper.updateFromPatchDto(reviewPatchDto, review);
         return reviewMapper.toResponseDto(reviewRepository.findById(reviewPatchDto.getReviewId()).orElseThrow());
     }
 
     @Transactional
-    public String deleteReview(Long tripId, Long reviewId) {
-        if (!reviewRepository.existsById(reviewId)) return "reviewId: " + reviewId + "  존재하지 않는 review입니다.";
+    public String deleteReview(UserEntity user, Long tripId, Long reviewId) {
+        ReviewEntity review = reviewRepository.findById(reviewId).orElseThrow();
         checkValid(reviewRepository.findById(reviewId).orElseThrow(),tripId);
+        checkUser(user, review);
         reviewRepository.deleteById(reviewId);
         return "reviewId: " + reviewId + " 삭제 완료";
     }
@@ -50,5 +52,12 @@ public class ReviewService {
     // 해당 trip에 속한 review인지 확인
     private static void checkValid(ReviewEntity review, Long tripId) {
         if (!review.getTrip().getId().equals(tripId)) throw new RuntimeException("Permission denied");
+    }
+
+    // 해당 review를 작성한 user인지 확인
+    private static void checkUser(UserEntity user, ReviewEntity review) {
+        if (!user.getId().equals(review.getUser().getId())) {
+            throw new RuntimeException("Permission denied");
+        }
     }
 }

@@ -32,13 +32,19 @@ public class ReviewController {
 
     // 후기글 수정
     @PatchMapping
-    public ResponseEntity<ReviewDto.ReviewResponseDto> updateReview(@PathVariable("tripId") Long tripId, @RequestBody ReviewDto.ReviewPatchDto reviewPatchDto) {
-        return ResponseEntity.ok().body(reviewService.updateReview(tripId, reviewPatchDto));
+    public ResponseEntity<ReviewDto.ReviewResponseDto> updateReview(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PathVariable("tripId") Long tripId,
+            @RequestBody ReviewDto.ReviewPatchDto reviewPatchDto) {
+        return ResponseEntity.ok().body(reviewService.updateReview(principalDetails.getUser(), tripId, reviewPatchDto));
     }
 
     // 후기글 삭제
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<String> deleteReview(@PathVariable("tripId") Long tripId, @PathVariable("reviewId") Long reviewId) {
-        return ResponseEntity.ok().body(reviewService.deleteReview(tripId, reviewId));
+    public ResponseEntity<String> deleteReview(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PathVariable("tripId") Long tripId,
+            @PathVariable("reviewId") Long reviewId) {
+        return ResponseEntity.ok().body(reviewService.deleteReview(principalDetails.getUser(), tripId, reviewId));
     }
 }
