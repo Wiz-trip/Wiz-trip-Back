@@ -2,10 +2,10 @@ package com.wiztrip.mapstruct;
 
 import com.wiztrip.domain.ReviewEntity;
 import com.wiztrip.domain.TripEntity;
+import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.ReviewDto;
 import com.wiztrip.repository.ReviewRepository;
 import com.wiztrip.repository.TripRepository;
-import com.wiztrip.repository.UserRepository;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,18 +24,15 @@ public abstract class ReviewMapper {
     @Autowired
     TripRepository tripRepository;
 
-    @Autowired
-    UserRepository userRepository;
-
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "user", ignore = true),
+            @Mapping(target = "user", source = "user"),
             @Mapping(target = "createAt", ignore = true),
             @Mapping(target = "modifiedAt",ignore = true),
             @Mapping(target = "trip", source = "tripId", qualifiedByName = "tripIdToTripEntity"),
             @Mapping(target = "imageList", source = "reviewPostDto.imageList")
     })
-    public abstract ReviewEntity toEntity(ReviewDto.ReviewPostDto reviewPostDto, Long tripId);
+    public abstract ReviewEntity toEntity(UserEntity user, Long tripId, ReviewDto.ReviewPostDto reviewPostDto);
 
     @Mappings({
             @Mapping(target = "reviewId", source = "id"),

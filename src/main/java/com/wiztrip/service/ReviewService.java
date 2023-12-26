@@ -1,23 +1,28 @@
 package com.wiztrip.service;
 
 import com.wiztrip.domain.ReviewEntity;
+import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.ReviewDto;
 import com.wiztrip.mapstruct.ReviewMapper;
 import com.wiztrip.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Transactional(readOnly = true)
 public class ReviewService {
 
-    private ReviewMapper reviewMapper;
+    private final ReviewMapper reviewMapper;
 
-    private ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
 
-
-    public ReviewDto.ReviewResponseDto createReview(Long tripId, ReviewDto.ReviewPostDto reviewPostDto) {
-        return reviewMapper.toResponseDto(reviewRepository.save(reviewMapper.toEntity(reviewPostDto, tripId)));
+    @Transactional
+    public ReviewDto.ReviewResponseDto createReview(UserEntity user, Long tripId, ReviewDto.ReviewPostDto reviewPostDto) {
+        return reviewMapper.toResponseDto(reviewRepository.save(reviewMapper.toEntity(user, tripId, reviewPostDto)));
     }
 
     public ReviewDto.ReviewResponseDto getReview(Long tripId, Long reviewId) {
@@ -26,6 +31,7 @@ public class ReviewService {
         return reviewMapper.toResponseDto(review);
     }
 
+    @Transactional
     public ReviewDto.ReviewResponseDto updateReview(Long tripId, ReviewDto.ReviewPatchDto reviewPatchDto) {
         ReviewEntity review = reviewRepository.findById(reviewPatchDto.getReviewId()).orElseThrow();
         checkValid(review, tripId);
@@ -33,6 +39,7 @@ public class ReviewService {
         return reviewMapper.toResponseDto(reviewRepository.findById(reviewPatchDto.getReviewId()).orElseThrow());
     }
 
+    @Transactional
     public String deleteReview(Long tripId, Long reviewId) {
         if (!reviewRepository.existsById(reviewId)) return "reviewId: " + reviewId + "  존재하지 않는 review입니다.";
         checkValid(reviewRepository.findById(reviewId).orElseThrow(),tripId);
