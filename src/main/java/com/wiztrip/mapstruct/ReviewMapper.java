@@ -4,6 +4,8 @@ import com.wiztrip.domain.ReviewEntity;
 import com.wiztrip.domain.TripEntity;
 import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.ReviewDto;
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.repository.ReviewRepository;
 import com.wiztrip.repository.TripRepository;
 import org.mapstruct.*;
@@ -55,6 +57,7 @@ public abstract class ReviewMapper {
 
     @Named("tripIdToTripEntity")
     TripEntity tripIdToTripEntity(Long tripId) {
-        return tripRepository.findById(tripId).orElseThrow();
+        return tripRepository.findById(tripId)
+                .orElseThrow(() -> new CustomException(ErrorCode.TRIP_NOT_FOUND));
     }
 }
