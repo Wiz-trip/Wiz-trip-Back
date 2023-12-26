@@ -34,8 +34,6 @@ public class MemoController {
             description = """
                 tripId를 사용해 해당 Trip(전체 여행 계획)에 작성된 카테고리별 Memo를 최신순으로 전달합니다.
                 페이징을 사용해 한 페이지에 몇 개의 Memo를 받고 싶은지 설정할 수 있고, 원하는 페이지에 속한 Memo를 확인할 수 있습니다.
-                
-                /trips/{tripId}/memos?category={카테고리명}&pageNum={페이지수}&pageSize={페이지크기}
                 """
     )
     public ResponseEntity<Page<MemoDto.MemoResponseDto>> getMemoByCategory(
@@ -64,8 +62,6 @@ public class MemoController {
     @Operation(summary = "Memo 삭제",
             description = """
                 tripId와 memoId를 사용해 해당 Memo를 삭제합니다.
-                
-                /trips/{tripId}/memos?memo_id={memoId}
                 """)
     public ResponseEntity<String> deleteMemo(@PathVariable("tripId") Long tripId, @RequestParam("memoId") Long memoId) {
         return ResponseEntity.ok().body(memoService.deleteMemo(tripId, memoId));
