@@ -78,7 +78,7 @@ public class PlanService {
     }
 
     private void checkValidByPlanAndTripId(PlanEntity plan, Long tripId) { //plan이 trip에 속하는지 확인
-        if (!plan.getTrip().getId().equals(tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_PLAN);
+        if (!plan.getTrip().getId().equals(tripId)) throw new CustomException(ErrorCode.NOT_IN_TRIP_PLAN);
     }
 
     private void checkValidByUserIdAndTripId(Long userId, Long tripId) { //user가 trip에 속하는지 확인
