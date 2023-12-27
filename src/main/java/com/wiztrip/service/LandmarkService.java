@@ -6,6 +6,8 @@ import com.wiztrip.mapstruct.LandmarkMapper;
 import com.wiztrip.repository.LandmarkRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,12 @@ public class LandmarkService {
         LandmarkEntity landmark = landmarkRepository.findById(landmarkId)
                 .orElseThrow(() -> new EntityNotFoundException("Landmark 의 id를 찾을 수 없습니다 : " + landmarkId));
         return landmarkMapper.entityToDetailResponseDto(landmark); // 'entityToLandmarkDetailResponseDto' 메서드 사용
+    }
+
+
+    // 여행지 페이징 처리
+    public Page<LandmarkEntity> getAllLandmarks(Pageable pageable) {
+        return landmarkRepository.findAll(pageable);
     }
 
 
