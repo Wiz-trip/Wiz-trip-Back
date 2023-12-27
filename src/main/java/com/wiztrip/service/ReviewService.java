@@ -29,17 +29,21 @@ public class ReviewService {
         return reviewMapper.toResponseDto(reviewRepository.save(reviewMapper.toEntity(user, tripId, reviewPostDto)));
     }
 
-    public ReviewDto.ReviewResponseDto getReview(Long tripId, Long reviewId) {
+    public ReviewDto.ReviewResponseDto getReview(UserEntity user, Long tripId, Long reviewId) {
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
         checkValid(review, tripId);
+        checkUser(review, user);
         return reviewMapper.toResponseDto(review);
     }
 
     public Page<ReviewDto.MyReviewResponseDto> getMyReview(UserEntity user, PageRequest pageRequest) {
         Page<ReviewEntity> reviewPage = reviewRepository.findByUser(user, pageRequest);
 
-        return reviewPage.map(reviewMapper::toMyResponseDto);
+        return reviewPage.map(o -> {
+            checkUser(o, user);
+            return reviewMapper.toMyResponseDto(o);
+        });
     }
 
     @Transactional

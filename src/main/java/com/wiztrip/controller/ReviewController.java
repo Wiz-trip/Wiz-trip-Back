@@ -35,8 +35,11 @@ public class ReviewController {
     @GetMapping("trips/{tripId}/reviews")
     @Operation(summary = "Review 조회(세부 사항)",
             description = "tripId와 reviewId를 사용해 선택된 Review를 조회합니다.")
-    public ResponseEntity<ReviewDto.ReviewResponseDto> getReview(@PathVariable("tripId") Long tripId, @RequestParam("reviewId") Long reviewId) {
-        return ResponseEntity.ok().body(reviewService.getReview(tripId, reviewId));
+    public ResponseEntity<ReviewDto.ReviewResponseDto> getReview(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PathVariable("tripId") Long tripId,
+            @RequestParam("reviewId") Long reviewId) {
+        return ResponseEntity.ok().body(reviewService.getReview(principalDetails.getUser(), tripId, reviewId));
     }
 
     // 후기글 조회 (전체, 마이페이지)
