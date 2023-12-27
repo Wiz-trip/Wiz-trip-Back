@@ -21,14 +21,10 @@ public enum ErrorCode {
     UNAUTHORIZED_MEMBER(UNAUTHORIZED, "존재하지 않는 회원입니다."),
 
     // 403 FORBIDDEN: 접근 권한이 없는 사용자
-    FORBIDDEN_UPDATE_TRIP_USER(FORBIDDEN, "전체 여행 계획 수정 권한이 없는 사용자입니다."),
-    FORBIDDEN_DELETE_TRIP_USER(FORBIDDEN, "전체 여행 계획 삭제 권한이 없는 사용자입니다."),
-    FORBIDDEN_UPDATE_PLAN_USER(FORBIDDEN, "세부 여행 계획 수정 권한이 없는 사용자입니다."),
-    FORBIDDEN_DELETE_PLAN_USER(FORBIDDEN, "세부 여행 계획 삭제 권한이 없는 사용자입니다."),
-    FORBIDDEN_UPDATE_MEMO_USER(FORBIDDEN, "메모 수정 권한이 없는 사용자입니다."),
-    FORBIDDEN_DELETE_MEMO_USER(FORBIDDEN, "메모 삭제 권한이 없는 사용자입니다."),
-    FORBIDDEN_UPDATE_REVIEW_USER(FORBIDDEN, "후기글 수정 권한이 없는 사용자입니다."),
-    FORBIDDEN_DELETE_REVIEW_USER(FORBIDDEN, "후기글 삭제 권한이 없는 사용자입니다."),
+    FORBIDDEN_TRIP_USER(FORBIDDEN, "전체 여행 계획 권한이 없는 사용자입니다."),
+    FORBIDDEN_PLAN_USER(FORBIDDEN, "세부 여행 계획 권한이 없는 사용자입니다."),
+    FORBIDDEN_MEMO_USER(FORBIDDEN, "메모 권한이 없는 사용자입니다."),
+    FORBIDDEN_REVIEW_USER(FORBIDDEN, "후기글 권한이 없는 사용자입니다."),
     NOT_IN_TRIP_MEMO(FORBIDDEN, "해당 전체 여행 계획에 속한 메모가 아닙니다."),
     NOT_IN_TRIP_PLAN(FORBIDDEN, "해당 전체 여행 계획에 속한 세부 여행 계획이 아닙니다."),
     NOT_IN_TRIP_REVIEW(FORBIDDEN, "해당 전체 여행 계획에 속한 후기글이 아닙니다."),
@@ -44,6 +40,7 @@ public enum ErrorCode {
 
     // 409 CONFLICT: 중복된 리소스 (요청이 현재 서버 상태와 충돌될 때)
     DUPLICATE_EMAIL(CONFLICT, "이미 존재하는 이메일입니다."),
+    DUPLICATE_NICKNAME(CONFLICT, "이미 존재하는 닉네임입니다."),
     DUPLICATE_LANDMARK_LIKE(CONFLICT, "사용자가 이미 좋아요에 추가한 여행지입니다."),
     NO_LANDMARK_LIKE_EXIST(CONFLICT, "사용자가 좋아요에 추가하지 않은 여행지입니다."),
 

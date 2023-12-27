@@ -2,10 +2,12 @@ package com.wiztrip.mapstruct;
 
 import com.wiztrip.domain.ReviewEntity;
 import com.wiztrip.domain.TripEntity;
+import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.ReviewDto;
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.repository.ReviewRepository;
 import com.wiztrip.repository.TripRepository;
-import com.wiztrip.repository.UserRepository;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,18 +26,15 @@ public abstract class ReviewMapper {
     @Autowired
     TripRepository tripRepository;
 
-    @Autowired
-    UserRepository userRepository;
-
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "user", ignore = true),
+            @Mapping(target = "user", source = "user"),
             @Mapping(target = "createAt", ignore = true),
             @Mapping(target = "modifiedAt",ignore = true),
             @Mapping(target = "trip", source = "tripId", qualifiedByName = "tripIdToTripEntity"),
             @Mapping(target = "imageList", source = "reviewPostDto.imageList")
     })
-    public abstract ReviewEntity toEntity(ReviewDto.ReviewPostDto reviewPostDto, Long tripId);
+    public abstract ReviewEntity toEntity(UserEntity user, Long tripId, ReviewDto.ReviewPostDto reviewPostDto);
 
     @Mappings({
             @Mapping(target = "reviewId", source = "id"),
@@ -44,6 +43,17 @@ public abstract class ReviewMapper {
             @Mapping(target = "imageList", expression = "java(review.getImageList())")
     })
     public abstract ReviewDto.ReviewResponseDto toResponseDto(ReviewEntity review);
+
+    @Mappings({
+            @Mapping(target = "reviewId", source = "id"),
+            @Mapping(target = "userId", expression = "java(review.getUser().getId())"),
+            @Mapping(target = "tripId", expression = "java(review.getTrip().getId())"),
+            @Mapping(target = "destination", expression = "java(review.getTrip().getDestination())"),
+            @Mapping(target = "startDate", expression = "java(review.getTrip().getStartDate())"),
+            @Mapping(target = "finishDate", expression = "java(review.getTrip().getFinishDate())"),
+            @Mapping(target = "imageList", expression = "java(review.getImageList())")
+    })
+    public abstract ReviewDto.MyReviewResponseDto toMyResponseDto(ReviewEntity review);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mappings({
@@ -58,6 +68,7 @@ public abstract class ReviewMapper {
 
     @Named("tripIdToTripEntity")
     TripEntity tripIdToTripEntity(Long tripId) {
-        return tripRepository.findById(tripId).orElseThrow();
+        return tripRepository.findById(tripId)
+                .orElseThrow(() -> new CustomException(ErrorCode.TRIP_NOT_FOUND));
     }
 }
