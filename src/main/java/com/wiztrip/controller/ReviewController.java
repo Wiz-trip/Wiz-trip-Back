@@ -32,10 +32,10 @@ public class ReviewController {
     }
 
     // 후기글 조회 (세부 사항)
-    @GetMapping("trips/{tripId}/reviews/{reviewId}")
+    @GetMapping("trips/{tripId}/reviews")
     @Operation(summary = "Review 조회(세부 사항)",
             description = "tripId와 reviewId를 사용해 선택된 Review를 조회합니다.")
-    public ResponseEntity<ReviewDto.ReviewResponseDto> getReview(@PathVariable("tripId") Long tripId, @PathVariable("reviewId") Long reviewId) {
+    public ResponseEntity<ReviewDto.ReviewResponseDto> getReview(@PathVariable("tripId") Long tripId, @RequestParam("reviewId") Long reviewId) {
         return ResponseEntity.ok().body(reviewService.getReview(tripId, reviewId));
     }
 
@@ -53,7 +53,7 @@ public class ReviewController {
             @RequestParam(defaultValue = "10") Integer pageSize) {
 
         // 정렬 기준 (전체 여행 계획(Trip)을 기준)
-        Sort sort = Sort.by(Sort.Direction.ASC, "trip.startDate");
+        Sort sort = Sort.by(Sort.Direction.DESC, "trip.startDate");
 
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize, sort);
         return ResponseEntity.ok().body(reviewService.getMyReview(principalDetails.getUser(), pageRequest));
@@ -71,13 +71,13 @@ public class ReviewController {
     }
 
     // 후기글 삭제
-    @DeleteMapping("trips/{tripId}/reviews/{reviewId}")
+    @DeleteMapping("trips/{tripId}/reviews")
     @Operation(summary = "Review 삭제",
             description = "tripId와 reviewId를 사용해 해당 Review를 삭제합니다.")
     public ResponseEntity<String> deleteReview(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("tripId") Long tripId,
-            @PathVariable("reviewId") Long reviewId) {
+            @RequestParam("reviewId") Long reviewId) {
         return ResponseEntity.ok().body(reviewService.deleteReview(principalDetails.getUser(), tripId, reviewId));
     }
 }
