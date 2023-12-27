@@ -40,6 +40,7 @@ public enum ErrorCode {
 
     // 409 CONFLICT: 중복된 리소스 (요청이 현재 서버 상태와 충돌될 때)
     DUPLICATE_EMAIL(CONFLICT, "이미 존재하는 이메일입니다."),
+    DUPLICATE_NICKNAME(CONFLICT, "이미 존재하는 닉네임입니다."),
     DUPLICATE_LANDMARK_LIKE(CONFLICT, "사용자가 이미 좋아요에 추가한 여행지입니다."),
     NO_LANDMARK_LIKE_EXIST(CONFLICT, "사용자가 좋아요에 추가하지 않은 여행지입니다."),
 
