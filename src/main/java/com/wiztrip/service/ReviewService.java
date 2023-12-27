@@ -9,6 +9,8 @@ import com.wiztrip.mapstruct.ReviewMapper;
 import com.wiztrip.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,12 +36,18 @@ public class ReviewService {
         return reviewMapper.toResponseDto(review);
     }
 
+    public Page<ReviewDto.MyReviewResponseDto> getMyReview(UserEntity user, PageRequest pageRequest) {
+        Page<ReviewEntity> reviewPage = reviewRepository.findByUser(user, pageRequest);
+
+        return reviewPage.map(reviewMapper::toMyResponseDto);
+    }
+
     @Transactional
     public ReviewDto.ReviewResponseDto updateReview(UserEntity user, Long tripId, ReviewDto.ReviewPatchDto reviewPatchDto) {
         ReviewEntity review = reviewRepository.findById(reviewPatchDto.getReviewId())
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
         checkValid(review, tripId);
-        checkUser(user, review);
+        checkUser(review, user);
         reviewMapper.updateFromPatchDto(reviewPatchDto, review);
         return reviewMapper.toResponseDto(review);
     }
@@ -49,7 +57,7 @@ public class ReviewService {
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
         checkValid(review,tripId);
-        checkUser(user, review);
+        checkUser(review, user);
         reviewRepository.deleteById(reviewId);
         return "reviewId: " + reviewId + " 삭제 완료";
     }
@@ -60,7 +68,7 @@ public class ReviewService {
     }
 
     // 해당 review를 작성한 user인지 확인
-    private static void checkUser(UserEntity user, ReviewEntity review) {
+    private static void checkUser(ReviewEntity review, UserEntity user) {
         if (!user.getId().equals(review.getUser().getId())) throw new CustomException(ErrorCode.FORBIDDEN_REVIEW_USER);
     }
 }

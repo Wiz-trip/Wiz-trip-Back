@@ -44,6 +44,17 @@ public abstract class ReviewMapper {
     })
     public abstract ReviewDto.ReviewResponseDto toResponseDto(ReviewEntity review);
 
+    @Mappings({
+            @Mapping(target = "reviewId", source = "id"),
+            @Mapping(target = "userId", expression = "java(review.getUser().getId())"),
+            @Mapping(target = "tripId", expression = "java(review.getTrip().getId())"),
+            @Mapping(target = "destination", expression = "java(review.getTrip().getDestination())"),
+            @Mapping(target = "startDate", expression = "java(review.getTrip().getStartDate())"),
+            @Mapping(target = "finishDate", expression = "java(review.getTrip().getFinishDate())"),
+            @Mapping(target = "imageList", expression = "java(review.getImageList())")
+    })
+    public abstract ReviewDto.MyReviewResponseDto toMyResponseDto(ReviewEntity review);
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mappings({
             @Mapping(target = "id", ignore = true),
