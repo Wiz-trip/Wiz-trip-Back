@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -31,4 +34,12 @@ public class UserEntity extends TimeStamp {
     private Image image; //프로필 사진
 
     private String nickname; //회원 닉네임
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_bookmarks",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "landmark_id")
+    )
+    private Set<LandmarkEntity> bookmarkedLandmarks = new HashSet<>();
 }

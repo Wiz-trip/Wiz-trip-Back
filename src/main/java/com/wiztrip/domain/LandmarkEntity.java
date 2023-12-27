@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -35,4 +37,7 @@ public class LandmarkEntity {
             joinColumns = @JoinColumn(name = "landmark_id")
     )
     private List<Image> imageList = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "bookmarkedLandmarks")
+    private Set<UserEntity> bookmarkedByUsers = new HashSet<>();
 }

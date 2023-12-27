@@ -51,4 +51,19 @@ public class UserController {
     }
 
 
+    // 북마크 생성
+    @PostMapping("/{userId}/bookmarks/{landmarkId}")
+    public ResponseEntity<?> addBookmark(@PathVariable Long userId, @PathVariable Long landmarkId) {
+        userService.bookmarkLandmark(userId, landmarkId);
+        return ResponseEntity.ok("Bookmark 추가");
+    }
+
+    // 북마크 삭제
+    @DeleteMapping("/{userId}/bookmarks/{landmarkId}")
+    public ResponseEntity<?> removeBookmark(@PathVariable Long userId, @PathVariable Long landmarkId) {
+        userService.removeBookmark(userId, landmarkId);
+        return ResponseEntity.ok("Bookmark 삭제");
+    }
+
+
 }

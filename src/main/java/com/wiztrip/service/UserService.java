@@ -1,8 +1,10 @@
 package com.wiztrip.service;
 
+import com.wiztrip.domain.LandmarkEntity;
 import com.wiztrip.dto.UserDto;
 import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.UserRegisterDto;
+import com.wiztrip.repository.LandmarkRepository;
 import com.wiztrip.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final LandmarkRepository landmarkRepository;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -67,14 +70,6 @@ public class UserService {
             throw new IllegalArgumentException("Passwords do not match.");
         }
 
-        // username과 email의 중복 체크
-//        userRepository.findByUsername(registrationDto.getUsername()).ifPresent(u -> {
-//            throw new IllegalArgumentException("Username already in use.");
-//        });
-//        userRepository.findByEmail(registrationDto.getEmail()).ifPresent(u -> {
-//            throw new IllegalArgumentException("Email already in use.");
-//        });
-
         UserEntity newUser = new UserEntity();
         newUser.setUsername(registrationDto.getUsername());
         newUser.setEmail(registrationDto.getEmail());
@@ -83,6 +78,32 @@ public class UserService {
 
         return userRepository.save(newUser);
     }
+
+
+    // 랜드마크 북마크
+    @Transactional
+    public void bookmarkLandmark(Long userId, Long landmarkId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
+        LandmarkEntity landmark = landmarkRepository.findById(landmarkId)
+                .orElseThrow(() -> new EntityNotFoundException("Landmark 를 찾을 수 없습니다."));
+
+        user.getBookmarkedLandmarks().add(landmark);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void removeBookmark(Long userId, Long landmarkId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
+        LandmarkEntity landmark = landmarkRepository.findById(landmarkId)
+                .orElseThrow(() -> new EntityNotFoundException("Landmark 를 찾을 수 없습니다."));
+
+        user.getBookmarkedLandmarks().remove(landmark);
+        userRepository.save(user);
+    }
+
+
 
 }
 
