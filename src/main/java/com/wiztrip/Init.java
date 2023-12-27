@@ -94,7 +94,7 @@ public class Init {
                 plan.setCategory(selectCategory);
 
                 LocalDate localDate = LocalDate.of(2023, 12, 1+k);
-                LocalTime localTime = LocalTime.of(1+k, 1+k, 1+k);
+                LocalTime localTime = LocalTime.of(1+k, 30);
                 LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
                 plan.setStartTime(localDateTime);
                 plan.setFinishTime(localDateTime);
