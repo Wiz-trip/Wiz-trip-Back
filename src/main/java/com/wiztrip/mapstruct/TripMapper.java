@@ -4,6 +4,8 @@ import com.wiztrip.domain.PlanEntity;
 import com.wiztrip.domain.TripEntity;
 import com.wiztrip.domain.TripUserEntity;
 import com.wiztrip.dto.TripDto;
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.repository.PlanRepository;
 import com.wiztrip.repository.TripRepository;
 import com.wiztrip.repository.UserRepository;
@@ -29,7 +31,7 @@ public abstract class TripMapper {
 
     public TripEntity toEntity(TripDto.TripPostDto tripPostDto) {
         TripEntity trip = _toEntity(tripPostDto);
-        if(trip.getTripUserEntityList()==null) throw new RuntimeException("Trip에 속한 User가 없습니다.");
+        if(trip.getTripUserEntityList()==null) throw new CustomException(ErrorCode.WRONG_DTO);
         trip.getTripUserEntityList().forEach(o->o.setTrip(trip));
         trip.getPlanEntityList().forEach(o->o.setTrip(trip)); //연관관계 처리
         return trip;
@@ -70,13 +72,13 @@ public abstract class TripMapper {
     List<TripUserEntity> userIdListToTripUserEntityList(List<Long> userIdList) {
         if (userIdList.isEmpty()) return null; //update시 dto의 list가 비어있으면 null을 리턴해야 기존 값 유지됨
 
-        return userIdList.stream().map(o -> new TripUserEntity(userRepository.findById(o).orElseThrow())).toList();
+        return userIdList.stream().map(o -> new TripUserEntity(userRepository.findById(o).orElseThrow(()->new CustomException(ErrorCode.UNAUTHORIZED_MEMBER)))).toList();
     }
 
     @Named("planIdListToPlanEntityList")
     List<PlanEntity> planIdListToPlanEntityList(List<Long> planIdList) {
         if (planIdList.isEmpty()) return null; //update시 dto의 list가 비어있으면 null을 리턴해야 기존 값 유지됨
 
-        return planIdList.stream().map(o -> planRepository.findById(o).orElseThrow()).toList();
+        return planIdList.stream().map(o -> planRepository.findById(o).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND))).toList();
     }
 }

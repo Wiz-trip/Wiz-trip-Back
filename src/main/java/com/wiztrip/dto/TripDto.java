@@ -2,6 +2,8 @@ package com.wiztrip.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -28,9 +30,10 @@ public class TripDto {
         private LocalDate finishDate;
 
         @Schema(description = "목적지 이름", example = "제주도")
+        @NotBlank(message = "목적지를 입력해주세요")
         private String destination; //목적지
 
-        @Schema(description = "참여하는 User의 id", example = "[\n" +
+        @Schema(description = "참여하는 User의 id.", example = "[\n" +
                 "    1\n" +
                 "  ]")
         private List<Long> userIdList = new ArrayList<>();
@@ -76,6 +79,7 @@ public class TripDto {
     @Builder
     public static class TripPatchDto {
         @Schema(description = "trip id", example = "1")
+        @NotNull(message = "tripId를 입력해주세요.")
         private Long tripId;
 
         @Schema(description = "시작 일자", type = "string",

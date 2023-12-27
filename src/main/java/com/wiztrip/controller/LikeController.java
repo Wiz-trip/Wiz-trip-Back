@@ -8,6 +8,7 @@ import com.wiztrip.service.LikeboxService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +30,7 @@ public class LikeController {
     @Operation(summary = "Like 여러개 추가", description = "LikeAllPostDto를 통한 Like 한번에 여러개 추가. JWT Token 입력 필수!!!")
     @PostMapping
     // 여행지 좋아요 기능 //여러개 가능
-    public ResponseEntity<Map<Long, String>> addLike(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody LikeboxDto.LikePostDto likePostDto) {
+    public ResponseEntity<Map<Long, String>> addLike(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody @Valid LikeboxDto.LikePostDto likePostDto) {
         return ResponseEntity.ok().body(likeboxService.addLike(principalDetails.getUser(), likePostDto));
     }
 

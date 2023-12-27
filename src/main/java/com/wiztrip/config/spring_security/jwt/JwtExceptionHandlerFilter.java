@@ -4,6 +4,8 @@ package com.wiztrip.config.spring_security.jwt;
 import com.auth0.jwt.exceptions.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
     @Override
@@ -39,22 +42,28 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (TokenExpiredException e) { //토큰 만료
-            setErrorResponse(response, ErrorCode.TOKEN_EXPIRED);
+            setErrorResponse(response, SecurityErrorCode.TOKEN_EXPIRED);
         } catch (AlgorithmMismatchException | SignatureVerificationException | MissingClaimException |
                  IncorrectClaimException e) {
-            setErrorResponse(response, ErrorCode.INVALID_TOKEN);
+            setErrorResponse(response, SecurityErrorCode.INVALID_TOKEN);
+        } catch (CustomException e) {
+            if (e.getErrorCode().equals(ErrorCode.WRONG_USERNAME)) {
+                setErrorResponse(response, SecurityErrorCode.INVALID_USERNAME);
+            } else if (e.getErrorCode().equals(ErrorCode.WRONG_PASSWORD)) {
+                setErrorResponse(response, SecurityErrorCode.INVALID_PASSWORD);
+            }
         }
     }
 
     private void setErrorResponse(
             HttpServletResponse response,
-            ErrorCode errorCode
+            SecurityErrorCode securityErrorCode
     ) {
         ObjectMapper objectMapper = new ObjectMapper();
-        response.setStatus(errorCode.getHttpStatus().value());
+        response.setStatus(securityErrorCode.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now().toString(), errorCode.getValue(),
-                errorCode.getHttpStatus().getReasonPhrase(), errorCode.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now().toString(), securityErrorCode.getValue(),
+                securityErrorCode.getHttpStatus().getReasonPhrase(), securityErrorCode.getMessage());
         try {
             response.getWriter().write(objectMapper.registerModule(new JavaTimeModule()).writeValueAsString(errorResponse));
         } catch (IOException e) {
@@ -72,9 +81,11 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
 
     @AllArgsConstructor
     @Getter
-    private enum ErrorCode {
+    private enum SecurityErrorCode {
         TOKEN_EXPIRED(BAD_REQUEST, 400, "JWT Token Expired"),
-        INVALID_TOKEN(BAD_REQUEST, 400, "JWT Token Invalid");
+        INVALID_TOKEN(BAD_REQUEST, 400, "JWT Token Invalid"),
+        INVALID_USERNAME(UNAUTHORIZED, 401, "Username Invalid"),
+        INVALID_PASSWORD(UNAUTHORIZED, 401, "Password Invalid");
 
         private final HttpStatus httpStatus;
         private final int value;

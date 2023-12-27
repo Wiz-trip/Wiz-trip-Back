@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TripUserRepository extends JpaRepository<TripUserEntity,Long> {
-
+    boolean existsByUserIdAndTripId(Long userId, Long tripId);
 }

@@ -1,5 +1,8 @@
 package com.wiztrip.tool.file;
 
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
@@ -13,6 +16,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class FtpTool {
 
@@ -43,11 +47,9 @@ public class FtpTool {
         connect();
         try (InputStream inputStream = multipartFile.getInputStream()) {
             if (!ftpClient.storeFile(multipartFile.getOriginalFilename(), inputStream))
-                throw new Exception("FTP서버 업로드실패");
+                throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
         } catch (Exception e) {
-            if (e.getMessage().contains("not open")) {
-                throw new RuntimeException("FTP서버 연결실패");
-            }
+            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
         disconnect();
     }
@@ -60,9 +62,10 @@ public class FtpTool {
         multipartFileList.forEach(o -> {
             try (InputStream inputStream = o.getInputStream()) {
                 if (!ftpClient.storeFile(o.getOriginalFilename(), inputStream))
-                    throw new RuntimeException("FTP서버 업로드 실패");
+                    throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
             } catch (IOException e) {
-                throw new RuntimeException("파일 오류");
+                throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
+
             }
         });
         disconnect();
@@ -72,11 +75,9 @@ public class FtpTool {
         connect();
         try {
             if (!ftpClient.storeFile(filename, inputStream))
-                throw new Exception("FTP서버 업로드실패");
+                throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
         } catch (Exception e) {
-            if (e.getMessage().contains("not open")) {
-                throw new RuntimeException("FTP서버 연결실패");
-            }
+            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
         disconnect();
     }
@@ -86,9 +87,9 @@ public class FtpTool {
         filenameInputStreamMap.keySet().forEach(o -> {
             try (InputStream inputStream = filenameInputStreamMap.get(o)) {
                 if (!ftpClient.storeFile(o, inputStream))
-                    throw new RuntimeException("FTP서버 업로드 실패");
+                    throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
             } catch (IOException e) {
-                throw new RuntimeException("파일 오류");
+                throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAILED);
             }
         });
         disconnect();
@@ -108,7 +109,7 @@ public class FtpTool {
             disconnect();
             return bytes;
         } catch (Exception e) {
-            throw new RuntimeException("다운로드 실패");
+            throw new CustomException(ErrorCode.IMAGE_DOWNLOAD_FAILED);
         }
     }
 
@@ -161,8 +162,7 @@ public class FtpTool {
                 ftpClient.changeWorkingDirectory(directory);
             }
         } catch (Exception e) {
-            if (e.getMessage().contains("refused"))
-                throw new RuntimeException("FTP서버 연결실패");
+            throw new CustomException(ErrorCode.FTP_CONNECTION_FAILED);
         }
     }
 
@@ -173,7 +173,7 @@ public class FtpTool {
                 ftpClient.disconnect();
             }
         } catch (IOException e) {
-            throw new RuntimeException();
+            throw new RuntimeException("FTP disconnect 실패");
         }
     }
 }
