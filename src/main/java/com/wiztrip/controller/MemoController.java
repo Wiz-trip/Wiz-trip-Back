@@ -52,7 +52,7 @@ public class MemoController {
     // 메모 수정
     @PatchMapping
     @Operation(summary = "Memo 수정",
-            description = "tripId와 MemoPatchtDto를 사용해 해당 Memo를 삭제합니다.")
+            description = "tripId와 MemoPatchDto를 사용해 해당 Memo를 삭제합니다.")
     public ResponseEntity<MemoDto.MemoResponseDto> updateMemo(@PathVariable("tripId") Long tripId, @RequestBody MemoDto.MemoPatchDto memoPatchDto) {
         return ResponseEntity.ok().body(memoService.updateMemo(tripId, memoPatchDto));
     }
@@ -60,9 +60,7 @@ public class MemoController {
     // 메모 삭제
     @DeleteMapping
     @Operation(summary = "Memo 삭제",
-            description = """
-                tripId와 memoId를 사용해 해당 Memo를 삭제합니다.
-                """)
+            description = "tripId와 memoId를 사용해 해당 Memo를 삭제합니다.")
     public ResponseEntity<String> deleteMemo(@PathVariable("tripId") Long tripId, @RequestParam("memoId") Long memoId) {
         return ResponseEntity.ok().body(memoService.deleteMemo(tripId, memoId));
     }
