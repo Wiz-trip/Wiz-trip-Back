@@ -2,11 +2,8 @@ package com.wiztrip.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wiztrip.config.spring_security.auth.OAuthToken;
-import com.wiztrip.dto.LoginKakaoDto;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -63,38 +60,32 @@ public class kakaoController {
         }
 
         System.out.println("카카오 엑세스 토큰 :  " + oAuthToken.getAccess_token());
+        System.out.println("코드값 : "+ code);
 
-        return response.getBody();
+       // return response.getBody();
+        //return "카카오 코드 인증값 : " +code;
 
-//        RestTemplate rt2 = new RestTemplate();
-//
-//        // HttpHeaders 오브젝트 생성
-//        HttpHeaders headers2 = new HttpHeaders();
-//        headers2.add("Authorization","Bearer"+oAuthToken.getAccess_token() );
-//        headers2.add("Content-type","application/x-www-form-urlencoded;charset=utf-8");
-//
-//
-//        // HttpHeader 와 HttpBody 를 하나의 오브젝트에 담기
-//        HttpEntity<MultiValueMap<String,String>> kakaoProfileRequest2 =
-//                new HttpEntity<>(headers2);
-//
-//        // Http 요청하기 - POST 방식 - response 변수의 응답을 받음
-//        ResponseEntity<String> response2 = rt2.exchange(
-//                "https://kapi.kakao.com/v2/user/me",
-//                HttpMethod.POST,
-//                kakaoProfileRequest2,
-//                String.class
-//        );
-//
-//        String responseBody = response2.getBody();
-//        ObjectMapper objectMapper2 = new ObjectMapper();
-//        JsonNode jsonNode = objectMapper2.readTree(responseBody);
-//
-//        String nickname = RandomStringUtils.random(15,true,true);
-//        String email = jsonNode.get("kakao_account").get("email").asText();
-//
-//
-//        return new LoginKakaoDto(email,nickname);
+        RestTemplate rt2 = new RestTemplate();
+
+        // HttpHeaders 오브젝트 생성
+        HttpHeaders headers2 = new HttpHeaders();
+        headers2.add("Authorization","Bearer "+oAuthToken.getAccess_token() );
+        headers2.add("Content-type","application/x-www-form-urlencoded;charset=utf-8");
+
+
+        // HttpHeader 와 HttpBody 를 하나의 오브젝트에 담기
+        HttpEntity<MultiValueMap<String,String>> kakaoProfileRequest2 =
+                new HttpEntity<>(headers2);
+
+        // Http 요청하기 - POST 방식 - response 변수의 응답을 받음
+        ResponseEntity<String> response2 = rt2.exchange(
+                "https://kapi.kakao.com/v2/user/me",
+                HttpMethod.POST,
+                kakaoProfileRequest2,
+                String.class
+        );
+
+        return response2.getBody();
 
     }
 }
