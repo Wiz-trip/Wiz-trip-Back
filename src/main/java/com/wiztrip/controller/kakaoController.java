@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wiztrip.config.spring_security.auth.OAuthToken;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpHeaders;
-
+import org.springframework.web.servlet.view.RedirectView;
 
 
 @Controller
 public class kakaoController {
 
+    @Operation(summary = "카카오 로그인",description = "카카오 로그인을 진행합니다.")
     @GetMapping("/auth/kakao/callback")
     public @ResponseBody String kakaoCallback(String code) throws JsonProcessingException {
 
