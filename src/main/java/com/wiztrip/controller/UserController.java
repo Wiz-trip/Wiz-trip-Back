@@ -1,15 +1,16 @@
 package com.wiztrip.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.wiztrip.config.spring_security.jwt.TokenUtils;
 import com.wiztrip.dto.UserDto;
 import com.wiztrip.dto.UserRegisterDto;
 import com.wiztrip.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final TokenUtils tokenUtils;
 
     // 회원정보 조회
     @Operation(summary = "회원정보 조회",description = "userId 를 사용하여 회원정보를 조회합니다")
@@ -56,6 +58,5 @@ public class UserController {
         userService.createUser(registrationDto);
         return ResponseEntity.ok("회원가입이 성공적으로 완료");
     }
-
 
 }

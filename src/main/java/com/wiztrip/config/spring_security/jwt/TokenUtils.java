@@ -16,6 +16,8 @@ import java.util.Map;
 public class TokenUtils {
 
     private final PrincipalDetailsService principalDetailsService;
+   // public static final String AUTHORIZATION_HEADER = "Authorization";
+
 
     public String createToken(PrincipalDetails principalDetails, long expirationTime, String secret) {
         return JWT.create()
