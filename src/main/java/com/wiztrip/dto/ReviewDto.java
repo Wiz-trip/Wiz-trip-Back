@@ -1,9 +1,9 @@
 package com.wiztrip.dto;
 
-import com.wiztrip.constant.Image;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewDto {
@@ -13,11 +13,25 @@ public class ReviewDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    public static class ReviewImageDto {
+
+        private String imageName;
+
+        private String imagePath;
+
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
     public static class ReviewPostDto {
 
-        private List<Image> imageList;
+        private List<ReviewImageDto> imageList = new ArrayList<>();
 
         private String content;
+
     }
 
     @Getter
@@ -29,9 +43,10 @@ public class ReviewDto {
 
         private Long reviewId;
 
-        private List<Image> imageList;
+        private List<ReviewImageDto> imageList = new ArrayList<>();
 
         private String content;
+
     }
 
     @Getter
@@ -47,9 +62,10 @@ public class ReviewDto {
 
         private Long userId;
 
-        private List<Image> imageList;
+        private List<ReviewImageDto> imageList = new ArrayList<>();
 
         private String content;
+
     }
 
     @Getter
@@ -71,6 +87,7 @@ public class ReviewDto {
 
         private LocalDate finishDate;
 
-        private List<Image> imageList;
+        private List<ReviewImageDto> imageList = new ArrayList<>();
+
     }
 }

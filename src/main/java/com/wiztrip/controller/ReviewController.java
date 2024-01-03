@@ -9,9 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Tag(name = "Review")
 @RestController
@@ -21,14 +25,15 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     // 후기글 생성
-    @PostMapping("trips/{tripId}/reviews")
+    @PostMapping(value = "trips/{tripId}/reviews", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Review 생성",
             description = "tripId와 ReviewPostDto를 사용해 해당 Trip(전체 여행 계획)에 속한 Review를 생성합니다.")
     public ResponseEntity<ReviewDto.ReviewResponseDto> createReview(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("tripId") Long tripId,
-            @RequestBody ReviewDto.ReviewPostDto reviewPostDto) {
-        return ResponseEntity.ok().body(reviewService.createReview(principalDetails.getUser(), tripId, reviewPostDto));
+            @RequestBody ReviewDto.ReviewPostDto reviewPostDto,
+            @RequestPart(required = false) List<MultipartFile> multipartFileList) {
+        return ResponseEntity.ok().body(reviewService.createReview(principalDetails.getUser(), tripId, reviewPostDto, multipartFileList));
     }
 
     // 후기글 조회 (세부 사항)
