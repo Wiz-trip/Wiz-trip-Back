@@ -70,5 +70,4 @@ public class LandmarkController {
         Page<LandmarkEntity> landmarks = landmarkService.getAllLandmarks(pageable);
         return ResponseEntity.ok(landmarks);
     }
-
 }
