@@ -16,7 +16,10 @@ public class Address {
     @Schema(description = "지번 주소", example = "태평로1가 31 서울특별시청")
     private String localAddress; //지번 주소
 
-    protected Address() {} //무분별한 생성을 막기 위해 protected로 선언
+    public Address() {} //무분별한 생성을 막기 위해 protected로 선언
+
+
+
 
     //필요시 추가 생성자 필요
 

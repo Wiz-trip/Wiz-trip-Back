@@ -1,49 +1,76 @@
 package com.wiztrip.tourapi;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 
-@RestController
-@RequestMapping("/tour")
+@Component
+@Slf4j
 public class ApiController {
 
-    @GetMapping("/api")
-    public String allowBasic() {
-        StringBuilder result = new StringBuilder();
-        try {
-            StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B551011/KorService1/areaBasedList1");
-            urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=oQJZLhk4tLq3xQz%2BVsJ%2BZaaOuqTdiYjEoX%2Fy2Y8ULJatKQ1StfLkBcJ8HDSt%2BSi7DSnAn4Nkl%2BbbelVkeRYl3Q%3D%3D");
-          //  urlBuilder.append("&"+ URLEncoder.encode("pageNo","UTF-8") + URLEncoder.encode("1","UTF-8"));
-        //    urlBuilder.append("&"+ URLEncoder.encode("numOfRows","UTF-8") + URLEncoder.encode("10","UTF-8"));
-            urlBuilder.append("&MobileOS=ETC&MobileApp=AppTest");
-            urlBuilder.append("&_type=json");
-            URL url = new URL(urlBuilder.toString());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            BufferedReader rd;
-            if(conn.getResponseCode() >= 200 && conn.getResponseCode() <=300) {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));
-            } else {
-                rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-            }
-            String line;
-            while((line = rd.readLine()) != null) {
-                result.append(line + "\n");
-            }
-            rd.close();
-            conn.disconnect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public List<Map<String, Object>> getData(int numOfRows)
+            throws URISyntaxException, JsonProcessingException {
 
-        return result + " ";
+        // Base URL + API 호출 주소
+        String link = "https://apis.data.go.kr/B551011/KorService1/areaBasedList1";
+        String MobileOS = "ETC";        // 실행환경
+        String MobileApp = "Test";      // APP name
+        String _type = "json";          // 받을 데이터 타입
+
+        // 서비스 키
+        String serviceKey = "FI6qPw0hnomFTdMepcDdUiUO1wVBjkwNyUrPJxdCTP1SVxDMnBOb0LWcjrGyAi8Mz4zzC%2B9yH1RH8Twh1rIrdA%3D%3D";
+
+        String url = link + "?" +
+                "&MobileOS=" + MobileOS +
+                "&MobileApp=" + MobileApp +
+                "&_type=" + _type +
+//                "&areaCode=" + areaCode +               // 받아온 지역 코드
+//                "&contentTypeId=" + contentTypeId +     // 받아온 관광 타입
+                "&numOfRows=" + numOfRows +             // 출력할 데이터 개수
+                "&serviceKey=" + serviceKey;
+
+        URI uri = new URI(url);         // 작선한 문자열로 URL 생성
+        RestTemplate restTemplate = new RestTemplate();     // HTTP 요청 수행
+        HttpHeaders headers = new HttpHeaders();            // HTTP 요청 헤더 생성
+
+        // content-type 으로 데이터 타입 지정 , 여기서는 UTF-8
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        // get 요청
+        String response = restTemplate.getForObject(
+                uri,            // 요청 보낼 url
+                String.class    // 응답을 문자열로 받겠음.
+        );
+        // 로그 출력
+        log.info("API Response: {}", response);
+
+        // 데이터 추출
+        Map<String, Object> map = new ObjectMapper().readValue(response.toString(), Map.class);
+        Map<String, Object> responseMap = (Map<String, Object>) map.get("response");
+        Map<String, Object> bodyMap = (Map<String, Object>) responseMap.get("body");
+        Map<String, Object> itemsMap = (Map<String, Object>) bodyMap.get("items");
+        List<Map<String, Object>> itemMap = (List<Map<String, Object>>) itemsMap.get("item");
+
+        //state에 있는 정보만 들고오기
+        List<Map<String, Object>> testItemMap = itemMap.stream()
+//                .filter(item -> {
+//                    Object value = item.get("addr1");
+//                    return value != null && value.toString().contains(state);
+//                })
+                .collect(Collectors.toList());
+
+
+        return testItemMap;
     }
+
 }

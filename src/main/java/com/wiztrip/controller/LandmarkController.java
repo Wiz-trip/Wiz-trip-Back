@@ -1,5 +1,6 @@
 package com.wiztrip.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wiztrip.domain.LandmarkEntity;
 import com.wiztrip.dto.LandmarkDto;
 import com.wiztrip.service.LandmarkService;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URISyntaxException;
 import java.util.List;
 
 
@@ -21,22 +24,23 @@ public class LandmarkController {
 
     private final LandmarkService landmarkService;
 
+
     // 모든 여행지 조회
     @Operation(summary = "모든 여행지 조회",description = "모든 여행지를 조회합니다.")
     @GetMapping
-    public ResponseEntity<List<LandmarkDto.LandmarkAllResponseDto>> getAllLandmarks() {
-        List<LandmarkDto.LandmarkAllResponseDto> landmarks = landmarkService.getAllLandmarks();
+    public ResponseEntity<List<LandmarkDto.LandmarkAllResponseDto>> getAllLandmarks(@RequestParam(required = false, defaultValue = "100") int numOfRows)
+            throws URISyntaxException, JsonProcessingException{
+        List<LandmarkDto.LandmarkAllResponseDto> landmarks = landmarkService.getLandmarksFromApi(numOfRows);
         return ResponseEntity.ok(landmarks);
     }
 
-    // 여행지 상세 조회
-    @Operation(summary = "상세 여행지 조회",description = "landmarkId 를 사용하여 상세 여행지를 조회합니다.")
-    @GetMapping("/{landmarkId}")
-    public ResponseEntity<LandmarkDto.LandmarkDetailResponseDto> getLandmark(@PathVariable Long landmarkId) {
-        LandmarkDto.LandmarkDetailResponseDto landmark = landmarkService.getLandmarkById(landmarkId);
-        return ResponseEntity.ok().body(landmark);
-    }
 
+    // 여행지 상세 조회
+//    @GetMapping("/{landmarkId}")
+//    public ResponseEntity<LandmarkDto.LandmarkDetailResponseDto> getLandmark(@PathVariable Long landmarkId) throws URISyntaxException, JsonProcessingException {
+//        LandmarkDto.LandmarkDetailResponseDto landmark = landmarkService.getLandmarkById(landmarkId);
+//        return ResponseEntity.ok().body(landmark);
+//    }
 
 
     // 페이징
