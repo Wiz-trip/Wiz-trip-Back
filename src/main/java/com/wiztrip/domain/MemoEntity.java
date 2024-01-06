@@ -8,10 +8,12 @@ import lombok.Setter;
 
 
 @Entity
-@Getter  @Setter
-public class MemoEntity extends TimeStamp{
+@Getter
+@Setter
+public class MemoEntity {
 
     @Id
+    @Column(name = "memo_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 

@@ -51,8 +51,7 @@ public enum ErrorCode {
     SERVER_ERROR(INTERNAL_SERVER_ERROR, "내부 서버 에러입니다."),
     FTP_CONNECTION_FAILED(INTERNAL_SERVER_ERROR, "FTP server 연결 실패"),
     IMAGE_UPLOAD_FAILED(INTERNAL_SERVER_ERROR, "이미지 업로드 실패"),
-    IMAGE_DOWNLOAD_FAILED(INTERNAL_SERVER_ERROR, "이미지 다운로드 실패"),
-    ;
+    IMAGE_DOWNLOAD_FAILED(INTERNAL_SERVER_ERROR, "이미지 다운로드 실패");
 
 
     private final HttpStatus httpStatus;

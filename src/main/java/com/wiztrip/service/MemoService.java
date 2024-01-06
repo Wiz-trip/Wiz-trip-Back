@@ -2,6 +2,7 @@ package com.wiztrip.service;
 
 import com.wiztrip.constant.Category;
 import com.wiztrip.domain.MemoEntity;
+import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.MemoDto;
 import com.wiztrip.exception.CustomException;
 import com.wiztrip.exception.ErrorCode;
@@ -9,10 +10,10 @@ import com.wiztrip.mapstruct.MemoMapper;
 import com.wiztrip.repository.MemoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,13 +30,13 @@ public class MemoService {
         return memoMapper.toResponseDto(memoRepository.save(memoMapper.toEntity(memoPostDto, tripId)));
     }
 
-    public Page<MemoDto.MemoResponseDto> getMemoByCategory(Long tripId, Category category, PageRequest pageRequest) {
-        Page<MemoEntity> memoPage = memoRepository.findAllByTripIdAndCategory(tripId, category, pageRequest);
+    public ListDto<MemoDto.MemoResponseDto> getMemoByCategory(Long tripId, Category category) {
+        List<MemoEntity> memoList = memoRepository.findAllByTripIdAndCategory(tripId, category);
 
-        return memoPage.map(o -> {
+        return new ListDto<>(memoList.stream().map(o -> {
             checkValid(o, tripId);
             return memoMapper.toResponseDto(o);
-        });
+        }).toList());
     }
 
     @Transactional
