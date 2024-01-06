@@ -106,6 +106,7 @@ public class Init {
         for (int i = 0; i < 5; i++){
             for (int k = 0; k <= i; k++)  {
                 MemoEntity memo = new MemoEntity();
+                memo.setUser(userEntityList.get(i));
                 memo.setTrip(tripEntityList.get(k));
 
                 memo.setTitle("testmemotitle" + k);

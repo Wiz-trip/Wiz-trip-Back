@@ -31,6 +31,10 @@ public class MemoEntity {
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id")
     private TripEntity trip;
 }
