@@ -3,6 +3,7 @@ package com.wiztrip.service;
 import com.wiztrip.domain.ReviewEntity;
 import com.wiztrip.domain.ReviewImageEntity;
 import com.wiztrip.domain.UserEntity;
+import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.ReviewDto;
 import com.wiztrip.exception.CustomException;
 import com.wiztrip.exception.ErrorCode;
@@ -13,8 +14,6 @@ import com.wiztrip.tool.file.FtpTool;
 import com.wiztrip.tool.file.WebpConvertTool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,13 +51,13 @@ public class ReviewService {
         return reviewMapper.toResponseDto(review);
     }
 
-    public Page<ReviewDto.MyReviewResponseDto> getMyReview(UserEntity user, PageRequest pageRequest) {
-        Page<ReviewEntity> reviewPage = reviewRepository.findByUser(user, pageRequest);
+    public ListDto<ReviewDto.MyReviewResponseDto> getMyReview(UserEntity user) {
+        List<ReviewEntity> reviewList = reviewRepository.findByUser(user);
 
-        return reviewPage.map(o -> {
+        return new ListDto<>(reviewList.stream().map(o -> {
             checkValidByUser(o, user);
             return reviewMapper.toMyResponseDto(o);
-        });
+        }).toList());
     }
 
     @Transactional

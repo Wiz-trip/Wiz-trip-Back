@@ -1,14 +1,12 @@
 package com.wiztrip.controller;
 
 import com.wiztrip.config.spring_security.auth.PrincipalDetails;
+import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.ReviewDto;
 import com.wiztrip.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -55,16 +53,9 @@ public class ReviewController {
                 페이징을 사용해 한 페이지에 몇 개의 Review를 받고 싶은지 설정할 수 있고, 원하는 페이지에 속한 Review를 확인할 수 있습니다.
                 """
     )
-    public ResponseEntity<Page<ReviewDto.MyReviewResponseDto>> getMyReview(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam(defaultValue = "0") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-
-        // 정렬 기준 (전체 여행 계획(Trip)을 기준)
-        Sort sort = Sort.by(Sort.Direction.DESC, "trip.startDate");
-
-        PageRequest pageRequest = PageRequest.of(pageNum, pageSize, sort);
-        return ResponseEntity.ok().body(reviewService.getMyReview(principalDetails.getUser(), pageRequest));
+    public ResponseEntity<ListDto<ReviewDto.MyReviewResponseDto>> getMyReview(
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ResponseEntity.ok().body(reviewService.getMyReview(principalDetails.getUser()));
     }
 
     // 후기글 수정
