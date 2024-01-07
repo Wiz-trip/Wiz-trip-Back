@@ -1,7 +1,6 @@
 package com.wiztrip.dto;
 
 import com.wiztrip.constant.Address;
-import com.wiztrip.constant.Image;
 import lombok.*;
 
 import java.util.List;
@@ -9,6 +8,19 @@ import java.util.List;
 
 
 public class LandmarkDto {
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class LandmarkImageDto {
+
+        private String imageName;
+
+        private String imagePath;
+
+    }
 
     @Getter
     @Setter
@@ -23,7 +35,7 @@ public class LandmarkDto {
 
         private Address address;
 
-        private List<String> imageList;
+        private List<LandmarkImageDto> imageList;
 
     }
 
@@ -33,6 +45,7 @@ public class LandmarkDto {
     @NoArgsConstructor
     @Builder
     public static class LandmarkDetailResponseDto {
+
         private Long landmarkId;
 
         private String name;
@@ -41,7 +54,7 @@ public class LandmarkDto {
 
         private Address address;
 
-        private List<String> imageList;
+        private List<LandmarkImageDto> imageList;
 
     }
 }

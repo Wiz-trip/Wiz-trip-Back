@@ -1,8 +1,7 @@
 package com.wiztrip.mapstruct;
 
-
-import com.wiztrip.constant.Image;
 import com.wiztrip.domain.LandmarkEntity;
+import com.wiztrip.domain.LandmarkImageEntity;
 import com.wiztrip.dto.LandmarkDto;
 import com.wiztrip.repository.LandmarkRepository;
 import org.mapstruct.*;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Mapper(
         componentModel = "spring", // 빌드 시 구현체 만들고 빈으로 등록
@@ -26,7 +26,7 @@ public abstract class LandmarkMapper {
     // LandmarkEntity -> LandmarkAllResponseDto 변환
     @Mappings({
             @Mapping(target = "landmarkId", source = "id"),
-            @Mapping(target = "imageList", source = "imageList", qualifiedByName = "imagesToStrings")
+            @Mapping(target = "imageList", expression = "java(toImageEntity(entity.getImageList()))")
     })
     public abstract LandmarkDto.LandmarkAllResponseDto entityToAllResponseDto(LandmarkEntity entity);
 
@@ -34,10 +34,11 @@ public abstract class LandmarkMapper {
     @Mappings({
             @Mapping(target = "landmarkId", source = "id"),
             @Mapping(target = "content",source = "content"),
-            @Mapping(target = "imageList", source = "imageList", qualifiedByName = "imagesToStrings")
+            @Mapping(target = "imageList", expression = "java(toImageEntity(entity.getImageList()))")
     })
     public abstract LandmarkDto.LandmarkDetailResponseDto entityToDetailResponseDto(LandmarkEntity entity);
 
+    /*
     // Image 객체 리스트 -> String 리스트 변환
     @Named("imagesToStrings")
     List<String> imagesToStrings(List<Image> images) {
@@ -46,5 +47,15 @@ public abstract class LandmarkMapper {
                 .map(Image::toString)
                 .collect(Collectors.toList());
     }
+    */
 
+    @Named("toImageEntity")
+    public List<LandmarkDto.LandmarkImageDto> toImageEntity(List<LandmarkImageEntity> imageList) {
+        return imageList.stream()
+                .map(image -> LandmarkDto.LandmarkImageDto.builder()
+                        .imagePath(image.getImagePath())
+                        .imageName(image.getImageName())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
