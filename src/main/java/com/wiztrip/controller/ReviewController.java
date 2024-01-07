@@ -25,7 +25,7 @@ public class ReviewController {
     // 후기글 생성
     @PostMapping(value = "trips/{tripId}/reviews", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Review 생성",
-            description = "tripId와 ReviewPostDto를 사용해 해당 Trip(전체 여행 계획)에 속한 Review를 생성합니다.")
+            description = "tripId와 ReviewPostDto를 사용해 해당 Trip(전체 여행 계획)에 속한 Review를 생성합니다. (이미지 여러장 추가 가능)")
     public ResponseEntity<ReviewDto.ReviewResponseDto> createReview(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("tripId") Long tripId,
@@ -48,11 +48,7 @@ public class ReviewController {
     // 후기글 조회 (전체, 마이페이지)
     @GetMapping("my-reviews")
     @Operation(summary = "Review 조회(마이 페이지)",
-            description = """
-                마이 페이지에서 해당 User가 작성한 review를 Trip(전체 여행 계획)의 startDate를 기준으로 전달합니다.
-                페이징을 사용해 한 페이지에 몇 개의 Review를 받고 싶은지 설정할 수 있고, 원하는 페이지에 속한 Review를 확인할 수 있습니다.
-                """
-    )
+            description = "마이 페이지에서 해당 User가 작성한 review를 전달합니다.")
     public ResponseEntity<ListDto<ReviewDto.MyReviewResponseDto>> getMyReview(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ResponseEntity.ok().body(reviewService.getMyReview(principalDetails.getUser()));
