@@ -47,8 +47,8 @@ public class ReviewService {
     public ReviewDto.ReviewResponseDto getReview(UserEntity user, Long tripId, Long reviewId) {
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        checkValidByTrip(review, tripId);
         checkValidByUser(review, user);
+        checkValidByTrip(review, tripId);
         return reviewMapper.toResponseDto(review);
     }
 
@@ -65,10 +65,8 @@ public class ReviewService {
     public ReviewDto.ReviewResponseDto updateReview(UserEntity user, Long tripId, ReviewDto.ReviewPatchDto reviewPatchDto) {
         ReviewEntity review = reviewRepository.findById(reviewPatchDto.getReviewId())
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-
-        checkValidByTrip(review, tripId);
         checkValidByUser(review, user);
-
+        checkValidByTrip(review, tripId);
         reviewMapper.updateFromPatchDto(reviewPatchDto, review);
         return reviewMapper.toResponseDto(review);
     }
@@ -77,8 +75,8 @@ public class ReviewService {
     public String deleteReview(UserEntity user, Long tripId, Long reviewId) {
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        checkValidByTrip(review,tripId);
         checkValidByUser(review, user);
+        checkValidByTrip(review,tripId);
         reviewRepository.deleteById(reviewId);
         return "reviewId: " + reviewId + " 삭제 완료";
     }
