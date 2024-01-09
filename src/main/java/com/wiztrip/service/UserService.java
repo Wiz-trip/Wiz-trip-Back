@@ -59,21 +59,23 @@ public class UserService {
     }
 
 
+    // 닉네임 중복처리
+    public boolean isNicknameExist(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
 
     // 회원가입 처리
     @Transactional
     public UserEntity createUser(UserRegisterDto registrationDto) {
+
         if (!registrationDto.getPassword().equals(registrationDto.getConfirmPassword())) {
-            throw new IllegalArgumentException("Passwords do not match.");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        // username과 email의 중복 체크
-//        userRepository.findByUsername(registrationDto.getUsername()).ifPresent(u -> {
-//            throw new IllegalArgumentException("Username already in use.");
-//        });
-//        userRepository.findByEmail(registrationDto.getEmail()).ifPresent(u -> {
-//            throw new IllegalArgumentException("Email already in use.");
-//        });
+        // 닉네임 중복 처리
+        if(isNicknameExist(registrationDto.getNickname())) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+        }
 
         UserEntity newUser = new UserEntity();
         newUser.setUsername(registrationDto.getUsername());
