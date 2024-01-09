@@ -50,6 +50,8 @@ public class MemoDto {
 
         private Long tripId;
 
+        private Long userId;
+
         private String title;
 
         private String content;

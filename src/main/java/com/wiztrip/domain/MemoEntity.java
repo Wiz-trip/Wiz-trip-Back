@@ -8,10 +8,12 @@ import lombok.Setter;
 
 
 @Entity
-@Getter  @Setter
-public class MemoEntity extends TimeStamp{
+@Getter
+@Setter
+public class MemoEntity {
 
     @Id
+    @Column(name = "memo_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -27,6 +29,10 @@ public class MemoEntity extends TimeStamp{
 
     @Enumerated(EnumType.STRING)
     private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id")

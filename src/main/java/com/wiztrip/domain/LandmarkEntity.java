@@ -1,7 +1,6 @@
 package com.wiztrip.domain;
 
 import com.wiztrip.constant.Address;
-import com.wiztrip.constant.Image;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -29,10 +28,7 @@ public class LandmarkEntity {
     @Embedded
     private Address address;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(
-            name = "landmark_images",
-            joinColumns = @JoinColumn(name = "landmark_id")
-    )
-    private List<Image> imageList = new ArrayList<>();
+    @OneToMany(mappedBy = "landmark", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LandmarkImageEntity> imageList = new ArrayList<>();
+
 }
