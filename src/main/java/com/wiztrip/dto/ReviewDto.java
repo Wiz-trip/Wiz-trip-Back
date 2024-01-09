@@ -15,6 +15,8 @@ public class ReviewDto {
     @Builder
     public static class ReviewImageDto {
 
+        private Long imageId;
+
         private String imageName;
 
         private String imagePath;
@@ -27,8 +29,6 @@ public class ReviewDto {
     @NoArgsConstructor
     @Builder
     public static class ReviewPostDto {
-
-        private List<ReviewImageDto> imageList = new ArrayList<>();
 
         private String content;
 
@@ -43,7 +43,8 @@ public class ReviewDto {
 
         private Long reviewId;
 
-        private List<ReviewImageDto> imageList = new ArrayList<>();
+        // 수정할 image의 imageId 받아오기
+        private List<Long> imageIdList = new ArrayList<>();
 
         private String content;
 

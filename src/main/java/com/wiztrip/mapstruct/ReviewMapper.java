@@ -7,6 +7,7 @@ import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.ReviewDto;
 import com.wiztrip.exception.CustomException;
 import com.wiztrip.exception.ErrorCode;
+import com.wiztrip.repository.ReviewImageRepository;
 import com.wiztrip.repository.ReviewRepository;
 import com.wiztrip.repository.TripRepository;
 import org.mapstruct.*;
@@ -29,13 +30,10 @@ public abstract class ReviewMapper {
     ReviewRepository reviewRepository;
 
     @Autowired
-    TripRepository tripRepository;
+    ReviewImageRepository reviewImageRepository;
 
-    public ReviewEntity toEntity(UserEntity user, Long tripId, ReviewDto.ReviewPostDto reviewPostDto) {
-        ReviewEntity review = _toEntity(user, tripId, reviewPostDto);
-        review.getImageList().forEach(o->o.setReview(review));
-        return review;
-    }
+    @Autowired
+    TripRepository tripRepository;
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
@@ -43,9 +41,9 @@ public abstract class ReviewMapper {
             @Mapping(target = "createAt", ignore = true),
             @Mapping(target = "modifiedAt",ignore = true),
             @Mapping(target = "trip", source = "tripId", qualifiedByName = "tripIdToTripEntity"),
-            @Mapping(target = "imageList", source = "reviewPostDto.imageList", qualifiedByName = "getImageEntity")
+            @Mapping(target = "imageList", ignore = true)
     })
-    abstract ReviewEntity _toEntity(UserEntity user, Long tripId, ReviewDto.ReviewPostDto reviewPostDto);
+    public abstract ReviewEntity toEntity(UserEntity user, Long tripId, ReviewDto.ReviewPostDto reviewPostDto);
 
     @Mappings({
             @Mapping(target = "reviewId", source = "id"),
@@ -73,7 +71,7 @@ public abstract class ReviewMapper {
             @Mapping(target = "trip", ignore = true),
             @Mapping(target = "createAt", ignore = true),
             @Mapping(target = "modifiedAt",ignore = true),
-            @Mapping(target = "imageList", source = "reviewPatchDto.imageList", qualifiedByName = "getImageEntity")
+            @Mapping(target = "imageList", source = "reviewPatchDto.imageIdList", qualifiedByName = "getImageEntity")
     })
     public abstract void updateFromPatchDto(ReviewDto.ReviewPatchDto reviewPatchDto, @MappingTarget ReviewEntity review);
 
@@ -84,14 +82,12 @@ public abstract class ReviewMapper {
     }
 
     @Named("getImageEntity")
-    public List<ReviewImageEntity> getImageEntity(List<ReviewDto.ReviewImageDto> imageList) {
-        return imageList.stream()
-                .map(image -> {
-                    ReviewImageEntity reviewImageEntity = new ReviewImageEntity();
-                    reviewImageEntity.setImagePath(image.getImagePath());
-                    reviewImageEntity.setImageName(image.getImageName());
-                    return reviewImageEntity;
-                })
+    public List<ReviewImageEntity> getImageEntity(List<Long> imageIdList) {
+        return imageIdList.stream()
+                .map(imageId ->
+                    reviewImageRepository.findById(imageId)
+                            .orElseThrow(() -> new CustomException(ErrorCode.IMAGE_NOT_FOUND))
+                )
                 .collect(Collectors.toList());
     }
 
@@ -99,6 +95,7 @@ public abstract class ReviewMapper {
     public List<ReviewDto.ReviewImageDto> toImageEntity(List<ReviewImageEntity> imageList) {
         return imageList.stream()
                 .map(image -> ReviewDto.ReviewImageDto.builder()
+                        .imageId(image.getId())
                         .imagePath(image.getImagePath())
                         .imageName(image.getImageName())
                         .build())
