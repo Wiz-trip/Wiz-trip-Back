@@ -40,6 +40,7 @@ public enum ErrorCode {
     MEMO_NOT_FOUND(NOT_FOUND, "해당 메모를 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(NOT_FOUND, "해당 후기글을 찾을 수 없습니다."),
     LIKE_NOT_FOUND(NOT_FOUND,"해당 좋아요를 찾을 수 없습니다."),
+    IMAGE_NOT_FOUND(NOT_FOUND, "해당 이미지를 찾을 수 없습니다."),
 
     // 409 CONFLICT: 중복된 리소스 (요청이 현재 서버 상태와 충돌될 때)
     DUPLICATE_EMAIL(CONFLICT, "이미 존재하는 이메일입니다."),
