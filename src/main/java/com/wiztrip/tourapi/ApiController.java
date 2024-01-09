@@ -73,4 +73,43 @@ public class ApiController {
         return testItemMap;
     }
 
+
+    // 세부 여행지 메서드
+    public Map<String, Object> getLandmarkData(long contentTypeId)
+            throws URISyntaxException, JsonProcessingException {
+
+        // Base URL and API parameters
+        String link = "https://apis.data.go.kr/B551011/KorService1/areaBasedList1";// Assuming a different endpoint for detailed data
+        String serviceKey = "FI6qPw0hnomFTdMepcDdUiUO1wVBjkwNyUrPJxdCTP1SVxDMnBOb0LWcjrGyAi8Mz4zzC%2B9yH1RH8Twh1rIrdA%3D%3D";
+        String MobileOS = "ETC";        // 실행환경
+        String MobileApp = "Test";      // APP name
+        String _type = "json";          // 받을 데이터 타입
+
+        String url = link + "?" +
+                "serviceKey=" + serviceKey +
+                "&contentTypeId=" + contentTypeId +
+                "&MobileOS=" + MobileOS +
+                "&MobileApp=" + MobileApp +
+                "&_type=" + _type;
+
+
+        URI uri = new URI(url);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        // API Request
+        String response = restTemplate.getForObject(uri, String.class);
+        log.info("Detail API Response: {}", response);
+
+        // Data Extraction
+        Map<String, Object> map = new ObjectMapper().readValue(response, Map.class);
+        Map<String, Object> responseMap = (Map<String, Object>) map.get("response");
+        Map<String, Object> bodyMap = (Map<String, Object>) responseMap.get("body");
+        Map<String, Object> itemMap = (Map<String, Object>) bodyMap.get("item");
+
+        return itemMap;
+    }
+
+
 }

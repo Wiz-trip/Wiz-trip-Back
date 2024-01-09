@@ -44,4 +44,42 @@ public class LandmarkDto {
         private List<String> imageList;
 
     }
+
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class LandmarkApiResponseDto {
+        private Long contentId;
+
+        private Long contentTypeId;
+
+        private String title;
+
+        private String Address;
+
+        private List<String> imageList;
+
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class LandmarkApiDetailResponseDto {
+        private Long contentId;
+
+        private Long contentTypeId;
+
+        private String title;
+
+        private String Address;
+
+        private List<String> imageList;
+
+    }
+
 }

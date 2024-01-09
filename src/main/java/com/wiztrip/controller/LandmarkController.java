@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,19 +29,32 @@ public class LandmarkController {
     // 모든 여행지 조회
     @Operation(summary = "모든 여행지 조회",description = "모든 여행지를 조회합니다.")
     @GetMapping
-    public ResponseEntity<List<LandmarkDto.LandmarkAllResponseDto>> getAllLandmarks(@RequestParam(required = false, defaultValue = "100") int numOfRows)
+    public ResponseEntity<List<LandmarkDto.LandmarkApiResponseDto>> getAllLandmarks(@RequestParam(required = false, defaultValue = "100") int numOfRows)
             throws URISyntaxException, JsonProcessingException{
-        List<LandmarkDto.LandmarkAllResponseDto> landmarks = landmarkService.getLandmarksFromApi(numOfRows);
+        List<LandmarkDto.LandmarkApiResponseDto> landmarks = landmarkService.getLandmarksFromApi(numOfRows);
         return ResponseEntity.ok(landmarks);
     }
 
 
     // 여행지 상세 조회
-//    @GetMapping("/{landmarkId}")
-//    public ResponseEntity<LandmarkDto.LandmarkDetailResponseDto> getLandmark(@PathVariable Long landmarkId) throws URISyntaxException, JsonProcessingException {
-//        LandmarkDto.LandmarkDetailResponseDto landmark = landmarkService.getLandmarkById(landmarkId);
-//        return ResponseEntity.ok().body(landmark);
-//    }
+    @GetMapping("/{contentTypeId}")
+    public ResponseEntity<LandmarkDto.LandmarkApiDetailResponseDto> getLandmark(@PathVariable Long contentTypeId) throws URISyntaxException, JsonProcessingException {
+        try {
+            // 특정 랜드마크에 대한 상세 정보를 가져옵니다.
+            LandmarkDto.LandmarkApiDetailResponseDto landmarkDetails = landmarkService.getLandmarkDetails(contentTypeId);
+
+            // landmarkDetails가 null이 아니면 상세 정보를 반환합니다.
+            if (landmarkDetails != null) {
+                return ResponseEntity.ok(landmarkDetails);
+            } else {
+                // landmarkId에 해당하는 데이터가 없으면 404 Not Found를 반환합니다.
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            // 예외 발생 시 500 Internal Server Error를 반환합니다.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 
     // 페이징
