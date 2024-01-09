@@ -16,6 +16,8 @@ public class LandmarkDto {
     @Builder
     public static class LandmarkImageDto {
 
+        private Long imageId;
+
         private String imageName;
 
         private String imagePath;

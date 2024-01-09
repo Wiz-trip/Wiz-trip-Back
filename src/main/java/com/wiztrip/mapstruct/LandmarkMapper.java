@@ -53,6 +53,7 @@ public abstract class LandmarkMapper {
     public List<LandmarkDto.LandmarkImageDto> toImageEntity(List<LandmarkImageEntity> imageList) {
         return imageList.stream()
                 .map(image -> LandmarkDto.LandmarkImageDto.builder()
+                        .imageId(image.getId())
                         .imagePath(image.getImagePath())
                         .imageName(image.getImageName())
                         .build())
