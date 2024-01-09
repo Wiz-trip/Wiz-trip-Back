@@ -19,6 +19,10 @@ public class Address {
     protected Address() {} //무분별한 생성을 막기 위해 protected로 선언
 
     //필요시 추가 생성자 필요
+    public Address(String roadNameAddress, String localAddress) {
+        this.roadNameAddress = roadNameAddress;
+        this.localAddress = localAddress;
+    }
 
 
     @Override

@@ -1,5 +1,6 @@
 package com.wiztrip;
 
+import com.wiztrip.constant.Address;
 import com.wiztrip.constant.Category;
 import com.wiztrip.domain.*;
 import com.wiztrip.dto.LikeboxDto;
@@ -85,7 +86,10 @@ public class Init {
                 plan.setTrip(tripEntityList.get(k));
 
                 plan.setName("testplanname" + k);
-                // todo: address 추가
+
+                Address address = new Address("testplanroadnameaddress" + i, "testplanlocaladdress" + i);
+                plan.setAddress(address);
+
                 plan.setContent("testplancontent" + k);
 
                 Category[] category = Category.values();
@@ -136,7 +140,11 @@ public class Init {
         for (int i = 0; i < 5; i++) {
             LandmarkEntity landmark = new LandmarkEntity();
             landmark.setName("testlandmark" + i);
-            // todo: image, address 추가
+
+            Address address = new Address("testlandmarkroadnameaddress" + i, "testlandmarklocaladdress" + i);
+            landmark.setAddress(address);
+
+            // todo: image 추가
             landmarkRepository.save(landmark);
         }
 
