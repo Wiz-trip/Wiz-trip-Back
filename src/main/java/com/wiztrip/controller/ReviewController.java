@@ -29,8 +29,8 @@ public class ReviewController {
     public ResponseEntity<ReviewDto.ReviewResponseDto> createReview(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("tripId") Long tripId,
-            @RequestBody ReviewDto.ReviewPostDto reviewPostDto,
-            @RequestPart(required = false) List<MultipartFile> multipartFileList) {
+            @RequestPart(name = "request") ReviewDto.ReviewPostDto reviewPostDto,
+            @RequestPart(required = false, name = "image") List<MultipartFile> multipartFileList) {
         return ResponseEntity.ok().body(reviewService.createReview(principalDetails.getUser(), tripId, reviewPostDto, multipartFileList));
     }
 
