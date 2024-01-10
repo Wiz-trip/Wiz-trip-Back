@@ -1,6 +1,6 @@
 package com.wiztrip.dto;
 
-import com.wiztrip.constant.Image;
+import com.wiztrip.domain.UserImageEntity;
 import lombok.*;
 
 
@@ -19,7 +19,7 @@ public class UserDto {
 
         private String email;
 
-        private Image image; // 프로필 사진
+        private UserImageEntity image; // 프로필 사진
 
         private String nickname; // 회원 닉네임
 
@@ -40,7 +40,7 @@ public class UserDto {
 
         private String email;
 
-        private Image image; // 프로필 사진
+        private UserImageEntity image; // 프로필 사진
 
         private String nickname; // 회원 닉네임
 

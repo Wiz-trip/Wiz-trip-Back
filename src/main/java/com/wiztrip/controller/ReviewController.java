@@ -1,17 +1,19 @@
 package com.wiztrip.controller;
 
 import com.wiztrip.config.spring_security.auth.PrincipalDetails;
+import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.ReviewDto;
 import com.wiztrip.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Tag(name = "Review")
 @RestController
@@ -21,14 +23,15 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     // 후기글 생성
-    @PostMapping("trips/{tripId}/reviews")
+    @PostMapping(value = "trips/{tripId}/reviews", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Review 생성",
-            description = "tripId와 ReviewPostDto를 사용해 해당 Trip(전체 여행 계획)에 속한 Review를 생성합니다.")
+            description = "tripId와 ReviewPostDto를 사용해 해당 Trip(전체 여행 계획)에 속한 Review를 생성합니다. (이미지 여러장 추가 가능)")
     public ResponseEntity<ReviewDto.ReviewResponseDto> createReview(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("tripId") Long tripId,
-            @RequestBody ReviewDto.ReviewPostDto reviewPostDto) {
-        return ResponseEntity.ok().body(reviewService.createReview(principalDetails.getUser(), tripId, reviewPostDto));
+            @RequestPart(name = "request") ReviewDto.ReviewPostDto reviewPostDto,
+            @RequestPart(required = false, name = "image") List<MultipartFile> multipartFileList) {
+        return ResponseEntity.ok().body(reviewService.createReview(principalDetails.getUser(), tripId, reviewPostDto, multipartFileList));
     }
 
     // 후기글 조회 (세부 사항)
@@ -45,21 +48,10 @@ public class ReviewController {
     // 후기글 조회 (전체, 마이페이지)
     @GetMapping("my-reviews")
     @Operation(summary = "Review 조회(마이 페이지)",
-            description = """
-                마이 페이지에서 해당 User가 작성한 review를 Trip(전체 여행 계획)의 startDate를 기준으로 전달합니다.
-                페이징을 사용해 한 페이지에 몇 개의 Review를 받고 싶은지 설정할 수 있고, 원하는 페이지에 속한 Review를 확인할 수 있습니다.
-                """
-    )
-    public ResponseEntity<Page<ReviewDto.MyReviewResponseDto>> getMyReview(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam(defaultValue = "0") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-
-        // 정렬 기준 (전체 여행 계획(Trip)을 기준)
-        Sort sort = Sort.by(Sort.Direction.DESC, "trip.startDate");
-
-        PageRequest pageRequest = PageRequest.of(pageNum, pageSize, sort);
-        return ResponseEntity.ok().body(reviewService.getMyReview(principalDetails.getUser(), pageRequest));
+            description = "마이 페이지에서 해당 User가 작성한 review를 전달합니다.")
+    public ResponseEntity<ListDto<ReviewDto.MyReviewResponseDto>> getMyReview(
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ResponseEntity.ok().body(reviewService.getMyReview(principalDetails.getUser()));
     }
 
     // 후기글 수정
