@@ -101,7 +101,7 @@ public class ReviewService {
 
     // 이미지 중복 이름 확인
     private String getUniqueImageName(String originalFilename) {
-        String imageName = originalFilename;
+        String imageName = java.util.UUID.randomUUID().toString();
 
         while (reviewImageRepository.existsByImageName(imageName)) {
             imageName = java.util.UUID.randomUUID().toString();
