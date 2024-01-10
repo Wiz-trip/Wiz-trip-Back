@@ -4,12 +4,9 @@ import com.wiztrip.dto.UserDto;
 import com.wiztrip.dto.UserRegisterDto;
 import com.wiztrip.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor

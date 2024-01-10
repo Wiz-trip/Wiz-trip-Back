@@ -6,9 +6,17 @@ import com.wiztrip.dto.UserRegisterDto;
 import com.wiztrip.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,15 +38,16 @@ public class UserService {
     @Transactional
     public UserDto.UserResponseDto updateUser(UserDto.UserPatchDto userPatchDto) {
         UserEntity userEntity = userRepository.findById(userPatchDto.getId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userPatchDto.getId()));
+                .orElseThrow(() -> new EntityNotFoundException("회원 ID 를 찾을 수 없습니다 : " + userPatchDto.getId()));
 
         // UserPatchDto의 정보를 UserEntity에 적용
         userEntity.setUsername(userPatchDto.getUsername());
         userEntity.setEmail(userPatchDto.getEmail());
-        // 필요에 따라 다른 필드도 업데이트
+        userEntity.setNickname(userPatchDto.getNickname());
 
         return convertToUserResponseDto(userRepository.save(userEntity));
     }
+
 
     // 사용자 삭제
     @Transactional
