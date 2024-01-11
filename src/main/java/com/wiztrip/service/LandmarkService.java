@@ -9,6 +9,7 @@ import com.wiztrip.tourapi.ApiController;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +44,7 @@ public class LandmarkService {
         // API 응답 필드를 LandmarkDto 필드에 매핑
         return LandmarkDto.LandmarkApiResponseDto.builder()
                 .contentId(Long.parseLong(apiData.getOrDefault("contentid", "0").toString())) // 'contentid'를 imageId로 매핑
-                .imageName((String) apiData.get("addr1")) // 'addr1'을 imageName으로 매핑
+                .address((String) apiData.get("addr1")) // 'addr1'을 imageName으로 매핑
                 .imagePath((String) apiData.get("firstimage")) // 'firstimage'를 imagePath로 매핑
                 .contentTypeId(Long.parseLong(apiData.getOrDefault("contenttypeid", "0").toString())) // 'contenttypeid'를 contentTypeId로 매핑
                 .title((String) apiData.get("title")) // 'title'을 title로 매핑
@@ -75,8 +76,22 @@ public class LandmarkService {
     }
 
     // 여행지 페이징 처리
-    public Page<LandmarkEntity> getAllLandmarks(Pageable pageable) {
-        return landmarkRepository.findAll(pageable);
+    public Page<LandmarkDto.LandmarkApiResponseDto> getLandmarksPagingApi(Pageable pageable)
+            throws URISyntaxException, JsonProcessingException {
+
+        // ApiController를 사용하여 페이징 처리된 데이터 가져오기
+        List<Map<String, Object>> apiData = apiController.pagingData(pageable.getPageNumber(), pageable.getPageSize());
+
+        // Stream을 사용하여 DTO 변환
+        List<LandmarkDto.LandmarkApiResponseDto> content = apiData.stream()
+                .map(this::convertToAllLandmarkDto)
+                .collect(Collectors.toList());
+
+        long totalElements = 100; // 총 요소 수 계산
+        int totalPages = (int) Math.ceil((double) totalElements / (double) pageable.getPageSize());
+
+        // PageImpl 객체를 사용하여 Page 반환
+        return new PageImpl<>(content, pageable, totalElements);
     }
 
 
