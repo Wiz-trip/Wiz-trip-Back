@@ -9,6 +9,8 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Set;
+
 /**
  * Swagger springdoc-ui 구성 파일
  */

@@ -2,6 +2,7 @@ package com.wiztrip.dto;
 
 import com.wiztrip.domain.UserImageEntity;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 public class UserDto {
