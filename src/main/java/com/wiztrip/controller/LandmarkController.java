@@ -1,5 +1,6 @@
 package com.wiztrip.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wiztrip.domain.LandmarkEntity;
 import com.wiztrip.dto.LandmarkDto;
 import com.wiztrip.service.LandmarkService;
@@ -9,8 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URISyntaxException;
 import java.util.List;
 
 
@@ -21,22 +25,26 @@ public class LandmarkController {
 
     private final LandmarkService landmarkService;
 
-    // 모든 여행지 조회
-    @Operation(summary = "모든 여행지 조회",description = "모든 여행지를 조회합니다.")
+
+    @Operation(summary = "모든 여행지 조회", description = "모든 여행지를 조회합니다.")
     @GetMapping
-    public ResponseEntity<List<LandmarkDto.LandmarkAllResponseDto>> getAllLandmarks() {
-        List<LandmarkDto.LandmarkAllResponseDto> landmarks = landmarkService.getAllLandmarks();
+    public ResponseEntity<List<LandmarkDto.LandmarkApiResponseDto>> getAllLandmarks() {
+        try {
+            List<LandmarkDto.LandmarkApiResponseDto> landmarks = landmarkService.getLandmarksFromApi(100);
+            return ResponseEntity.ok(landmarks);
+        } catch (Exception e) {
+            // 오류 처리, 예를 들어 API 호출 실패
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
+    @Operation(summary = "상세 여행지 조회", description = "상세 여행지를 조회합니다.")
+    @GetMapping("/landmarks")
+    public ResponseEntity<List<LandmarkDto.LandmarkApiDetailResponseDto>> getLandmarksByContentTypeId(@RequestParam String cat1,@RequestParam String cat2,@RequestParam String cat3) throws URISyntaxException, JsonProcessingException {
+        List<LandmarkDto.LandmarkApiDetailResponseDto> landmarks = landmarkService.getLandmarksByContentTypeId(cat1, cat2, cat3);
         return ResponseEntity.ok(landmarks);
     }
-
-    // 여행지 상세 조회
-    @Operation(summary = "상세 여행지 조회",description = "landmarkId 를 사용하여 상세 여행지를 조회합니다.")
-    @GetMapping("/{landmarkId}")
-    public ResponseEntity<LandmarkDto.LandmarkDetailResponseDto> getLandmark(@PathVariable Long landmarkId) {
-        LandmarkDto.LandmarkDetailResponseDto landmark = landmarkService.getLandmarkById(landmarkId);
-        return ResponseEntity.ok().body(landmark);
-    }
-
 
 
     // 페이징
