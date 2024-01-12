@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wiztrip.constant.Address;
 import com.wiztrip.constant.Category;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -18,11 +17,6 @@ public class PlanDto {
     @NoArgsConstructor
     @Builder
     public static class PlanPostDto {
-
-        @Schema(description = "계획 이름", example = "제육집")
-        @NotBlank(message = "name을 입력해주세요")
-        private String name; //계획 이름. ~~식당, ~~호텔 등
-
         @Schema(description = "Plan의 주소")
         private Address address;
 
@@ -50,11 +44,9 @@ public class PlanDto {
     @NoArgsConstructor
     @Builder
     public static class PlanResponseDto {
+
         @Schema(description = "plan id", example = "1")
         private Long planId;
-
-        @Schema(description = "계획 이름", example = "제육집")
-        private String name; //계획 이름. ~~식당, ~~호텔 등
 
         @Schema(description = "Plan의 주소")
         private Address address;
@@ -80,6 +72,7 @@ public class PlanDto {
 
         @Schema(description = "Plan이 속한 Trip의 id", example = "1")
         private Long tripId; //plan이 속한 trip의 id
+
     }
 
     @Getter
@@ -88,12 +81,10 @@ public class PlanDto {
     @NoArgsConstructor
     @Builder
     public static class PlanPatchDto {
+
         @Schema(description = "plan id", example = "1")
         @NotNull(message = "planId를 입력해주세요.")
         private Long planId;
-
-        @Schema(description = "계획 이름", example = "제육집")
-        private String name; //계획 이름. ~~식당, ~~호텔 등
 
         @Schema(description = "Plan의 주소")
         private Address address;
@@ -113,7 +104,6 @@ public class PlanDto {
 
         @Schema(description = "Plan의 종류", example = "RESTAURANT")
         private Category category;
+
     }
-
-
 }

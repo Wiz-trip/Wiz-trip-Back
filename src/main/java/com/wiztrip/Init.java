@@ -85,8 +85,6 @@ public class Init {
                 plan.setUser(userEntityList.get(i));
                 plan.setTrip(tripEntityList.get(k));
 
-                plan.setName("testplanname" + k);
-
                 Address address = new Address("testplanroadnameaddress" + i, "testplanlocaladdress" + i);
                 plan.setAddress(address);
 
