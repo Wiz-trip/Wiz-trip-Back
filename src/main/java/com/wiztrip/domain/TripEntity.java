@@ -24,6 +24,10 @@ public class TripEntity {
 
     private String destination; //목적지. 사용자가 정할 수 있으면 좋을듯?? 00과 부산여행, 00과 엠티 등등
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private UserEntity owner;
+
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripUserEntity> tripUserEntityList = new ArrayList<>();
 

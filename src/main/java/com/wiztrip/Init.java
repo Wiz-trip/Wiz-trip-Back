@@ -64,6 +64,10 @@ public class Init {
             LocalDate localDate = LocalDate.of(2023, 12, 1+i);
             trip.setStartDate(localDate);
             trip.setFinishDate(localDate);
+
+            UserEntity owner = userRepository.findByUsername("testusername" + i).orElse(null);
+            trip.setOwner(owner);
+
             tripRepository.save(trip);
         }
 

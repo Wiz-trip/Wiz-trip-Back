@@ -3,6 +3,7 @@ package com.wiztrip.mapstruct;
 import com.wiztrip.domain.PlanEntity;
 import com.wiztrip.domain.TripEntity;
 import com.wiztrip.domain.TripUserEntity;
+import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.TripDto;
 import com.wiztrip.exception.CustomException;
 import com.wiztrip.exception.ErrorCode;
@@ -33,8 +34,8 @@ public abstract class TripMapper {
     @Autowired
     RedisTool redisTool;
 
-    public TripEntity toEntity(TripDto.TripPostDto tripPostDto) {
-        TripEntity trip = _toEntity(tripPostDto);
+    public TripEntity toEntity(UserEntity user, TripDto.TripPostDto tripPostDto) {
+        TripEntity trip = _toEntity(user, tripPostDto);
         if(trip.getTripUserEntityList()==null) throw new CustomException(ErrorCode.WRONG_DTO);
         trip.getTripUserEntityList().forEach(o->o.setTrip(trip));
         trip.getPlanEntityList().forEach(o->o.setTrip(trip)); //연관관계 처리
@@ -43,16 +44,18 @@ public abstract class TripMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "owner", source = "owner"),
             @Mapping(target = "planEntityList", ignore = true),
             @Mapping(target = "memoEntityList", ignore = true),//todo: 나중에 수정해야함!!!!
             @Mapping(target = "reviewEntityList", ignore = true),
-            @Mapping(target = "tripUserEntityList", source = "userIdList", qualifiedByName = "userIdListToTripUserEntityList"),
+            @Mapping(target = "tripUserEntityList", source = "tripPostDto.userIdList", qualifiedByName = "userIdListToTripUserEntityList"),
             @Mapping(target = "tripUrlEntityList", ignore = true)
     })
-    abstract TripEntity _toEntity(TripDto.TripPostDto tripPostDto);
+    abstract TripEntity _toEntity(UserEntity owner, TripDto.TripPostDto tripPostDto);
 
     @Mappings({
             @Mapping(target = "tripId", source = "id"),
+            @Mapping(target = "ownerId", expression = "java(trip.getOwner().getId())"),
             @Mapping(target = "userIdList", expression = "java(trip.getTripUserEntityList().stream().map(o->o.getUser().getId()).toList())"),
             @Mapping(target = "planIdList", expression = "java(trip.getPlanEntityList().stream().map(o->o.getId()).toList())")
     })
@@ -78,6 +81,7 @@ public abstract class TripMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "owner", ignore = true),
             @Mapping(target = "planEntityList", source = "planIdList", qualifiedByName = "planIdListToPlanEntityList"),
             @Mapping(target = "memoEntityList", ignore = true), //todo: 나중에 수정해야함!!!!
             @Mapping(target = "reviewEntityList", ignore = true),

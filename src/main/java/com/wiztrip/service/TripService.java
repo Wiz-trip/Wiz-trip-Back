@@ -43,12 +43,12 @@ public class TripService {
     public TripDto.TripResponseDto createTrip(UserEntity user, TripDto.TripPostDto tripPostDto) {
         //본인이 userIdList에 포함되어 있지 않으면 추가
         if(!tripPostDto.getUserIdList().contains(user.getId())) tripPostDto.getUserIdList().add(user.getId());
-        return tripMapper.toResponseDto(tripRepository.save(tripMapper.toEntity(tripPostDto)));
+        return tripMapper.toResponseDto(tripRepository.save(tripMapper.toEntity(user, tripPostDto)));
     }
 
     public TripDto.TripResponseDto getTrip(UserEntity user, Long tripId) {
         TripEntity trip = tripRepository.findById(tripId).orElseThrow(()->new CustomException(ErrorCode.TRIP_NOT_FOUND));
-        checkValid(user.getId(), trip.getId());
+        checkValidByUser(user.getId(), trip.getId());
         return tripMapper.toResponseDto(trip);
     }
 
@@ -64,7 +64,7 @@ public class TripService {
         List<TripUserEntity> tripUserList = tripUserRepository.findByUser(user);
 
         return new ListDto<>(tripUserList.stream().map(o -> {
-            checkValid(user.getId(), o.getTrip().getId());
+            checkValidByUser(user.getId(), o.getTrip().getId());
             return tripMapper.toResponseDto(o.getTrip());
         }).toList());
     }
@@ -72,7 +72,7 @@ public class TripService {
     @Transactional
     public TripDto.TripResponseDto updateTrip(UserEntity user, TripDto.TripPatchDto tripPatchDto) {
         TripEntity trip = tripRepository.findById(tripPatchDto.getTripId()).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND));
-        checkValid(user.getId(), trip.getId());
+        checkValidByUser(user.getId(), trip.getId());
         tripMapper.updateFromPatchDto(tripPatchDto, trip);
         return tripMapper.toResponseDto(tripRepository.findById(tripPatchDto.getTripId()).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND)));
     }
@@ -80,7 +80,8 @@ public class TripService {
     @Transactional
     public String deleteTrip(UserEntity user, Long tripId) {
         if (!tripRepository.existsById(tripId)) throw new CustomException(ErrorCode.TRIP_NOT_FOUND);
-        checkValid(user.getId(),tripId);
+        checkValidByUser(user.getId(),tripId);
+        checkValidByOwner(user.getId(),tripId);
         tripRepository.deleteById(tripId);
         return "tripId: " + tripId + " 삭제 완료";
     }
@@ -89,7 +90,7 @@ public class TripService {
     public TripDto.TripUrlResponseDto createTripUrl(UserEntity user, Long tripId) {
 
         TripEntity trip = tripRepository.findById(tripId).orElseThrow(() -> new CustomException(ErrorCode.TRIP_NOT_FOUND));
-        checkValid(user.getId(),tripId);
+        checkValidByUser(user.getId(),tripId);
 
         String url = redisTool.getValues(trip.getId().toString());
 
@@ -138,7 +139,11 @@ public class TripService {
         return tripMapper.toTripIdResponseDto(trip);
     }
 
-    private void checkValid(Long userId, Long tripId) {
-        if(!tripUserRepository.existsByUserIdAndTripId(userId,tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_USER);
+    private void checkValidByUser(Long userId, Long tripId) {
+        if(!tripUserRepository.existsByUserIdAndTripId(userId, tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_USER);
+    }
+
+    private void checkValidByOwner(Long userId, Long tripId) {
+        if(!tripRepository.existsByOwnerIdAndId(userId, tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_OWNER);
     }
 }

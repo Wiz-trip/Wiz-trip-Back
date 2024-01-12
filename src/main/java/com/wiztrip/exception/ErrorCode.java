@@ -24,6 +24,7 @@ public enum ErrorCode {
 
     // 403 FORBIDDEN: 허용되지 않는 접근
     FORBIDDEN_TRIP_USER(FORBIDDEN, "전체 여행 계획 권한이 없는 사용자입니다."),
+    FORBIDDEN_TRIP_OWNER(FORBIDDEN, "전체 여행 계획 소유자가 아닙니다."),
     FORBIDDEN_REVIEW_USER(FORBIDDEN, "후기글 권한이 없는 사용자입니다."),
     NOT_IN_TRIP_MEMO(FORBIDDEN, "해당 전체 여행 계획에 속한 메모가 아닙니다."),
     NOT_IN_TRIP_PLAN(FORBIDDEN, "해당 전체 여행 계획에 속한 세부 여행 계획이 아닙니다."),
@@ -41,6 +42,7 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND(NOT_FOUND, "해당 후기글을 찾을 수 없습니다."),
     LIKE_NOT_FOUND(NOT_FOUND,"해당 좋아요를 찾을 수 없습니다."),
     IMAGE_NOT_FOUND(NOT_FOUND, "해당 이미지를 찾을 수 없습니다."),
+    USER_NOT_FOUND(NOT_FOUND, "해당 사용자를 찾을 수 없습니다."),
 
     // 409 CONFLICT: 중복된 리소스 (요청이 현재 서버 상태와 충돌될 때)
     DUPLICATE_EMAIL(CONFLICT, "이미 존재하는 이메일입니다."),

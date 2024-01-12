@@ -14,4 +14,7 @@ public interface TripRepository extends JpaRepository<TripEntity,Long> {
 
     @Query("select t.id from TripEntity t join TripUserEntity tu on tu.trip.id=t.id where tu.user.id=:userId")
     Page<Long> findAllTripIdByUserId(Long userId, Pageable pageable);
+
+    boolean existsByOwnerIdAndId(Long userId, Long id);
+
 }
