@@ -2,7 +2,9 @@ package com.wiztrip.service;
 
 import com.wiztrip.domain.TripEntity;
 import com.wiztrip.domain.TripUrlEntity;
+import com.wiztrip.domain.TripUserEntity;
 import com.wiztrip.domain.UserEntity;
+import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.TripDto;
 import com.wiztrip.exception.CustomException;
 import com.wiztrip.exception.ErrorCode;
@@ -17,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -54,6 +58,15 @@ public class TripService {
 
     public Page<TripDto.TripResponseDto> getTripDetailsPageByUser(UserEntity user, Pageable pageable) {
         return tripRepository.findAllTripByUserId(user.getId(), pageable).map(tripMapper::toResponseDto);
+    }
+
+    public ListDto<TripDto.TripResponseDto> getTripDetailsByUser(UserEntity user) {
+        List<TripUserEntity> tripUserList = tripUserRepository.findByUser(user);
+
+        return new ListDto<>(tripUserList.stream().map(o -> {
+            checkValid(user.getId(), o.getTrip().getId());
+            return tripMapper.toResponseDto(o.getTrip());
+        }).toList());
     }
 
     @Transactional

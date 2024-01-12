@@ -1,6 +1,7 @@
 package com.wiztrip.controller;
 
 import com.wiztrip.config.spring_security.auth.PrincipalDetails;
+import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.TripDto;
 import com.wiztrip.service.TripService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,6 +65,13 @@ public class TripController {
     ) {
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize, sortDirection, sortBy);
         return ResponseEntity.ok().body(tripService.getTripDetailsPageByUser(principalDetails.getUser(), pageRequest));
+    }
+
+    @Operation(summary = "User가 속한 Trip detail 조회",description = "User가 속한 Trip의 Detail을 담은 Page 조회. JWT Token 필수!!!")
+    @GetMapping("/with-details")
+    public ResponseEntity<ListDto<TripDto.TripResponseDto>> getTripDetailsByUser(
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ResponseEntity.ok().body(tripService.getTripDetailsByUser(principalDetails.getUser()));
     }
 
     @Operation(summary = "Trip 수정", description = "TripPatchDto를 통해 Trip 수정. TripPatchDto.userIdList, TripPatchDto.planIdList를 조정해 참여중인 User, 포함된 Plan을 추가, 삭제 할 수 있음. 수정하고싶은 attribute만 포함해서 보내야함!! ")
