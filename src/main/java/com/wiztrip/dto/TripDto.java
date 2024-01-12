@@ -76,6 +76,9 @@ public class TripDto {
                 "  ]")
         private List<Long> planIdList = new ArrayList<>(); //만약 여러개의 plan을 한번에 삭제하려고 할 때 필요
 
+        @Schema(description = "종료 여부", example = "false")
+        private boolean finished;
+
     }
 
     @Getter

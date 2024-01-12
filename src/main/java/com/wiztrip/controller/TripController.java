@@ -80,7 +80,7 @@ public class TripController {
         return ResponseEntity.ok().body(tripService.updateTrip(principalDetails.getUser(),tripPatchDto));
     }
 
-    @Operation(summary = "Trip 삭제", description = "trip id를 통해 trip 삭제")
+    @Operation(summary = "Trip 삭제", description = "trip id를 통해 trip 삭제합니다. Owner(Trip을 생성한 사람)만 삭제할 수 있습니다.")
     @DeleteMapping
     public ResponseEntity<String> deleteTrip(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -106,5 +106,15 @@ public class TripController {
     public ResponseEntity<TripDto.TripIdResponseDto> getTripUrl (
             @PathVariable("url") String url) {
         return ResponseEntity.ok().body(tripService.getTripUrl(url));
+    }
+
+    // 전체 여행 계획 종료
+    @Operation(summary = "Trip 종료",
+            description = "TripId를 통해 해당 Trip의 상태를 false(기본값)에서 true로 변경합니다. Owner(Trip을 생성한 사람)만 종료할 수 있으며, 종료할 경우, 더 이상 Trip을 수정할 수 없습니다.")
+    @PatchMapping("/{tripId}")
+    public ResponseEntity<String> updateTripFinish (
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PathVariable("tripId") Long tripId) {
+        return ResponseEntity.ok().body(tripService.updateTripFinish(principalDetails.getUser(), tripId));
     }
 }

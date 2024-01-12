@@ -71,10 +71,11 @@ public class TripService {
 
     @Transactional
     public TripDto.TripResponseDto updateTrip(UserEntity user, TripDto.TripPatchDto tripPatchDto) {
-        TripEntity trip = tripRepository.findById(tripPatchDto.getTripId()).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND));
+        TripEntity trip = tripRepository.findById(tripPatchDto.getTripId()).orElseThrow(()->new CustomException(ErrorCode.TRIP_NOT_FOUND));
+        checkIsFinished(trip);
         checkValidByUser(user.getId(), trip.getId());
         tripMapper.updateFromPatchDto(tripPatchDto, trip);
-        return tripMapper.toResponseDto(tripRepository.findById(tripPatchDto.getTripId()).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND)));
+        return tripMapper.toResponseDto(trip);
     }
 
     @Transactional
@@ -90,6 +91,7 @@ public class TripService {
     public TripDto.TripUrlResponseDto createTripUrl(UserEntity user, Long tripId) {
 
         TripEntity trip = tripRepository.findById(tripId).orElseThrow(() -> new CustomException(ErrorCode.TRIP_NOT_FOUND));
+        checkIsFinished(trip);
         checkValidByUser(user.getId(),tripId);
 
         String url = redisTool.getValues(trip.getId().toString());
@@ -120,7 +122,6 @@ public class TripService {
         return tripMapper.toUrlResponseDto(trip);
     }
 
-    @Transactional
     public TripDto.TripIdResponseDto getTripUrl(String url) {
 
         String stringTripId = redisTool.getValues(url);
@@ -139,11 +140,26 @@ public class TripService {
         return tripMapper.toTripIdResponseDto(trip);
     }
 
+    @Transactional
+    public String updateTripFinish(UserEntity user, Long tripId) {
+        TripEntity trip = tripRepository.findById(tripId).orElseThrow(() -> new CustomException(ErrorCode.TRIP_NOT_FOUND));
+        checkIsFinished(trip);
+        checkValidByUser(user.getId(),tripId);
+        checkValidByOwner(user.getId(),tripId);
+        trip.setFinished(true);
+        tripRepository.save(trip);
+        return "tripId: " + tripId + " 종료 완료";
+    }
+
     private void checkValidByUser(Long userId, Long tripId) {
         if(!tripUserRepository.existsByUserIdAndTripId(userId, tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_USER);
     }
 
     private void checkValidByOwner(Long userId, Long tripId) {
         if(!tripRepository.existsByOwnerIdAndId(userId, tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_OWNER);
+    }
+
+    private void checkIsFinished(TripEntity trip) {
+        if(trip.isFinished()) {throw new CustomException(ErrorCode.ALREADY_TRIP_FINISHED);}
     }
 }

@@ -43,4 +43,6 @@ public class TripEntity {
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewEntity> reviewEntityList = new ArrayList<>();
 
+    private boolean finished;
+
 }

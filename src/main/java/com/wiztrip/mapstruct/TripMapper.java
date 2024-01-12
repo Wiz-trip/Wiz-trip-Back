@@ -49,7 +49,8 @@ public abstract class TripMapper {
             @Mapping(target = "memoEntityList", ignore = true),//todo: 나중에 수정해야함!!!!
             @Mapping(target = "reviewEntityList", ignore = true),
             @Mapping(target = "tripUserEntityList", source = "tripPostDto.userIdList", qualifiedByName = "userIdListToTripUserEntityList"),
-            @Mapping(target = "tripUrlEntityList", ignore = true)
+            @Mapping(target = "tripUrlEntityList", ignore = true),
+            @Mapping(target = "finished", ignore = true)
     })
     abstract TripEntity _toEntity(UserEntity owner, TripDto.TripPostDto tripPostDto);
 
@@ -57,7 +58,8 @@ public abstract class TripMapper {
             @Mapping(target = "tripId", source = "id"),
             @Mapping(target = "ownerId", expression = "java(trip.getOwner().getId())"),
             @Mapping(target = "userIdList", expression = "java(trip.getTripUserEntityList().stream().map(o->o.getUser().getId()).toList())"),
-            @Mapping(target = "planIdList", expression = "java(trip.getPlanEntityList().stream().map(o->o.getId()).toList())")
+            @Mapping(target = "planIdList", expression = "java(trip.getPlanEntityList().stream().map(o->o.getId()).toList())"),
+            @Mapping(target = "finished", expression = "java(trip.isFinished())")
     })
     public abstract TripDto.TripResponseDto toResponseDto(TripEntity trip);
 
@@ -86,7 +88,8 @@ public abstract class TripMapper {
             @Mapping(target = "memoEntityList", ignore = true), //todo: 나중에 수정해야함!!!!
             @Mapping(target = "reviewEntityList", ignore = true),
             @Mapping(target = "tripUserEntityList", source = "userIdList", qualifiedByName = "userIdListToTripUserEntityList"),
-            @Mapping(target = "tripUrlEntityList", ignore = true)
+            @Mapping(target = "tripUrlEntityList", ignore = true),
+            @Mapping(target = "finished", ignore = true)
     })
     abstract void _updateFromPatchDto(TripDto.TripPatchDto tripPatchDto, @MappingTarget TripEntity trip);
 
