@@ -9,6 +9,7 @@ import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.repository.PlanRepository;
 import com.wiztrip.repository.TripRepository;
 import com.wiztrip.repository.UserRepository;
+import com.wiztrip.tool.redis.RedisTool;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,6 +30,9 @@ public abstract class TripMapper {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    RedisTool redisTool;
+
     public TripEntity toEntity(TripDto.TripPostDto tripPostDto) {
         TripEntity trip = _toEntity(tripPostDto);
         if(trip.getTripUserEntityList()==null) throw new CustomException(ErrorCode.WRONG_DTO);
@@ -40,8 +44,10 @@ public abstract class TripMapper {
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "planEntityList", ignore = true),
-            @Mapping(target = "memoEntityList", ignore = true), //todo: 나중에 수정해야함!!!!
+            @Mapping(target = "memoEntityList", ignore = true),//todo: 나중에 수정해야함!!!!
+            @Mapping(target = "reviewEntityList", ignore = true),
             @Mapping(target = "tripUserEntityList", source = "userIdList", qualifiedByName = "userIdListToTripUserEntityList"),
+            @Mapping(target = "tripUrlEntityList", ignore = true)
     })
     abstract TripEntity _toEntity(TripDto.TripPostDto tripPostDto);
 
@@ -51,6 +57,16 @@ public abstract class TripMapper {
             @Mapping(target = "planIdList", expression = "java(trip.getPlanEntityList().stream().map(o->o.getId()).toList())")
     })
     public abstract TripDto.TripResponseDto toResponseDto(TripEntity trip);
+
+    @Mappings({
+            @Mapping(target = "url", expression = "java(redisTool.getValues(trip.getId().toString()))")
+    })
+    public abstract TripDto.TripUrlResponseDto toUrlResponseDto(TripEntity trip);
+
+    @Mappings({
+            @Mapping(target = "tripId", source = "id"),
+    })
+    public abstract TripDto.TripIdResponseDto toTripIdResponseDto(TripEntity trip);
 
     public void updateFromPatchDto(TripDto.TripPatchDto tripPatchDto, TripEntity trip) {
         _updateFromPatchDto(tripPatchDto, trip);
@@ -62,9 +78,11 @@ public abstract class TripMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mappings({
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "planEntityList", source = "planIdList", qualifiedByName = "planIdListToPlanEntityList"),
             @Mapping(target = "memoEntityList", ignore = true), //todo: 나중에 수정해야함!!!!
+            @Mapping(target = "reviewEntityList", ignore = true),
             @Mapping(target = "tripUserEntityList", source = "userIdList", qualifiedByName = "userIdListToTripUserEntityList"),
-            @Mapping(target = "planEntityList", source = "planIdList", qualifiedByName = "planIdListToPlanEntityList")
+            @Mapping(target = "tripUrlEntityList", ignore = true)
     })
     abstract void _updateFromPatchDto(TripDto.TripPatchDto tripPatchDto, @MappingTarget TripEntity trip);
 

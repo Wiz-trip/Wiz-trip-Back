@@ -22,20 +22,20 @@ public enum ErrorCode {
     INVALID_AUTH_TOKEN(UNAUTHORIZED, "권한 정보가 없는 토큰입니다"),
     UNAUTHORIZED_MEMBER(UNAUTHORIZED, "존재하지 않는 회원입니다."),
 
-    // 403 FORBIDDEN: 접근 권한이 없는 사용자
+    // 403 FORBIDDEN: 허용되지 않는 접근
     FORBIDDEN_TRIP_USER(FORBIDDEN, "전체 여행 계획 권한이 없는 사용자입니다."),
-    FORBIDDEN_PLAN_USER(FORBIDDEN, "세부 여행 계획 권한이 없는 사용자입니다."),
-    FORBIDDEN_MEMO_USER(FORBIDDEN, "메모 권한이 없는 사용자입니다."),
     FORBIDDEN_REVIEW_USER(FORBIDDEN, "후기글 권한이 없는 사용자입니다."),
     NOT_IN_TRIP_MEMO(FORBIDDEN, "해당 전체 여행 계획에 속한 메모가 아닙니다."),
     NOT_IN_TRIP_PLAN(FORBIDDEN, "해당 전체 여행 계획에 속한 세부 여행 계획이 아닙니다."),
     NOT_IN_TRIP_REVIEW(FORBIDDEN, "해당 전체 여행 계획에 속한 후기글이 아닙니다."),
+    EXPIRED_TRIP_URL(FORBIDDEN, "유효 기간이 만료된 url 입니다."),
 
     // 404 NOT_FOUND: 잘못된 리소스 접근
     REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "로그아웃 된 사용자입니다"),
     MEMBER_NOT_FOUND(NOT_FOUND, "해당 회원 정보를 찾을 수 없습니다."),
     LANDMARK_NOT_FOUND(NOT_FOUND, "해당 여행지 정보를 찾을 수 없습니다."),
     TRIP_NOT_FOUND(NOT_FOUND, "해당 전체 여행 계획을 찾을 수 없습니다."),
+    TRIP_URL_NOT_FOUND(NOT_FOUND, "해당 url을 찾을 수 없습니다."),
     PLAN_NOT_FOUND(NOT_FOUND, "해당 세부 여행 계획을 찾을 수 없습니다."),
     MEMO_NOT_FOUND(NOT_FOUND, "해당 메모를 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(NOT_FOUND, "해당 후기글을 찾을 수 없습니다."),

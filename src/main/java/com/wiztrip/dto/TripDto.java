@@ -106,4 +106,25 @@ public class TripDto {
         private List<Long> planIdList = new ArrayList<>(); //만약 여러개의 plan을 한번에 삭제하려고 할 때 필요
     }
 
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class TripUrlResponseDto {
+
+        private String url;
+
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class TripIdResponseDto {
+
+        private Long tripId;
+
+    }
 }

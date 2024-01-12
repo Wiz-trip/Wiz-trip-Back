@@ -28,8 +28,15 @@ public class TripEntity {
     private List<TripUserEntity> tripUserEntityList = new ArrayList<>();
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TripUrlEntity> tripUrlEntityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlanEntity> planEntityList = new ArrayList<>();
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemoEntity> memoEntityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewEntity> reviewEntityList = new ArrayList<>();
+
 }
