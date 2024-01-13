@@ -60,13 +60,13 @@ public class PlanDto {
         private Address address;
 
         @Schema(description = "시작 일자,시간", type = "string",
-                pattern = "2023(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])T(0[0-9]|1[0-2]):([0-5][0-9])")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
+            pattern = "2023(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])T(0[0-9]|1[0-2]):([0-5][0-9])")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd'T'HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime startTime;
 
         @Schema(description = "종료 일자,시간", type = "string",
-                pattern = "2023(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])T(0[0-9]|1[0-2]):([0-5][0-9])")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
+            pattern = "2023(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])T(0[0-9]|1[0-2]):([0-5][0-9])")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd'T'HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime finishTime;
 
         @Schema(description = "Plan에 대한 부가 설명", example = "제육 맛집")
@@ -99,13 +99,13 @@ public class PlanDto {
         private Address address;
 
         @Schema(description = "시작 일자,시간", type = "string",
-                pattern = "2023(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])T(0[0-9]|1[0-2]):([0-5][0-9])")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
+            pattern = "2023(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])T(0[0-9]|1[0-2]):([0-5][0-9])")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd'T'HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime startTime;
 
         @Schema(description = "종료 일자,시간", type = "string",
-                pattern = "2023(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])T(0[0-9]|1[0-2]):([0-5][0-9])")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
+            pattern = "2023(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])T(0[0-9]|1[0-2]):([0-5][0-9])")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd'T'HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime finishTime;
 
         @Schema(description = "Plan에 대한 부가 설명", example = "제육 맛집")
