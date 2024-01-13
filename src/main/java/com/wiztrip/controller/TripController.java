@@ -92,19 +92,19 @@ public class TripController {
     // 공유 url 생성
     @Operation(summary = "Trip 공유 url 생성",
             description = "TripId를 통해 10글자의 랜덤한 url을 생성합니다. 유효 기간이 지났을 경우, 새로운 url을 생성하고, 만약 유효 기간이 지나지 않았다면, 이전에 생성한 url을 반환합니다.")
-    @PostMapping("/{tripId}")
+    @PostMapping("/share")
     public ResponseEntity<TripDto.TripUrlResponseDto> createTripUrl (
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @PathVariable("tripId") Long tripId) {
+            @RequestParam Long tripId) {
         return ResponseEntity.ok().body(tripService.createTripUrl(principalDetails.getUser(), tripId));
     }
 
     // 공유 url 조회
     @Operation(summary = "Trip 공유 url 조회",
             description = "user를 고려하지 않고, url을 통해 해당하는 tripId를 조회합니다.")
-    @GetMapping("/{url}")
+    @GetMapping("/share")
     public ResponseEntity<TripDto.TripIdResponseDto> getTripUrl (
-            @PathVariable("url") String url) {
+            @RequestParam String url) {
         return ResponseEntity.ok().body(tripService.getTripUrl(url));
     }
 
