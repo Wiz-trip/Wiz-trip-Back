@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -28,6 +29,18 @@ public class UserController {
     @PatchMapping("/{userId}")
     public ResponseEntity<UserDto.UserResponseDto> updateUser(@RequestBody UserDto.UserPatchDto userPatchDto) {
         return ResponseEntity.ok().body(userService.updateUser(userPatchDto));
+    }
+
+    // 닉네임 중복
+    @Operation(summary = "닉네임 중복 처리 확인",
+            description =
+                    """
+                    닉네임 중복을 확인 (String 값)
+                    - 반환값 true,false
+                    """)
+    @GetMapping("/{nickname}/exist")
+    public ResponseEntity<Boolean> isNicknameExist(@RequestParam String nickname) {
+        return ResponseEntity.ok(userService.isNicknameExist(nickname));
     }
 
 
