@@ -18,8 +18,6 @@ public class PlanEntity { //Trip의 세부 사항. 장소, 시간, 예산 등
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name; //계획 이름. ~~식당, ~~호텔 등
-
     @Embedded
     private Address address;
 

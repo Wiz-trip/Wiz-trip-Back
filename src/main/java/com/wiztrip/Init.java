@@ -64,6 +64,10 @@ public class Init {
             LocalDate localDate = LocalDate.of(2023, 12, 1+i);
             trip.setStartDate(localDate);
             trip.setFinishDate(localDate);
+
+            UserEntity owner = userRepository.findByUsername("testusername" + i).orElse(null);
+            trip.setOwner(owner);
+
             tripRepository.save(trip);
         }
 
@@ -84,8 +88,6 @@ public class Init {
                 PlanEntity plan = new PlanEntity();
                 plan.setUser(userEntityList.get(i));
                 plan.setTrip(tripEntityList.get(k));
-
-                plan.setName("testplanname" + k);
 
                 Address address = new Address("testplanroadnameaddress" + i, "testplanlocaladdress" + i);
                 plan.setAddress(address);

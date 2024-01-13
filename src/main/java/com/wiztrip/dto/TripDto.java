@@ -37,6 +37,7 @@ public class TripDto {
                 "    1\n" +
                 "  ]")
         private List<Long> userIdList = new ArrayList<>();
+
     }
 
     @Getter
@@ -45,6 +46,7 @@ public class TripDto {
     @NoArgsConstructor
     @Builder
     public static class TripResponseDto {
+
         @Schema(description = "trip id", example = "1")
         private Long tripId;
 
@@ -61,6 +63,9 @@ public class TripDto {
         @Schema(description = "목적지 이름", example = "제주도")
         private String destination; //목적지
 
+        @Schema(description = "owner(Trip을 생성한 사람) id", example = "1")
+        private Long ownerId;
+
         @Schema(description = "참여하는 User의 id", example = "[\n" +
                 "    1\n" +
                 "  ]")
@@ -70,6 +75,10 @@ public class TripDto {
                 "    1\n" +
                 "  ]")
         private List<Long> planIdList = new ArrayList<>(); //만약 여러개의 plan을 한번에 삭제하려고 할 때 필요
+
+        @Schema(description = "종료 여부", example = "false")
+        private boolean finished;
+
     }
 
     @Getter
@@ -78,6 +87,7 @@ public class TripDto {
     @NoArgsConstructor
     @Builder
     public static class TripPatchDto {
+
         @Schema(description = "trip id", example = "1")
         @NotNull(message = "tripId를 입력해주세요.")
         private Long tripId;
@@ -104,6 +114,28 @@ public class TripDto {
                 "    1\n" +
                 "  ]")
         private List<Long> planIdList = new ArrayList<>(); //만약 여러개의 plan을 한번에 삭제하려고 할 때 필요
+
     }
 
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class TripUrlResponseDto {
+
+        private String url;
+
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class TripIdResponseDto {
+
+        private Long tripId;
+
+    }
 }
