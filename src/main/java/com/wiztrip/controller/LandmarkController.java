@@ -46,79 +46,24 @@ public class LandmarkController {
 
     @Operation(summary = "상세 관광지 조회",
             description = """
-                   < 대분류(cat1) -> 중분류(cat2) -> 소분류(cat3) >
+                    < 여행지의 contentId 로 상세 여행지의 소개정보를 조회 >
+                    * 여행지의 전화번호
+                    * 쉬는날
+                    * 수용인원
+                    * 영업 시간
+                    * 주차 가능 여부
+                    * 애완동물 출입 가능 여부
+                    * 신용카드 가능 여부
                     
-                    * 대분류 A01: 자연관광지
-                        * 중분류 A0101: 자연관광지
-                            * A01010100: 국립공원
-                            * A01010200: 도립공원
-                            * A01010300: 군립공원
-                            * A01010400: 산
-                            * A01010500: 자연생태관광지
-                            * A01010600: 자연휴양림
-                            * A01010700: 수목원
-                            * A01010800: 폭포
-                            * A01010900: 계곡
-                            * A01011000: 약수터
-                            * A01011100: 해안절경
-                            * A01011200: 해수욕장
-                            * A01011300: 섬
-                            * A01011400: 항구/포구
-                            * A01011600: 등대
-                            * A01011700: 호수
-                            * A01011800: 강
-                            * A01011900: 동굴
-                        * 중분류 A0102: 관광자원
-                            * A01020100: 희귀동.식물
-                            * A01020200: 기암괴석
-                    * 대분류 A02: 역사관광지
-                        * 중분류 A0201: 역사관광지
-                            * A02010100: 고궁
-                            * A02010200: 성
-                            * A02010300: 문
-                            * A02010400: 고택
-                            * A02010500: 생가
-                            * A02010600: 민속마을
-                            * A02010700: 유적지/사적지
-                            * A02010800: 사찰
-                            * A02010900: 종교성지
-                            * A02011000: 안보관광
-                        * 중분류 A0202: 휴양관광지
-                            * A02020200: 관광단지
-                            * A02020300: 온천/욕장/스파
-                            * A02020400: 이색찜질방
-                            * A02020500: 헬스투어
-                            * A02020600: 테마공원
-                            * A02020700: 공원
-                            * A02020800: 유람선/잠수함관광
-                        * 중분류 A0203: 체험관광지
-                            * A02030100: 농.산.어촌 체험
-                            * A02030200: 전통체험
-                            * A02030300: 산사체험
-                            * A02030400: 이색체험
-                            * A02030600: 이색거리
-                        * 중분류 A0204: 산업관광지
-                            * A02040400: 발전소
-                            * A02040600: 식음료
-                            * A02040800: 기타
-                            * A02040900: 전자-반도체
-                            * A02041000: 자동차
-                        * 중분류 A0205: 건축/조형물
-                            * A02050100: 다리/대교
-                            * A02050200: 기념탑/기념비/전망대
-                            * A02050300: 분수
-                            * A02050400: 동상
-                            * A02050500: 터널
-                            * A02050600: 유명건물
+                    를 조회
+                   
                     """
                     )
     @GetMapping("/landmarks")
     public ResponseEntity<List<LandmarkDto.LandmarkApiDetailResponseDto>> getLandmarksByContentTypeId(
-            @RequestParam String cat1,
-            @RequestParam String cat2,
-            @RequestParam String cat3)
+            @RequestParam String contentId)
             throws URISyntaxException, JsonProcessingException {
-        List<LandmarkDto.LandmarkApiDetailResponseDto> landmarks = landmarkService.getLandmarksByContentTypeId(cat1, cat2, cat3);
+        List<LandmarkDto.LandmarkApiDetailResponseDto> landmarks = landmarkService.getLandmarksByContentTypeId(contentId);
         return ResponseEntity.ok(landmarks);
     }
 

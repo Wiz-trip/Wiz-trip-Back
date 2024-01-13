@@ -77,11 +77,11 @@ public class ApiController {
 
 
     // 세부 여행지 메서드
-    public List<Map<String, Object>> getLandmarkData(String cat1,String cat2,String cat3)
+    public List<Map<String, Object>> getLandmarkData(String contentId)
             throws URISyntaxException, JsonProcessingException {
 
         // Base URL + API 호출 주소
-        String link = "https://apis.data.go.kr/B551011/KorService1/areaBasedList1";
+        String link = "https://apis.data.go.kr/B551011/KorService1/detailIntro1";
         String MobileOS = "ETC";        // 실행환경
         String MobileApp = "Test";      // APP name
         String _type = "json";          // 받을 데이터 타입
@@ -99,9 +99,7 @@ public class ApiController {
                 "&numOfRows=" + numOfRows +
                 "&pageNo=" + pageNo +
                 "&contentTypeId=" + contentTypeId +
-                "&cat1=" + cat1 +
-                "&cat2=" + cat2 +
-                "&cat3=" + cat3 +
+                "&contentId=" + contentId +
                 "&serviceKey=" + serviceKey;
 
         URI uri = new URI(url);         // 작선한 문자열로 URL 생성

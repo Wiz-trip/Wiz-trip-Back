@@ -86,22 +86,32 @@ public class LandmarkDto {
     @Builder
     public static class LandmarkApiDetailResponseDto {
 
-
-        private String address;
-
-        private String imagePath;
-
         private Long contentId;
 
-        private Long contentTypeId;
+      //  private String address;
 
-        private String title;
+     //   private String imagePath;
 
-        private String cat1;
+//        private Long contentTypeId;
+//
+//        private String title;
 
-        private String cat2;
+        private String infocenter;  // Tel number
 
-        private String cat3;
+        private String restDate;    // 쉬는 날
+
+        private String accomcount;  // 수용 인원
+
+        private String useTime;    // 영업 시간
+
+        private String parking;     // 주차 가능 여부
+
+        private String checkPet;    // 애완동물 출입 가능 여부
+
+        private String checkCreditCard; // 신용카드 가능 여부
+
+
+
 
     }
 
