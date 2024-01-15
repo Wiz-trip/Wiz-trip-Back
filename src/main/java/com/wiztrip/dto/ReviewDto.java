@@ -77,4 +77,26 @@ public class ReviewDto {
         private List<Base64Dto> imageList = new ArrayList<>();
 
     }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class MyReviewCountResponseDto {
+
+        private Integer reviewNum;
+
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class ToReviewCountResponseDto {
+
+        private Integer reviewNum;
+
+    }
 }

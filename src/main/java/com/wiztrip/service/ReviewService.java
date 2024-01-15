@@ -68,6 +68,20 @@ public class ReviewService {
         }).toList());
     }
 
+    public ReviewDto.MyReviewCountResponseDto getMyReviewCount(UserEntity user) {
+        return reviewMapper.toMyCountResponseDto(reviewRepository.countByUserId(user.getId()));
+    }
+
+    public ReviewDto.ToReviewCountResponseDto getToReviewCount(UserEntity user) {
+        List<TripEntity> tripList = tripRepository.findByFinishedTrue();
+
+        Integer reviewCount = (int) tripList.stream()
+                .filter(trip -> !reviewRepository.existsByTripIdAndUserId(trip.getId(), user.getId()))
+                .count();
+
+        return reviewMapper.toToCountResponseDto(reviewCount);
+    }
+
     @Transactional
     public ReviewDto.ReviewResponseDto updateReview(UserEntity user, Long tripId, ReviewDto.ReviewPatchDto reviewPatchDto) {
         ReviewEntity review = reviewRepository.findById(reviewPatchDto.getReviewId())
@@ -88,6 +102,7 @@ public class ReviewService {
         return "reviewId: " + reviewId + " 삭제 완료";
     }
 
+    // 이미지(multipart) 업로드
     @Transactional
     public void uploadImage(ReviewEntity review, List<MultipartFile> multipartFileList) {
         for (MultipartFile multipartFile : multipartFileList) {

@@ -73,6 +73,16 @@ public abstract class ReviewMapper {
     })
     public abstract ReviewDto.MyReviewResponseDto toMyResponseDto(ReviewEntity review);
 
+    @Mappings({
+            @Mapping(target = "reviewNum", source = "reviewNum")
+    })
+    public abstract ReviewDto.MyReviewCountResponseDto toMyCountResponseDto(Integer reviewNum);
+
+    @Mappings({
+            @Mapping(target = "reviewNum", source = "reviewNum")
+    })
+    public abstract ReviewDto.ToReviewCountResponseDto toToCountResponseDto(Integer reviewNum);
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mappings({
             @Mapping(target = "id", ignore = true),
