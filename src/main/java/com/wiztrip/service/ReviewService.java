@@ -40,8 +40,9 @@ public class ReviewService {
     @Transactional
     public ReviewDto.ReviewResponseDto createReview(UserEntity user, Long tripId, ReviewDto.ReviewPostDto reviewPostDto, List<MultipartFile> multipartFileList) {
         ReviewEntity review = reviewMapper.toEntity(user, tripId, reviewPostDto);
+        reviewRepository.save(review);
         uploadImage(review, multipartFileList);
-        return reviewMapper.toResponseDto(reviewRepository.save(review));
+        return reviewMapper.toResponseDto(review);
     }
 
     public ReviewDto.ReviewResponseDto getReview(UserEntity user, Long tripId, Long reviewId) {
@@ -81,8 +82,8 @@ public class ReviewService {
         return "reviewId: " + reviewId + " 삭제 완료";
     }
 
-    // 이미지(multipartFile) 추가
-    private void uploadImage(ReviewEntity review, List<MultipartFile> multipartFileList){
+    @Transactional
+    public void uploadImage(ReviewEntity review, List<MultipartFile> multipartFileList) {
         for (MultipartFile multipartFile : multipartFileList) {
 
             String imageName = getUniqueImageName(multipartFile.getOriginalFilename());
@@ -94,18 +95,20 @@ public class ReviewService {
             ReviewImageEntity reviewImageEntity = new ReviewImageEntity();
             reviewImageEntity.setImagePath(imagePath);
             reviewImageEntity.setImageName(imageName);
-            reviewImageEntity.setReview(review);
             reviewImageRepository.save(reviewImageEntity);
+
+            review.addImage(reviewImageEntity);
+
         }
     }
 
     // 이미지 중복 이름 확인
     private String getUniqueImageName(String originalFilename) {
-        String imageName = java.util.UUID.randomUUID().toString();
+        String imageName;
 
-        while (reviewImageRepository.existsByImageName(imageName)) {
+        do {
             imageName = java.util.UUID.randomUUID().toString();
-        }
+        } while (reviewImageRepository.existsByImageName(imageName));
 
         return imageName + ".webp";
     }

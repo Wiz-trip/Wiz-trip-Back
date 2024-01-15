@@ -32,4 +32,11 @@ public class ReviewEntity extends TimeStamp{
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImageEntity> imageList = new ArrayList<>();
 
+    public void addImage(ReviewImageEntity reviewImageEntity) {
+        if (imageList == null) {
+            imageList = new ArrayList<>();
+        }
+        imageList.add(reviewImageEntity);
+        reviewImageEntity.setReview(this);
+    }
 }
