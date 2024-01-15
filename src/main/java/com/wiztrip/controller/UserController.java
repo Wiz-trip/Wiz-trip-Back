@@ -37,6 +37,8 @@ public class UserController {
                     """
                     닉네임 중복을 확인 (String 값)
                     - 반환값 true,false
+                    * 중복된 닉네임이 없으면 -> true
+                    * 중복된 닉네임이 있다면 -> false
                     """)
     @GetMapping("/{nickname}/exist")
     public ResponseEntity<Boolean> isNicknameExist(@RequestParam String nickname) {
