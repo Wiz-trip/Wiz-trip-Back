@@ -74,7 +74,7 @@ public class ApiController {
 
         return testItemMap;
     }
-
+// }
 
     // 세부 여행지 메서드
     public List<Map<String, Object>> getLandmarkData(String contentId)

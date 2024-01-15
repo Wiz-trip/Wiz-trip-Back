@@ -29,17 +29,30 @@ public class LandmarkService {
     private final ApiController apiController;
 
 
+
     // API 데이터 가져오기 및 처리
     public List<LandmarkDto.LandmarkApiResponseDto> getLandmarksFromApi(int numOfRows)
             throws URISyntaxException, JsonProcessingException {
 
         List<Map<String, Object>> apiData = apiController.getData(numOfRows); // 필요한 파라미터 제공
-        return apiData.stream()
+
+        // DTO 변환
+        List<LandmarkDto.LandmarkApiResponseDto> landmarksDto = apiData.stream()
                 .map(this::convertToAllLandmarkDto)
                 .collect(Collectors.toList());
+
+        List<LandmarkEntity> landmarks = landmarksDto.stream()
+                .map(this::convertToLandmarkEntity)
+                .collect(Collectors.toList());
+        landmarkRepository.saveAll(landmarks);
+
+//        return apiData.stream()
+//                .map(this::convertToAllLandmarkDto)
+//                .collect(Collectors.toList());
+        return landmarksDto;
     }
 
-    // 전체 여행지 불러오기
+    // 전체 여행지 불러오기(API 데이터를 LandmarkApiResponseDto 객체로 변환)
     private LandmarkDto.LandmarkApiResponseDto convertToAllLandmarkDto(Map<String, Object> apiData) {
         // API 응답 필드를 LandmarkDto 필드에 매핑
         return LandmarkDto.LandmarkApiResponseDto.builder()
@@ -51,16 +64,34 @@ public class LandmarkService {
                 .build();
     }
 
-    // 세부 여행지 불러오기
+    // 전체 여행지 (LandmarkApiResponseDto를 Landmark 엔터티로 변환)
+    private LandmarkEntity convertToLandmarkEntity(LandmarkDto.LandmarkApiResponseDto dto) {
+        LandmarkEntity landmark = new LandmarkEntity();
+
+        // DTO 필드를 엔터티 필드에 매핑
+        landmark.setContentId(dto.getContentId());      // 세부 여행지 확인을 위한 랜드마크의 ID
+        //landmark.setAdrress(dto.getAddress());      // 주소
+        landmark.setContentTypeId(dto.getContentTypeId());  // 관광지 타입
+        landmark.setName(dto.getTitle());       // 여행지 이름
+
+        return landmark;
+    }
+
+
+
+    // 세부 여행지 불러오기(dto 변환)
     public List<LandmarkDto.LandmarkApiDetailResponseDto> getLandmarksByContentTypeId(String contentId)
             throws URISyntaxException, JsonProcessingException {
 
+        // API 에서 데이터 가져옴
         List<Map<String, Object>> detailapiData = apiController.getLandmarkData(contentId); // 필요한 파라미터 제공
         return detailapiData.stream()
                 .map(this::convertToDetailLandmarkDto)
                 .collect(Collectors.toList());
     }
 
+
+    // 세부 여행지 (API 데이터를 LandmarkApiDetailResponseDto 객체로 변환)
     private LandmarkDto.LandmarkApiDetailResponseDto convertToDetailLandmarkDto(Map<String, Object> detailapiData) {
         // API 응답 필드를 LandmarkDto 필드에 매핑
         return LandmarkDto.LandmarkApiDetailResponseDto.builder()

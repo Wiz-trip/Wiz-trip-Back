@@ -3,6 +3,7 @@ package com.wiztrip.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wiztrip.domain.LandmarkEntity;
 import com.wiztrip.dto.LandmarkDto;
+import com.wiztrip.repository.LandmarkRepository;
 import com.wiztrip.service.LandmarkService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,15 @@ import java.util.List;
 public class LandmarkController {
 
     private final LandmarkService landmarkService;
+    private final LandmarkRepository landmarkRepository;
+
+
+    // api 데이터 확인
+    @GetMapping("/api/all")
+    public ResponseEntity<List<LandmarkEntity>> getAlApiLandmarks() {
+        List<LandmarkEntity> landmarks = landmarkRepository.findAll();
+        return ResponseEntity.ok(landmarks);
+    }
 
 
     @Operation(summary = "모든 관광지 조회", description =

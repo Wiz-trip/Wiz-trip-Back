@@ -67,12 +67,11 @@ public class LandmarkDto {
     @Builder
     public static class LandmarkApiResponseDto {
 
+        private Long contentId;
 
         private String address;
 
         private String imagePath;
-
-        private Long contentId;
 
         private Long contentTypeId;
 
@@ -87,14 +86,6 @@ public class LandmarkDto {
     public static class LandmarkApiDetailResponseDto {
 
         private Long contentId;
-
-      //  private String address;
-
-     //   private String imagePath;
-
-//        private Long contentTypeId;
-//
-//        private String title;
 
         private String infocenter;  // Tel number
 
