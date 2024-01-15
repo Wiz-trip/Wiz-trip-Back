@@ -1,28 +1,15 @@
 package com.wiztrip.dto;
 
 import com.wiztrip.constant.Address;
+import com.wiztrip.tool.file.Base64Dto;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 
 public class LandmarkDto {
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class LandmarkImageDto {
-
-        private Long imageId;
-
-        private String imageName;
-
-        private String imagePath;
-
-    }
 
     @Getter
     @Setter
@@ -37,7 +24,7 @@ public class LandmarkDto {
 
         private Address address;
 
-        private List<LandmarkImageDto> imageList;
+        private List<Base64Dto> imageList = new ArrayList<>();
 
     }
 
@@ -56,7 +43,7 @@ public class LandmarkDto {
 
         private Address address;
 
-        private List<LandmarkImageDto> imageList;
+        private List<Base64Dto> imageList = new ArrayList<>();
 
     }
 }

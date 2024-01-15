@@ -4,6 +4,9 @@ import com.wiztrip.domain.LandmarkEntity;
 import com.wiztrip.domain.LandmarkImageEntity;
 import com.wiztrip.dto.LandmarkDto;
 import com.wiztrip.repository.LandmarkRepository;
+import com.wiztrip.tool.file.Base64Dto;
+import com.wiztrip.tool.file.Base64Tool;
+import com.wiztrip.tool.file.FtpTool;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,6 +25,12 @@ public abstract class LandmarkMapper {
 
     @Autowired
     LandmarkRepository landmarkRepository;
+
+    @Autowired
+    FtpTool ftpTool;
+
+    @Autowired
+    Base64Tool base64Tool;
 
     // LandmarkEntity -> LandmarkAllResponseDto 변환
     @Mappings({
@@ -50,13 +59,9 @@ public abstract class LandmarkMapper {
     */
 
     @Named("toImageEntity")
-    public List<LandmarkDto.LandmarkImageDto> toImageEntity(List<LandmarkImageEntity> imageList) {
-        return imageList.stream()
-                .map(image -> LandmarkDto.LandmarkImageDto.builder()
-                        .imageId(image.getId())
-                        .imagePath(image.getImagePath())
-                        .imageName(image.getImageName())
-                        .build())
+    public List<Base64Dto> toImageEntity(List<LandmarkImageEntity> fileList) {
+        return fileList.stream()
+                .map(image -> base64Tool.base64StringToDto(image.getImageName(), ftpTool.downloadFileAndConvertToBase64String(image.getImageName())))
                 .collect(Collectors.toList());
     }
 }
