@@ -11,7 +11,6 @@ import com.wiztrip.repository.ReviewImageRepository;
 import com.wiztrip.repository.ReviewRepository;
 import com.wiztrip.repository.TripRepository;
 import com.wiztrip.tool.file.Base64Dto;
-import com.wiztrip.tool.file.Base64Tool;
 import com.wiztrip.tool.file.FtpTool;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +39,6 @@ public abstract class ReviewMapper {
 
     @Autowired
     FtpTool ftpTool;
-
-    @Autowired
-    Base64Tool base64Tool;
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
@@ -113,7 +109,7 @@ public abstract class ReviewMapper {
     @Named("toImageEntity")
     public List<Base64Dto> toImageEntity(List<ReviewImageEntity> fileList) {
         return fileList.stream()
-                .map(image -> base64Tool.base64StringToDto(image.getImageName(), ftpTool.downloadFileAndConvertToBase64String(image.getImageName())))
+                .map(image -> ftpTool.downloadFileAndConvertToBase64Dto(image.getImageName()))
                 .collect(Collectors.toList());
     }
 }
