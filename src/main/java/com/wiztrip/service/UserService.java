@@ -86,6 +86,18 @@ public class UserService {
             throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
         }
 
+        // 이메일 중복 처리
+        userRepository.findByEmail(registrationDto.getEmail())
+                .ifPresent(u -> {
+                    throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+                });
+
+        // 유저네임 중복 처리
+        userRepository.findByUsername(registrationDto.getUsername())
+                .ifPresent(u -> {
+                    throw new IllegalArgumentException("이미 존재하는 유저네임입니다.");
+                });
+
         UserEntity newUser = new UserEntity();
         newUser.setUsername(registrationDto.getUsername());
         newUser.setEmail(registrationDto.getEmail());
