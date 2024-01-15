@@ -50,6 +50,8 @@ public enum ErrorCode {
     DUPLICATE_LANDMARK_LIKE(CONFLICT, "사용자가 이미 좋아요에 추가한 여행지입니다."),
     NO_LANDMARK_LIKE_EXIST(CONFLICT, "사용자가 좋아요에 추가하지 않은 여행지입니다."),
     ALREADY_TRIP_FINISHED(CONFLICT, "이미 종료된 전체 여행 계획입니다."),
+    ALREADY_WRITTEN_REVIEW(CONFLICT, "이미 후기글을 작성한 전체 여행 계획입니다."),
+    NOT_FINISHED_TRIP(CONFLICT, "아직 종료되지 않은 전체 여행 계획입니다."),
 
     // 500 INTERNAL SERVER ERROR
     SERVER_ERROR(INTERNAL_SERVER_ERROR, "내부 서버 에러입니다."),
