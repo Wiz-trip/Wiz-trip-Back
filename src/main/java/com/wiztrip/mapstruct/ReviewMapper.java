@@ -10,6 +10,8 @@ import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.repository.ReviewImageRepository;
 import com.wiztrip.repository.ReviewRepository;
 import com.wiztrip.repository.TripRepository;
+import com.wiztrip.tool.file.Base64Dto;
+import com.wiztrip.tool.file.FtpTool;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,6 +36,9 @@ public abstract class ReviewMapper {
 
     @Autowired
     TripRepository tripRepository;
+
+    @Autowired
+    FtpTool ftpTool;
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
@@ -64,6 +69,16 @@ public abstract class ReviewMapper {
     })
     public abstract ReviewDto.MyReviewResponseDto toMyResponseDto(ReviewEntity review);
 
+    @Mappings({
+            @Mapping(target = "reviewNum", source = "reviewNum")
+    })
+    public abstract ReviewDto.MyReviewCountResponseDto toMyCountResponseDto(Integer reviewNum);
+
+    @Mappings({
+            @Mapping(target = "reviewNum", source = "reviewNum")
+    })
+    public abstract ReviewDto.ToReviewCountResponseDto toToCountResponseDto(Integer reviewNum);
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mappings({
             @Mapping(target = "id", ignore = true),
@@ -71,7 +86,7 @@ public abstract class ReviewMapper {
             @Mapping(target = "trip", ignore = true),
             @Mapping(target = "createAt", ignore = true),
             @Mapping(target = "modifiedAt",ignore = true),
-            @Mapping(target = "imageList", source = "reviewPatchDto.imageIdList", qualifiedByName = "getImageEntity")
+            @Mapping(target = "imageList", source = "reviewPatchDto.fileNameList", qualifiedByName = "getImageEntity")
     })
     public abstract void updateFromPatchDto(ReviewDto.ReviewPatchDto reviewPatchDto, @MappingTarget ReviewEntity review);
 
@@ -82,23 +97,19 @@ public abstract class ReviewMapper {
     }
 
     @Named("getImageEntity")
-    public List<ReviewImageEntity> getImageEntity(List<Long> imageIdList) {
-        return imageIdList.stream()
-                .map(imageId ->
-                    reviewImageRepository.findById(imageId)
+    public List<ReviewImageEntity> getImageEntity(List<String> fileNameList) {
+        return fileNameList.stream()
+                .map(fileName ->
+                    reviewImageRepository.findByImageName(fileName)
                             .orElseThrow(() -> new CustomException(ErrorCode.IMAGE_NOT_FOUND))
                 )
                 .collect(Collectors.toList());
     }
 
     @Named("toImageEntity")
-    public List<ReviewDto.ReviewImageDto> toImageEntity(List<ReviewImageEntity> imageList) {
-        return imageList.stream()
-                .map(image -> ReviewDto.ReviewImageDto.builder()
-                        .imageId(image.getId())
-                        .imagePath(image.getImagePath())
-                        .imageName(image.getImageName())
-                        .build())
+    public List<Base64Dto> toImageEntity(List<ReviewImageEntity> fileList) {
+        return fileList.stream()
+                .map(image -> ftpTool.downloadFileAndConvertToBase64Dto(image.getImageName()))
                 .collect(Collectors.toList());
     }
 }

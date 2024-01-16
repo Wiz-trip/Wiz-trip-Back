@@ -67,6 +67,7 @@ public class Init {
 
             UserEntity owner = userRepository.findByUsername("testusername" + i).orElse(null);
             trip.setOwner(owner);
+            trip.setFinished(true);
 
             tripRepository.save(trip);
         }

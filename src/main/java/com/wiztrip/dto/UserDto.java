@@ -1,8 +1,7 @@
 package com.wiztrip.dto;
 
-import com.wiztrip.domain.UserImageEntity;
+import com.wiztrip.tool.file.Base64Dto;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 
 public class UserDto {
@@ -20,7 +19,7 @@ public class UserDto {
 
         private String email;
 
-        private UserImageEntity image; // 프로필 사진
+        private Base64Dto image; // 프로필 사진
 
         private String nickname; // 회원 닉네임
 
@@ -41,7 +40,7 @@ public class UserDto {
 
         private String email;
 
-        private UserImageEntity image; // 프로필 사진
+        private String fileName; // 프로필 사진
 
         private String nickname; // 회원 닉네임
 

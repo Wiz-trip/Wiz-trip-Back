@@ -25,7 +25,8 @@ public class ReviewController {
     // 후기글 생성
     @PostMapping(value = "trips/{tripId}/reviews", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Review 생성",
-            description = "tripId와 ReviewPostDto를 사용해 해당 Trip(전체 여행 계획)에 속한 Review를 생성합니다. (이미지 여러장 추가 가능)")
+            description = "tripId와 ReviewPostDto를 사용해 해당 Trip(전체 여행 계획)에 속한 Review를 생성합니다. 이때, Review Image는 여러 장 삽입할 수 있습니다. " +
+                    "또한, 종료된 Trip에 한해서 Review를 작성할 수 있으며, User는 자신이 속한 Trip에서 한 개의 Review만 작성할 수 있습니다.")
     public ResponseEntity<ReviewDto.ReviewResponseDto> createReview(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("tripId") Long tripId,
@@ -47,11 +48,29 @@ public class ReviewController {
 
     // 후기글 조회 (전체, 마이페이지)
     @GetMapping("my-reviews")
-    @Operation(summary = "Review 조회(마이 페이지)",
-            description = "마이 페이지에서 해당 User가 작성한 review를 전달합니다.")
+    @Operation(summary = "Review 조회(나의 여행 기록)",
+            description = "마이 페이지에서 해당 User가 작성한 Review 정보를 전달합니다.")
     public ResponseEntity<ListDto<ReviewDto.MyReviewResponseDto>> getMyReview(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ResponseEntity.ok().body(reviewService.getMyReview(principalDetails.getUser()));
+    }
+
+    // 후기글 조회 (마이페이지, 작성한 후기글 개수)
+    @GetMapping("my-reviews/count")
+    @Operation(summary = "Review 조회(작성한 후기글 개수)",
+            description = "마이 페이지에서 해당 User가 작성한 Review 개수를 전달합니다.")
+    public ResponseEntity<ReviewDto.MyReviewCountResponseDto> getMyReviewCountNum(
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ResponseEntity.ok().body(reviewService.getMyReviewCount(principalDetails.getUser()));
+    }
+
+    // 후기글 조회 (마이페이지, 작성할 후기글 개수)
+    @GetMapping("to-reviews/count")
+    @Operation(summary = "Review 조회(작성할 후기글 개수)",
+            description = "마이 페이지에서 해당 User가 작성할 수 있는 Review 개수를 전달합니다.")
+    public ResponseEntity<ReviewDto.ToReviewCountResponseDto> getMyReviewNum(
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ResponseEntity.ok().body(reviewService.getToReviewCount(principalDetails.getUser()));
     }
 
     // 후기글 수정

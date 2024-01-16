@@ -62,7 +62,7 @@ public class UserService {
                 .id(userEntity.getId())
                 .username(userEntity.getUsername())
                 .email(userEntity.getEmail())
-                .image(userEntity.getImage()) // 프로필 사진
+              //.image(userEntity.getImage()) // 프로필 사진
                 .nickname(userEntity.getNickname()) // 회원 닉네임
                 .build();
     }

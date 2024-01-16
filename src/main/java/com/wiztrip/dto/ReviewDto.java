@@ -1,5 +1,6 @@
 package com.wiztrip.dto;
 
+import com.wiztrip.tool.file.Base64Dto;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -7,21 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewDto {
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class ReviewImageDto {
-
-        private Long imageId;
-
-        private String imageName;
-
-        private String imagePath;
-
-    }
 
     @Getter
     @Setter
@@ -43,8 +29,8 @@ public class ReviewDto {
 
         private Long reviewId;
 
-        // 수정할 image의 imageId 받아오기
-        private List<Long> imageIdList = new ArrayList<>();
+        // 수정할 image의 name 받아오기
+        private List<String> fileNameList = new ArrayList<>();
 
         private String content;
 
@@ -63,7 +49,7 @@ public class ReviewDto {
 
         private Long userId;
 
-        private List<ReviewImageDto> imageList = new ArrayList<>();
+        private List<Base64Dto> imageList = new ArrayList<>();
 
         private String content;
 
@@ -88,7 +74,29 @@ public class ReviewDto {
 
         private LocalDate finishDate;
 
-        private List<ReviewImageDto> imageList = new ArrayList<>();
+        private List<Base64Dto> imageList = new ArrayList<>();
+
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class MyReviewCountResponseDto {
+
+        private Integer reviewNum;
+
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class ToReviewCountResponseDto {
+
+        private Integer reviewNum;
 
     }
 }
