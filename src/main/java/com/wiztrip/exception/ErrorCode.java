@@ -52,12 +52,14 @@ public enum ErrorCode {
     ALREADY_TRIP_FINISHED(CONFLICT, "이미 종료된 전체 여행 계획입니다."),
     ALREADY_WRITTEN_REVIEW(CONFLICT, "이미 후기글을 작성한 전체 여행 계획입니다."),
     NOT_FINISHED_TRIP(CONFLICT, "아직 종료되지 않은 전체 여행 계획입니다."),
+    PLAN_IS_LOCKED(CONFLICT,"해당 Plan은 다른 유저가 편집중이므로 수정할 수 없습니다."),
 
     // 500 INTERNAL SERVER ERROR
     SERVER_ERROR(INTERNAL_SERVER_ERROR, "내부 서버 에러입니다."),
     FTP_CONNECTION_FAILED(INTERNAL_SERVER_ERROR, "FTP server 연결 실패"),
     IMAGE_UPLOAD_FAILED(INTERNAL_SERVER_ERROR, "이미지 업로드 실패"),
-    IMAGE_DOWNLOAD_FAILED(INTERNAL_SERVER_ERROR, "이미지 다운로드 실패");
+    IMAGE_DOWNLOAD_FAILED(INTERNAL_SERVER_ERROR, "이미지 다운로드 실패"),
+    IMAGE_DELETE_FAILED(INTERNAL_SERVER_ERROR,"이미지 삭제 실패");
 
 
     private final HttpStatus httpStatus;

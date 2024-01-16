@@ -109,4 +109,33 @@ public class PlanController {
         return ResponseEntity.ok().body(planService.deletePlan(principalDetails.getUser(), tripId, planId));
     }
 
+    /**
+     * 동시 편집을 위한 API
+     */
+    @Operation(summary = "동시 편집 - Lock Plan", description = "Plan을 다른 사람이 편집하지 못하도록 lock")
+    @PostMapping("/lock")
+    public ResponseEntity<String> lockPlan(
+        @Schema(description = "plan id", example = "1")
+        @RequestParam @NotNull @Min(1) Long planId
+    ) {
+        return ResponseEntity.ok().body(planService.lockPlan(planId));
+    }
+
+    @Operation(summary = "동시 편집 - Unlock Plan", description = "Plan을 다른 사람이 편집할 수 있도록 unlock")
+    @PostMapping("/unlock")
+    public ResponseEntity<String> unlockPlan(
+        @Schema(description = "plan id", example = "1")
+        @RequestParam @NotNull @Min(1) Long planId
+    ) {
+        return ResponseEntity.ok().body(planService.unlockPlan(planId));
+    }
+
+    @Operation(summary = "동시 편집 - Check Lock Status", description = "Plan의 Lock status를 확인.")
+    @GetMapping("check-lock-status")
+    public ResponseEntity<Boolean> checkLock(
+        @Schema(description = "plan id", example = "1")
+        @RequestParam @NotNull @Min(1) Long planId
+    ) {
+        return ResponseEntity.ok().body(planService.isLocked(planId));
+    }
 }
