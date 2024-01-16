@@ -57,11 +57,12 @@ public class UserController {
     // 회원가입 처리
     @Operation(summary = "회원가입 처리",
             description = """ 
-            username
-            email
-            password
-            confirmpassword
-            nickname 입력
+            <회원가입>
+            * username
+            * email
+            * password
+            * confirmpassword
+            * nickname 입력
             """)
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserRegisterDto registrationDto) {

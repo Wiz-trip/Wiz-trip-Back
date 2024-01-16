@@ -19,6 +19,10 @@ public class LandmarkEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private Long contentId;
+
+    private Long contentTypeId;
+
     @NotNull
     private String name;
 
