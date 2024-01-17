@@ -10,6 +10,7 @@ import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.mapstruct.MemoMapper;
 import com.wiztrip.repository.MemoRepository;
 import com.wiztrip.repository.TripUserRepository;
+import com.wiztrip.repository.TripRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,9 +30,12 @@ public class MemoService {
 
     private final TripUserRepository tripUserRepository;
 
+    private final TripRepository tripRepository;
+
     @Transactional
     public MemoDto.MemoResponseDto createMemo(UserEntity user, Long tripId, MemoDto.MemoPostDto memoPostDto) {
         checkValidByUser(user.getId(), tripId);
+        checkTripIsFinished(tripId);
         return memoMapper.toResponseDto(memoRepository.save(memoMapper.toEntity(user, memoPostDto, tripId)));
     }
 
@@ -51,6 +55,7 @@ public class MemoService {
         MemoEntity memo = memoRepository.findById(memoPatchDto.getMemoId())
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMO_NOT_FOUND));
         checkValidByTrip(memo, tripId);
+        checkTripIsFinished(tripId);
         memoMapper.updateFromPatchDto(memoPatchDto, memo);
         return memoMapper.toResponseDto(memo);
     }
@@ -61,6 +66,7 @@ public class MemoService {
         MemoEntity memo = memoRepository.findById(memoId)
                         .orElseThrow(() -> new CustomException(ErrorCode.MEMO_NOT_FOUND));
         checkValidByTrip(memo, tripId);
+        checkTripIsFinished(tripId);
         memoRepository.deleteById(memoId);
         return "memoId: " + memoId + " 삭제 완료";
     }
@@ -73,5 +79,12 @@ public class MemoService {
     // 해당 trip에 속한 user인지 확인
     private void checkValidByUser(Long userId, Long tripId) {
         if(!tripUserRepository.existsByUserIdAndTripId(userId, tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_USER);
+    }
+
+    // trip의 종료 여부 확인
+    private void checkTripIsFinished(Long tripId) {
+        if (tripRepository.findById(tripId).orElseThrow(() -> new CustomException(ErrorCode.TRIP_NOT_FOUND)).isFinished()) {
+            throw new CustomException(ErrorCode.ALREADY_TRIP_FINISHED);
+        }
     }
 }

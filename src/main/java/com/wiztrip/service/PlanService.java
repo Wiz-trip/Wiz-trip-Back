@@ -1,6 +1,7 @@
 package com.wiztrip.service;
 
 import com.wiztrip.domain.PlanEntity;
+import com.wiztrip.domain.TripEntity;
 import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.PlanDto;
@@ -8,6 +9,7 @@ import com.wiztrip.exception.CustomException;
 import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.mapstruct.PlanMapper;
 import com.wiztrip.repository.PlanRepository;
+import com.wiztrip.repository.TripRepository;
 import com.wiztrip.repository.TripUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +30,12 @@ public class PlanService {
 
     private final TripUserRepository tripUserRepository;
 
+    private final TripRepository tripRepository;
+
     @Transactional
     public PlanDto.PlanResponseDto createPlan(UserEntity user, Long tripId, PlanDto.PlanPostDto planPostDto) {
         checkValidByUserIdAndTripId(user.getId(), tripId);
+        checkTripIsFinished(tripId);
         return planMapper.toResponseDto(planRepository.save(planMapper.toEntity(planPostDto, tripId, user)));
     }
 
@@ -65,6 +70,7 @@ public class PlanService {
         checkValidByUserIdAndTripId(user.getId(),tripId);
         PlanEntity plan = planRepository.findById(planPatchDto.getPlanId()).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND));
         checkValidByPlanAndTripId(plan, tripId);
+        checkTripIsFinished(tripId);
         planMapper.updateFromPatchDto(planPatchDto, plan); //dirty checking을 활용한 update
         return planMapper.toResponseDto(planRepository.findById(planPatchDto.getPlanId()).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND)));
     }
@@ -73,6 +79,7 @@ public class PlanService {
     public String deletePlan(UserEntity user, Long tripId, Long planId) {
         checkValidByUserIdAndTripId(user.getId(),tripId);
         checkValidByPlanAndTripId(planRepository.findById(planId).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND)), tripId);
+        checkTripIsFinished(tripId);
         planRepository.deleteById(planId);
         return "planId: " + planId + " 삭제 완료";
     }
@@ -85,4 +92,10 @@ public class PlanService {
         if(!tripUserRepository.existsByUserIdAndTripId(userId,tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_USER);
     }
 
+    // trip의 종료 여부 확인
+    private void checkTripIsFinished(Long tripId) {
+        if(tripRepository.findById(tripId).orElseThrow(()->new CustomException(ErrorCode.TRIP_NOT_FOUND)).isFinished()) {
+            throw new CustomException(ErrorCode.ALREADY_TRIP_FINISHED);
+        }
+    }
 }
