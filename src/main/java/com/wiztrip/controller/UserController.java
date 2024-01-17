@@ -36,10 +36,17 @@ public class UserController {
     // 프로필 사진 업데이트
     @Operation(summary = "프로필 사진 업데이트", description =
             """
-             userId 를 이용하여 프로필 사진을 추가.
-             *  fileName : 테스트할 이미지파일 이름 -> "example.jpg"
-             *  content :   "example.jpg" 를 Base64 로 인코딩한 문자열  -> 예시 ) "/9j4AAQSkZ...."
-             """
+                    userId 를 이용하여 프로필 사진을 추가.
+                    *  fileName : 테스트할 이미지파일 이름 -> "example.jpg"
+                    *  content :   "example.jpg" 를 Base64 로 인코딩한 문자열  -> 예시 ) "/9j4AAQSkZ...."
+                                 
+                    * 예시 )
+                           {
+                             "fileName": "test_image.jpg",
+                             "content": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+                           }
+                                        
+                    """
                     )
     @PatchMapping("/{userId}/profileImageUpdate")
     public ResponseEntity<UserDto.UserResponseDto> updateProfilePicture
