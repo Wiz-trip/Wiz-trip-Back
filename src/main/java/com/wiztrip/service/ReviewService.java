@@ -73,12 +73,7 @@ public class ReviewService {
     }
 
     public ReviewDto.ToReviewCountResponseDto getToReviewCount(UserEntity user) {
-        List<TripEntity> tripList = tripRepository.findByFinishedTrue();
-
-        Integer reviewCount = (int) tripList.stream()
-                .filter(trip -> !reviewRepository.existsByTripIdAndUserId(trip.getId(), user.getId()))
-                .count();
-
+        Integer reviewCount = tripRepository.countByUserIdAndFinishedTrue(user.getId()) - reviewRepository.countByUserId(user.getId());
         return reviewMapper.toToCountResponseDto(reviewCount);
     }
 
