@@ -12,6 +12,7 @@ import com.wiztrip.mapstruct.TripMapper;
 import com.wiztrip.repository.TripRepository;
 import com.wiztrip.repository.TripUrlRepository;
 import com.wiztrip.repository.TripUserRepository;
+import com.wiztrip.repository.UserRepository;
 import com.wiztrip.tool.redis.RedisTool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,8 @@ public class TripService {
 
     private final TripUrlRepository tripUrlRepository;
 
+    private final UserRepository userRepository;
+
     private final RedisTool redisTool;
 
     @Transactional
@@ -44,6 +47,25 @@ public class TripService {
         //본인이 userIdList에 포함되어 있지 않으면 추가
         if(!tripPostDto.getUserIdList().contains(user.getId())) tripPostDto.getUserIdList().add(user.getId());
         return tripMapper.toResponseDto(tripRepository.save(tripMapper.toEntity(user, tripPostDto)));
+    }
+
+    @Transactional
+    public TripDto.TripUserResponseDto createTripUser(Long tripId, Long userId) {
+        TripEntity trip = tripRepository.findById(tripId).orElseThrow(() -> new CustomException(ErrorCode.TRIP_NOT_FOUND));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        checkTripIsFinished(trip);
+
+        if (tripUserRepository.existsByUserIdAndTripId(userId, tripId)) {throw new CustomException(ErrorCode.USER_ALREADY_IN_TRIP);}
+
+        TripUserEntity tripUserEntity = new TripUserEntity();
+        tripUserEntity.setTrip(trip);
+        tripUserEntity.setUser(user);
+
+        trip.getTripUserEntityList().add(tripUserEntity);
+
+        tripRepository.save(trip);
+
+        return tripMapper.toTripUserResponseDto(trip);
     }
 
     public TripDto.TripResponseDto getTrip(UserEntity user, Long tripId) {
@@ -69,10 +91,14 @@ public class TripService {
         }).toList());
     }
 
+    public TripDto.MyTripCountResponseDto getMyTripCount(UserEntity user) {
+        return tripMapper.toMyCountResponseDto(tripRepository.countByUserIdAndFinishedFalse(user.getId()));
+    }
+
     @Transactional
     public TripDto.TripResponseDto updateTrip(UserEntity user, TripDto.TripPatchDto tripPatchDto) {
         TripEntity trip = tripRepository.findById(tripPatchDto.getTripId()).orElseThrow(()->new CustomException(ErrorCode.TRIP_NOT_FOUND));
-        checkIsFinished(trip);
+        checkTripIsFinished(trip);
         checkValidByUser(user.getId(), trip.getId());
         tripMapper.updateFromPatchDto(tripPatchDto, trip);
         return tripMapper.toResponseDto(trip);
@@ -91,7 +117,7 @@ public class TripService {
     public TripDto.TripUrlResponseDto createTripUrl(UserEntity user, Long tripId) {
 
         TripEntity trip = tripRepository.findById(tripId).orElseThrow(() -> new CustomException(ErrorCode.TRIP_NOT_FOUND));
-        checkIsFinished(trip);
+        checkTripIsFinished(trip);
         checkValidByUser(user.getId(),tripId);
 
         String url = redisTool.getValues(trip.getId().toString());
@@ -143,7 +169,7 @@ public class TripService {
     @Transactional
     public String updateTripFinish(UserEntity user, Long tripId) {
         TripEntity trip = tripRepository.findById(tripId).orElseThrow(() -> new CustomException(ErrorCode.TRIP_NOT_FOUND));
-        checkIsFinished(trip);
+        checkTripIsFinished(trip);
         checkValidByUser(user.getId(),tripId);
         checkValidByOwner(user.getId(),tripId);
         trip.setFinished(true);
@@ -155,11 +181,13 @@ public class TripService {
         if(!tripUserRepository.existsByUserIdAndTripId(userId, tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_USER);
     }
 
+    // trip owner 확인
     private void checkValidByOwner(Long userId, Long tripId) {
         if(!tripRepository.existsByOwnerIdAndId(userId, tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_OWNER);
     }
 
-    private void checkIsFinished(TripEntity trip) {
+    // trip의 종료 여부 확인
+    private void checkTripIsFinished(TripEntity trip) {
         if(trip.isFinished()) {throw new CustomException(ErrorCode.ALREADY_TRIP_FINISHED);}
     }
 }

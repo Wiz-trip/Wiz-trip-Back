@@ -21,4 +21,7 @@ public interface TripRepository extends JpaRepository<TripEntity,Long> {
 
     List<TripEntity> findByFinishedTrue();
 
+    @Query("select count(t.id) from TripEntity t join TripUserEntity tu on tu.trip.id=t.id where tu.user.id=:userId and t.finished=false")
+    Integer countByUserIdAndFinishedFalse(Long userId);
+
 }

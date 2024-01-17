@@ -52,6 +52,7 @@ public enum ErrorCode {
     ALREADY_TRIP_FINISHED(CONFLICT, "이미 종료된 전체 여행 계획입니다."),
     ALREADY_WRITTEN_REVIEW(CONFLICT, "이미 후기글을 작성한 전체 여행 계획입니다."),
     NOT_FINISHED_TRIP(CONFLICT, "아직 종료되지 않은 전체 여행 계획입니다."),
+    USER_ALREADY_IN_TRIP(CONFLICT, "이미 전체 여행 계획에 포함된 사용자입니다."),
 
     // 500 INTERNAL SERVER ERROR
     SERVER_ERROR(INTERNAL_SERVER_ERROR, "내부 서버 에러입니다."),
