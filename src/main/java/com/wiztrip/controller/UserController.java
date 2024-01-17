@@ -3,9 +3,11 @@ package com.wiztrip.controller;
 import com.wiztrip.dto.UserDto;
 import com.wiztrip.dto.UserRegisterDto;
 import com.wiztrip.service.UserService;
+import com.wiztrip.tool.file.Base64Dto;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +32,29 @@ public class UserController {
     public ResponseEntity<UserDto.UserResponseDto> updateUser(@RequestBody UserDto.UserPatchDto userPatchDto) {
         return ResponseEntity.ok().body(userService.updateUser(userPatchDto));
     }
+
+    // 프로필 사진 업데이트
+    @Operation(summary = "프로필 사진 업데이트", description =
+            """
+             userId 를 이용하여 프로필 사진을 추가.
+             *  fileName : 테스트할 이미지파일 이름 -> "example.jpg"
+             *  content :   "example.jpg" 를 Base64 로 인코딩한 문자열  -> 예시 ) "/9j4AAQSkZ...."
+             """
+                    )
+    @PatchMapping("/{userId}/profileImageUpdate")
+    public ResponseEntity<UserDto.UserResponseDto> updateProfilePicture
+    (@PathVariable Long userId, @RequestBody Base64Dto base64Dto) {
+        UserDto.UserResponseDto updatedUser = userService.updateProfilePicture(userId, base64Dto);
+        return ResponseEntity.ok().body(updatedUser);
+    }
+
+    // 프로필 사진 삭제
+    @Operation(summary = "프로필 사진 삭제",description = "userId 를 사용하여 프로필 사진을 삭제")
+    @DeleteMapping("/{userId}/profileImageDelete")
+    public ResponseEntity<String> deleteProfilePicture(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.deleteProfilePicture(userId));
+    }
+
 
     // 닉네임 중복
     @Operation(summary = "닉네임 중복 처리 확인",
