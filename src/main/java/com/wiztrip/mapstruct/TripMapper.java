@@ -64,14 +64,25 @@ public abstract class TripMapper {
     public abstract TripDto.TripResponseDto toResponseDto(TripEntity trip);
 
     @Mappings({
+            @Mapping(target = "tripId", source = "id"),
+            @Mapping(target = "userIdList", expression = "java(trip.getTripUserEntityList().stream().map(o->o.getUser().getId()).toList())")
+    })
+    public abstract TripDto.TripUserResponseDto toTripUserResponseDto(TripEntity trip);
+
+    @Mappings({
             @Mapping(target = "url", expression = "java(redisTool.getValues(trip.getId().toString()))")
     })
     public abstract TripDto.TripUrlResponseDto toUrlResponseDto(TripEntity trip);
 
     @Mappings({
-            @Mapping(target = "tripId", source = "id"),
+            @Mapping(target = "tripId", source = "id")
     })
     public abstract TripDto.TripIdResponseDto toTripIdResponseDto(TripEntity trip);
+
+    @Mappings({
+            @Mapping(target = "tripNum", source = "tripNum")
+    })
+    public abstract TripDto.MyTripCountResponseDto toMyCountResponseDto(Integer tripNum);
 
     public void updateFromPatchDto(TripDto.TripPatchDto tripPatchDto, TripEntity trip) {
         _updateFromPatchDto(tripPatchDto, trip);

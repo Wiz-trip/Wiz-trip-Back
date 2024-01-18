@@ -12,6 +12,7 @@ import com.wiztrip.mapstruct.ReviewMapper;
 import com.wiztrip.repository.ReviewImageRepository;
 import com.wiztrip.repository.ReviewRepository;
 import com.wiztrip.repository.TripRepository;
+import com.wiztrip.repository.TripUserRepository;
 import com.wiztrip.tool.file.FtpTool;
 import com.wiztrip.tool.file.WebpConvertTool;
 import lombok.RequiredArgsConstructor;
@@ -37,12 +38,15 @@ public class ReviewService {
 
     private final TripRepository tripRepository;
 
+    private final TripUserRepository tripUserRepository;
+
     private final WebpConvertTool webpConvertTool;
 
     private final FtpTool ftpTool;
 
     @Transactional
     public ReviewDto.ReviewResponseDto createReview(UserEntity user, Long tripId, ReviewDto.ReviewPostDto reviewPostDto, List<MultipartFile> multipartFileList) {
+        checkValidByUser(user.getId(), tripId);
         checkTripIsFinshied(tripId);
         checkValidByTripAndUser(tripId, user);
         ReviewEntity review = reviewMapper.toEntity(user, tripId, reviewPostDto);
@@ -52,9 +56,10 @@ public class ReviewService {
     }
 
     public ReviewDto.ReviewResponseDto getReview(UserEntity user, Long tripId, Long reviewId) {
+        checkValidByUser(user.getId(), tripId);
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        checkValidByUser(review, user);
+        checkWriteByUser(review, user);
         checkValidByTrip(review, tripId);
         return reviewMapper.toResponseDto(review);
     }
@@ -63,7 +68,7 @@ public class ReviewService {
         List<ReviewEntity> reviewList = reviewRepository.findByUserId(user.getId());
 
         return new ListDto<>(reviewList.stream().map(o -> {
-            checkValidByUser(o, user);
+            checkWriteByUser(o, user);
             return reviewMapper.toMyResponseDto(o);
         }).toList());
     }
@@ -73,20 +78,16 @@ public class ReviewService {
     }
 
     public ReviewDto.ToReviewCountResponseDto getToReviewCount(UserEntity user) {
-        List<TripEntity> tripList = tripRepository.findByFinishedTrue();
-
-        Integer reviewCount = (int) tripList.stream()
-                .filter(trip -> !reviewRepository.existsByTripIdAndUserId(trip.getId(), user.getId()))
-                .count();
-
+        Integer reviewCount = tripRepository.countByUserIdAndFinishedTrue(user.getId()) - reviewRepository.countByUserId(user.getId());
         return reviewMapper.toToCountResponseDto(reviewCount);
     }
 
     @Transactional
     public ReviewDto.ReviewResponseDto updateReview(UserEntity user, Long tripId, ReviewDto.ReviewPatchDto reviewPatchDto) {
+        checkValidByUser(user.getId(), tripId);
         ReviewEntity review = reviewRepository.findById(reviewPatchDto.getReviewId())
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        checkValidByUser(review, user);
+        checkWriteByUser(review, user);
         checkValidByTrip(review, tripId);
         reviewMapper.updateFromPatchDto(reviewPatchDto, review);
         return reviewMapper.toResponseDto(review);
@@ -94,9 +95,10 @@ public class ReviewService {
 
     @Transactional
     public String deleteReview(UserEntity user, Long tripId, Long reviewId) {
+        checkValidByUser(user.getId(), tripId);
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
-        checkValidByUser(review, user);
+        checkWriteByUser(review, user);
         checkValidByTrip(review,tripId);
         reviewRepository.deleteById(reviewId);
         return "reviewId: " + reviewId + " 삭제 완료";
@@ -139,8 +141,13 @@ public class ReviewService {
         if (!review.getTrip().getId().equals(tripId)) throw new CustomException(ErrorCode.NOT_IN_TRIP_REVIEW);
     }
 
+    // 해당 trip에 속한 user인지 확인
+    private void checkValidByUser(Long userId, Long tripId) {
+        if(!tripUserRepository.existsByUserIdAndTripId(userId, tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_USER);
+    }
+
     // 해당 review를 작성한 user인지 확인
-    private void checkValidByUser(ReviewEntity review, UserEntity user) {
+    private void checkWriteByUser(ReviewEntity review, UserEntity user) {
         if (!user.getId().equals(review.getUser().getId())) throw new CustomException(ErrorCode.FORBIDDEN_REVIEW_USER);
     }
 

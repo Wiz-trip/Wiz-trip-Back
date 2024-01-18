@@ -52,6 +52,7 @@ public enum ErrorCode {
     ALREADY_TRIP_FINISHED(CONFLICT, "이미 종료된 전체 여행 계획입니다."),
     ALREADY_WRITTEN_REVIEW(CONFLICT, "이미 후기글을 작성한 전체 여행 계획입니다."),
     NOT_FINISHED_TRIP(CONFLICT, "아직 종료되지 않은 전체 여행 계획입니다."),
+    USER_ALREADY_IN_TRIP(CONFLICT, "이미 전체 여행 계획에 포함된 사용자입니다."),
     PLAN_IS_LOCKED(CONFLICT,"해당 Plan은 다른 유저가 편집중이므로 수정할 수 없습니다."),
 
     // 500 INTERNAL SERVER ERROR

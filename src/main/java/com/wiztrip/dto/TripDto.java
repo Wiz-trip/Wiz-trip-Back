@@ -138,4 +138,28 @@ public class TripDto {
         private Long tripId;
 
     }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class TripUserResponseDto {
+
+        private Long tripId;
+
+        private List<Long> userIdList = new ArrayList<>();
+
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class MyTripCountResponseDto {
+
+        private Integer tripNum;
+
+    }
 }

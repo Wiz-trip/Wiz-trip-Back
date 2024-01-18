@@ -59,16 +59,16 @@ public class ReviewController {
     @GetMapping("my-reviews/count")
     @Operation(summary = "Review 조회(작성한 후기글 개수)",
             description = "마이 페이지에서 해당 User가 작성한 Review 개수를 전달합니다.")
-    public ResponseEntity<ReviewDto.MyReviewCountResponseDto> getMyReviewCountNum(
+    public ResponseEntity<ReviewDto.MyReviewCountResponseDto> getMyReviewCount(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ResponseEntity.ok().body(reviewService.getMyReviewCount(principalDetails.getUser()));
     }
 
     // 후기글 조회 (마이페이지, 작성할 후기글 개수)
-    @GetMapping("to-reviews/count")
+    @GetMapping("my-to-reviews/count")
     @Operation(summary = "Review 조회(작성할 후기글 개수)",
             description = "마이 페이지에서 해당 User가 작성할 수 있는 Review 개수를 전달합니다.")
-    public ResponseEntity<ReviewDto.ToReviewCountResponseDto> getMyReviewNum(
+    public ResponseEntity<ReviewDto.ToReviewCountResponseDto> getToReviewCount(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ResponseEntity.ok().body(reviewService.getToReviewCount(principalDetails.getUser()));
     }
