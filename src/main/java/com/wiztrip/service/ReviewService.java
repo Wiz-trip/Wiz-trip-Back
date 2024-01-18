@@ -45,12 +45,20 @@ public class ReviewService {
     private final FtpTool ftpTool;
 
     @Transactional
-    public ReviewDto.ReviewResponseDto createReview(UserEntity user, Long tripId, ReviewDto.ReviewPostDto reviewPostDto, List<MultipartFile> multipartFileList) {
+    public ReviewDto.ReviewResponseDto createReview(UserEntity user, Long tripId, ReviewDto.ReviewPostDto reviewPostDto) {
         checkValidByUser(user.getId(), tripId);
         checkTripIsFinshied(tripId);
         checkValidByTripAndUser(tripId, user);
         ReviewEntity review = reviewMapper.toEntity(user, tripId, reviewPostDto);
         reviewRepository.save(review);
+        return reviewMapper.toResponseDto(review);
+    }
+
+    @Transactional
+    public ReviewDto.ReviewResponseDto createReviewImage(UserEntity user, Long reviewId, List<MultipartFile> multipartFileList) {
+        ReviewEntity review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+        checkWriteByUser(review, user);
         uploadImage(review, multipartFileList);
         return reviewMapper.toResponseDto(review);
     }

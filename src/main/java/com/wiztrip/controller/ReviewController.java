@@ -23,16 +23,27 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     // 후기글 생성
-    @PostMapping(value = "trips/{tripId}/reviews", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Review 생성",
+    @PostMapping(value = "trips/{tripId}/reviews")
+    @Operation(summary = "Review 생성(json)",
             description = "tripId와 ReviewPostDto를 사용해 해당 Trip(전체 여행 계획)에 속한 Review를 생성합니다. 이때, Review Image는 여러 장 삽입할 수 있습니다. " +
                     "또한, 종료된 Trip에 한해서 Review를 작성할 수 있으며, User는 자신이 속한 Trip에서 한 개의 Review만 작성할 수 있습니다.")
     public ResponseEntity<ReviewDto.ReviewResponseDto> createReview(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("tripId") Long tripId,
-            @RequestPart(name = "request") ReviewDto.ReviewPostDto reviewPostDto,
-            @RequestPart(required = false, name = "image") List<MultipartFile> multipartFileList) {
-        return ResponseEntity.ok().body(reviewService.createReview(principalDetails.getUser(), tripId, reviewPostDto, multipartFileList));
+            @RequestBody ReviewDto.ReviewPostDto reviewPostDto) {
+        return ResponseEntity.ok().body(reviewService.createReview(principalDetails.getUser(), tripId, reviewPostDto));
+    }
+
+    // 후기글 이미지 생성
+    @PostMapping(value = "reviews/{reviewId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Review 생성(image)",
+            description = "tripId와 ReviewPostDto를 사용해 해당 Trip(전체 여행 계획)에 속한 Review를 생성합니다. 이때, Review Image는 여러 장 삽입할 수 있습니다. " +
+                    "또한, 종료된 Trip에 한해서 Review를 작성할 수 있으며, User는 자신이 속한 Trip에서 한 개의 Review만 작성할 수 있습니다.")
+    public ResponseEntity<ReviewDto.ReviewResponseDto> createReviewImage(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam("reviewId") Long reviewId,
+            @RequestPart List<MultipartFile> multipartFileList) {
+        return ResponseEntity.ok().body(reviewService.createReviewImage(principalDetails.getUser(), reviewId, multipartFileList));
     }
 
     // 후기글 조회 (세부 사항)
