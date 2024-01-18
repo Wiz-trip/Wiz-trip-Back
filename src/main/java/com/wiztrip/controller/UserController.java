@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -30,6 +31,20 @@ public class UserController {
         return ResponseEntity.ok().body(userService.updateUser(userPatchDto));
     }
 
+    // 닉네임 중복
+    @Operation(summary = "닉네임 중복 처리 확인",
+            description =
+                    """
+                    닉네임 중복을 확인 (String 값)
+                    - 반환값 true,false
+                    * 중복된 닉네임이 없으면 -> true
+                    * 중복된 닉네임이 있다면 -> false
+                    """)
+    @GetMapping("/{nickname}/exist")
+    public ResponseEntity<Boolean> isNicknameExist(@RequestParam String nickname) {
+        return ResponseEntity.ok(userService.isNicknameExist(nickname));
+    }
+
 
     // 회원 탈퇴
     @Operation(summary = "회원 탈퇴",description = "userId를 사용하여 회원을 탈퇴합니다")
@@ -42,11 +57,12 @@ public class UserController {
     // 회원가입 처리
     @Operation(summary = "회원가입 처리",
             description = """ 
-            username
-            email
-            password
-            confirmpassword
-            nickname 입력
+            <회원가입>
+            * username
+            * email
+            * password
+            * confirmpassword
+            * nickname 입력
             """)
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserRegisterDto registrationDto) {

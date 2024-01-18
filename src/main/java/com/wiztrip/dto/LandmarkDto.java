@@ -46,4 +46,52 @@ public class LandmarkDto {
         private List<Base64Dto> imageList = new ArrayList<>();
 
     }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class LandmarkApiResponseDto {
+
+        private Long contentId;
+
+        private String address;
+
+        private String imagePath;
+
+        private Long contentTypeId;
+
+        private String title;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class LandmarkApiDetailResponseDto {
+
+        private Long contentId;
+
+        private String infocenter;  // Tel number
+
+        private String restDate;    // 쉬는 날
+
+        private String accomcount;  // 수용 인원
+
+        private String useTime;    // 영업 시간
+
+        private String parking;     // 주차 가능 여부
+
+        private String checkPet;    // 애완동물 출입 가능 여부
+
+        private String checkCreditCard; // 신용카드 가능 여부
+
+
+
+
+    }
+
+
 }

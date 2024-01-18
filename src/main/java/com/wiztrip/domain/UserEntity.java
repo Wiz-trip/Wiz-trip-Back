@@ -29,6 +29,7 @@ public class UserEntity extends TimeStamp {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserImageEntity image; //프로필 사진
 
+    @NotNull
     private String nickname; //회원 닉네임
 
 }

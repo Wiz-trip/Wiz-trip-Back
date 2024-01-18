@@ -135,6 +135,19 @@ public class FtpTool {
         return new Base64Dto(filename, base64String);
     }
 
+    /**
+     * 파일 삭제
+     */
+    public void deleteFile(String filename) {
+        connect();
+        try {
+            ftpClient.deleteFile(filename);
+            disconnect();
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.IMAGE_DELETE_FAILED);
+        }
+    }
+
 
     // FTP 연결 및 설정
     private void connect() {

@@ -1,7 +1,6 @@
 package com.wiztrip.service;
 
 import com.wiztrip.domain.PlanEntity;
-import com.wiztrip.domain.TripEntity;
 import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.ListDto;
 import com.wiztrip.dto.PlanDto;
@@ -9,8 +8,8 @@ import com.wiztrip.exception.CustomException;
 import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.mapstruct.PlanMapper;
 import com.wiztrip.repository.PlanRepository;
-import com.wiztrip.repository.TripRepository;
 import com.wiztrip.repository.TripUserRepository;
+import com.wiztrip.tool.redis.RedisTool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,24 +29,23 @@ public class PlanService {
 
     private final TripUserRepository tripUserRepository;
 
-    private final TripRepository tripRepository;
+    private final RedisTool redisTool;
 
     @Transactional
     public PlanDto.PlanResponseDto createPlan(UserEntity user, Long tripId, PlanDto.PlanPostDto planPostDto) {
         checkValidByUserIdAndTripId(user.getId(), tripId);
-        checkTripIsFinished(tripId);
         return planMapper.toResponseDto(planRepository.save(planMapper.toEntity(planPostDto, tripId, user)));
     }
 
     public PlanDto.PlanResponseDto getPlan(UserEntity user, Long tripId, Long planId) {
-        checkValidByUserIdAndTripId(user.getId(),tripId);
-        PlanEntity plan = planRepository.findById(planId).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND));
+        checkValidByUserIdAndTripId(user.getId(), tripId);
+        PlanEntity plan = planRepository.findById(planId).orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
         checkValidByPlanAndTripId(plan, tripId);
         return planMapper.toResponseDto(plan);
     }
 
     public ListDto<PlanDto.PlanResponseDto> getAllPlanByTripId(UserEntity user, Long tripId) {
-        checkValidByUserIdAndTripId(user.getId(),tripId);
+        checkValidByUserIdAndTripId(user.getId(), tripId);
         return new ListDto<>(planRepository.findAllByTripId(tripId).stream().map(o -> {
             checkValidByPlanAndTripId(o, tripId);
             return planMapper.toResponseDto(o);
@@ -55,31 +53,30 @@ public class PlanService {
     }
 
     public Page<Long> getPlanIdPageByTripId(UserEntity user, Long tripId, Pageable pageable) {
-        checkValidByUserIdAndTripId(user.getId(),tripId);
+        checkValidByUserIdAndTripId(user.getId(), tripId);
         return planRepository.findAllIdByTripId(tripId, pageable);
     }
 
     public Page<PlanDto.PlanResponseDto> getAllPlanPageByTripId(UserEntity user, Long tripId, Pageable pageable) {
-        checkValidByUserIdAndTripId(user.getId(),tripId);
+        checkValidByUserIdAndTripId(user.getId(), tripId);
         return planRepository.findAllByTripId(tripId, pageable).map(planMapper::toResponseDto);
     }
 
 
     @Transactional
     public PlanDto.PlanResponseDto updatePlan(UserEntity user, Long tripId, PlanDto.PlanPatchDto planPatchDto) {
-        checkValidByUserIdAndTripId(user.getId(),tripId);
-        PlanEntity plan = planRepository.findById(planPatchDto.getPlanId()).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND));
+        checkValidByUserIdAndTripId(user.getId(), tripId);
+        if(isLocked(planPatchDto.getPlanId())) throw new CustomException(ErrorCode.PLAN_IS_LOCKED);
+        PlanEntity plan = planRepository.findById(planPatchDto.getPlanId()).orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
         checkValidByPlanAndTripId(plan, tripId);
-        checkTripIsFinished(tripId);
         planMapper.updateFromPatchDto(planPatchDto, plan); //dirty checking을 활용한 update
-        return planMapper.toResponseDto(planRepository.findById(planPatchDto.getPlanId()).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND)));
+        return planMapper.toResponseDto(planRepository.findById(planPatchDto.getPlanId()).orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND)));
     }
 
     @Transactional
     public String deletePlan(UserEntity user, Long tripId, Long planId) {
-        checkValidByUserIdAndTripId(user.getId(),tripId);
-        checkValidByPlanAndTripId(planRepository.findById(planId).orElseThrow(()->new CustomException(ErrorCode.PLAN_NOT_FOUND)), tripId);
-        checkTripIsFinished(tripId);
+        checkValidByUserIdAndTripId(user.getId(), tripId);
+        checkValidByPlanAndTripId(planRepository.findById(planId).orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND)), tripId);
         planRepository.deleteById(planId);
         return "planId: " + planId + " 삭제 완료";
     }
@@ -89,13 +86,30 @@ public class PlanService {
     }
 
     private void checkValidByUserIdAndTripId(Long userId, Long tripId) { //user가 trip에 속하는지 확인
-        if(!tripUserRepository.existsByUserIdAndTripId(userId,tripId)) throw new CustomException(ErrorCode.FORBIDDEN_TRIP_USER);
+        if (!tripUserRepository.existsByUserIdAndTripId(userId, tripId))
+            throw new CustomException(ErrorCode.FORBIDDEN_TRIP_USER);
     }
 
-    // trip의 종료 여부 확인
-    private void checkTripIsFinished(Long tripId) {
-        if(tripRepository.findById(tripId).orElseThrow(()->new CustomException(ErrorCode.TRIP_NOT_FOUND)).isFinished()) {
-            throw new CustomException(ErrorCode.ALREADY_TRIP_FINISHED);
+    /**
+     * 동시편집을 위한 method
+     * lock, unlock을 통해 서로 다른 사용자가 같은 Plan에 동시에 수정하지 못하도록 함
+     */
+    private static final String LOCK_PREFIX = "planId:";
+    public String lockPlan(Long planId) {
+        if (redisTool.checkExistsValue(String.valueOf(planId))) {
+            redisTool.setValues(LOCK_PREFIX +planId, "true");
         }
+        return "lock success";
+    }
+
+    public String unlockPlan(Long planId) {
+        if (redisTool.checkExistsValue(LOCK_PREFIX +planId))
+            redisTool.setValues(LOCK_PREFIX +planId,"false");
+        return "unlock success";
+    }
+
+    public boolean isLocked(Long planId) {
+        return redisTool.checkExistsValue(LOCK_PREFIX + planId) &&
+            redisTool.getValues(LOCK_PREFIX + planId).equals("true");
     }
 }

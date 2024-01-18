@@ -26,5 +26,10 @@ public class FtpTestController {
     public Base64Dto getFile(@RequestParam String filename) {
         return base64Tool.base64StringToDto(filename, ftpTool.downloadFileAndConvertToBase64String(filename));
     }
+
+    @DeleteMapping
+    public void deleteFile(@RequestParam String filename) {
+        ftpTool.deleteFile(filename);
+    }
 }
 

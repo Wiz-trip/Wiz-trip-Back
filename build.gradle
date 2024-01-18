@@ -75,6 +75,10 @@ dependencies {
     //REDIS
     implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.2.0'
 
+    // api
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    implementation 'com.google.code.gson:gson'
+
 
 
 
