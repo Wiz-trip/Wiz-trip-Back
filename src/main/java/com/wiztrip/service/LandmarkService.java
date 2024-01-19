@@ -2,8 +2,10 @@ package com.wiztrip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wiztrip.domain.LandmarkEntity;
+import com.wiztrip.domain.LandmarkImageEntity;
 import com.wiztrip.dto.LandmarkDto;
 import com.wiztrip.mapstruct.LandmarkMapper;
+import com.wiztrip.repository.LandmarkImageRepository;
 import com.wiztrip.repository.LandmarkRepository;
 import com.wiztrip.tourapi.ApiController;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,6 +28,7 @@ public class LandmarkService {
 
     private final LandmarkRepository landmarkRepository;
     private final ApiController apiController;
+    private final LandmarkImageRepository landmarkImageRepository;
 
 
 
@@ -45,6 +48,10 @@ public class LandmarkService {
                 .collect(Collectors.toList());
         landmarkRepository.saveAll(landmarks);
 
+        List<LandmarkImageEntity> imageEntities = landmarks.stream()
+                .map(landmark -> convertToImageEntity(landmarksDto.get(landmarks.indexOf(landmark)), landmark))
+                .collect(Collectors.toList());
+        landmarkImageRepository.saveAll(imageEntities);
 
         return landmarksDto;
     }
@@ -72,6 +79,16 @@ public class LandmarkService {
 
         landmarkRepository.save(landmark);
         return landmark;
+    }
+
+    // api 의 이미지를 db에 저장하기 위한 로직
+    public LandmarkImageEntity convertToImageEntity(LandmarkDto.LandmarkApiResponseDto dto, LandmarkEntity landmark) {
+        LandmarkImageEntity imageEntity = new LandmarkImageEntity();
+        imageEntity.setImagePath(dto.getImagePath());
+        imageEntity.setImageName(dto.getTitle());
+        imageEntity.setContentId(dto.getContentId());
+        imageEntity.setLandmark(landmark);
+        return imageEntity;
     }
 
 

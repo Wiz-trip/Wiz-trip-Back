@@ -4,6 +4,7 @@ package com.wiztrip.tourapi;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -19,24 +20,23 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ApiController {
 
+    @Value("${service.key}")
+    private String serviceKey;
+
     public List<Map<String, Object>> getData(int numOfRows)
             throws URISyntaxException, JsonProcessingException {
 
         // Base URL + API 호출 주소
         String link = "https://apis.data.go.kr/B551011/KorService1/areaBasedList1";
         String MobileOS = "ETC";        // 실행환경
-        String MobileApp = "Test";      // APP name
+        String MobileApp = "WizTripWeb";      // APP name
         String _type = "json";          // 받을 데이터 타입
         String contentTypeId = "12";    // 관광지(12)
-
-        // 서비스 키
-        String serviceKey = "X0dmwJ%2BtzCSdiOo7%2BQ5hBTOKs1JT7dV8caHkqg80DO6W2xWdRWVywo7D4RZ1GmS2CuHRp1oJwn3mB67dTJycuw%3D%3D";
 
         String url = link + "?" +
                 "&MobileOS=" + MobileOS +
                 "&MobileApp=" + MobileApp +
                 "&_type=" + _type +
-//                "&areaCode=" + areaCode +               // 받아온 지역 코드
                 "&contentTypeId=" + contentTypeId +     // 받아온 관광 타입
                 "&numOfRows=" + numOfRows +             // 출력할 데이터 개수
                 "&serviceKey=" + serviceKey;
@@ -65,16 +65,9 @@ public class ApiController {
 
         //state에 있는 정보만 들고오기
         List<Map<String, Object>> testItemMap = itemMap.stream()
-//                .filter(item -> {
-//                    Object value = item.get("addr1");
-//                    return value != null && value.toString().contains(state);
-//                })
                 .collect(Collectors.toList());
-
-
         return testItemMap;
     }
-// }
 
     // 세부 여행지 메서드
     public List<Map<String, Object>> getLandmarkData(String contentId)
@@ -88,9 +81,6 @@ public class ApiController {
         String contentTypeId = "12";    // 관광지(12)
         int numOfRows = 1;
         int pageNo = 1;
-
-        // 서비스 키
-        String serviceKey = "X0dmwJ%2BtzCSdiOo7%2BQ5hBTOKs1JT7dV8caHkqg80DO6W2xWdRWVywo7D4RZ1GmS2CuHRp1oJwn3mB67dTJycuw%3D%3D";
 
         String url = link + "?" +
                 "&MobileOS=" + MobileOS +
@@ -126,13 +116,7 @@ public class ApiController {
 
         //state에 있는 정보만 들고오기
         List<Map<String, Object>> testItemMap = itemMap.stream()
-//                .filter(item -> {
-//                    Object value = item.get("addr1");
-//                    return value != null && value.toString().contains(state);
-//                })
                 .collect(Collectors.toList());
-
-
         return testItemMap;
     }
 
@@ -146,7 +130,6 @@ public class ApiController {
         String mobileApp = "Test";
         String _type = "json";
         String contentTypeId = "12"; // 관광지 타입
-        String serviceKey = "X0dmwJ%2BtzCSdiOo7%2BQ5hBTOKs1JT7dV8caHkqg80DO6W2xWdRWVywo7D4RZ1GmS2CuHRp1oJwn3mB67dTJycuw%3D%3D";     // 서비스 키
 
         // URL 생성
         String url = link + "?serviceKey=" + serviceKey +
@@ -162,9 +145,6 @@ public class ApiController {
         URI uri = new URI(url);
         String response = restTemplate.getForObject(uri, String.class);
 
-        // 로그 출력
-        log.info("API Response: {}", response);
-
         Map<String, Object> map = new ObjectMapper().readValue(response.toString(), Map.class);
         Map<String, Object> responseMap = (Map<String, Object>) map.get("response");
         Map<String, Object> bodyMap = (Map<String, Object>) responseMap.get("body");
@@ -172,9 +152,7 @@ public class ApiController {
         List<Map<String, Object>> itemMap = (List<Map<String, Object>>) itemsMap.get("item");
 
         return itemMap.stream()
-                // 여기에 필요한 경우 추가적인 필터링 로직을 적용
                 .collect(Collectors.toList());
     }
-
 
 }
