@@ -59,6 +59,8 @@ public class ImageService {
             String imagePath = directory + "/" + webpFileName;
             imageEntity.setImageName(webpFileName);
             imageEntity.setImagePath(imagePath);
+            imageEntity.setEmail(user.getEmail());
+            imageEntity.setNickname(user.getNickname());
 
             userImageRepository.save(imageEntity);
             userRepository.save(user);
@@ -75,4 +77,24 @@ public class ImageService {
         // 고유한 이름 부여
         return "profile_image_" + UUID.randomUUID()+ ".webp";
     }
+
+
+    public void deleteProfilePicture(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow( () -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        UserImageEntity imageEntity = user.getImage();
+
+        if(imageEntity != null) {
+            if (imageEntity.getImageName() != null) {
+                ftpTool.deleteFile(imageEntity.getImageName());
+            }
+            user.setImage(null);
+            userImageRepository.delete(imageEntity);
+            userRepository.save(user);
+        } else {
+            throw new CustomException(ErrorCode.PROFILE_IMAGE_NOT_FOUND);
+        }
+    }
+
 }

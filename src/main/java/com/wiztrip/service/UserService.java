@@ -56,65 +56,6 @@ public class UserService {
         return convertToUserResponseDto(userRepository.save(userEntity));
     }
 
-
-    // 프로필 사진 추가
-//    @Transactional
-//    public UserDto.UserResponseDto updateProfilePicture(Long userId, Base64Dto base64Dto) {
-//        UserEntity user = userRepository.findById(userId)
-//                .orElseThrow(() -> new UsernameNotFoundException("User id 를 찾을 수 없습니다 : " + userId));
-//
-//        try {
-//            // "profile-pictures" -> 파일 저장할 서버 디렉토리 이름 / 경로
-//            String profileImagePath = base64Service.decodeBase64ToFileAndStore(base64Dto, "profile-path");
-//            Optional<UserImageEntity> existingImage = userImageRepository.findByUserId(userId);
-//
-//            UserImageEntity userImage = existingImage.orElse(new UserImageEntity());
-//            userImage.setImageName(base64Dto.getFileName());
-//            userImage.setImagePath(profileImagePath);
-//            userImage.setUser(user);
-//            user.setImage(userImage);
-//
-//            userImageRepository.save(userImage);
-//
-//            // UserResponseDto로 변환하여 반환
-//            return convertToUserResponseDtoWithImage(user, userImage);
-//        } catch (IOException e) {
-//            throw new RuntimeException("파일 업로드 실패 원인 : ", e);
-//        }
-//    }
-//
-//    // 프로필 사진 삭제
-//    @Transactional
-//    public String deleteProfilePicture(Long userId) {
-//        UserImageEntity userImage = userImageRepository.findByUserId(userId)
-//                .orElseThrow(() -> new UsernameNotFoundException("User id 를 찾을 수 없습니다 : " + userId));
-//
-//        // 파일 시스템에서 이미지 삭제
-//        String filePath = userImage.getImagePath();
-//        if (filePath != null && !filePath.isEmpty()) {
-//            try {
-//                Path file = Paths.get(filePath);
-//                if (Files.exists(file)) {
-//                    Files.delete(file);
-//                }
-//            } catch (IOException e) {
-//                throw new RuntimeException("Failed to delete file", e);
-//            }
-//        }
-//
-//        // 데이터베이스에서 이미지 정보 업데이트
-//        userImage.setImagePath(null);
-//        userImage.setImageName(null);
-//
-//        UserEntity user = userImage.getUser();
-//        user.setImage(null); // UserEntity에서도 이미지 정보 제거
-//        userImageRepository.save(userImage);
-//
-//        userImageRepository.delete(userImage);
-//
-//        return "프로필 삭제 성공";
-//    }
-
     // 사용자 삭제
     @Transactional
     public String deleteUser(Long userId) {
@@ -126,38 +67,24 @@ public class UserService {
 
     // UserEntity를 UserResponseDto로 변환
     private UserDto.UserResponseDto convertToUserResponseDto(UserEntity userEntity) {
-        Base64Dto imageDto = null;
 
-        UserImageEntity userImage = userEntity.getImage();
-        if (userImage != null && userImage.getImagePath() != null && !userImage.getImagePath().isEmpty()) {
-            String base64Content = base64Service.encodeFileToBase64(userImage.getImagePath());
-            imageDto = new Base64Dto(userImage.getImageName(), base64Content);
+        UserDto.UserResponseDto userResponseDto = new UserDto.UserResponseDto();
+        userResponseDto.setId(userEntity.getId());
+        userResponseDto.setUsername(userEntity.getUsername());
+        userResponseDto.setEmail(userEntity.getEmail());
+        userResponseDto.setNickname(userEntity.getNickname());
+
+        UserImageEntity imageEntity = userEntity.getImage();
+        if(imageEntity != null) {
+            Base64Dto imageDto = new Base64Dto();
+            imageDto.setFileName(imageEntity.getImageName());
+            imageDto.setContent(imageEntity.getImagePath());
+            userResponseDto.setImage(imageDto);
+        } else {
+            userResponseDto.setImage(null);
         }
 
-        return UserDto.UserResponseDto.builder()
-                .id(userEntity.getId())
-                .username(userEntity.getUsername())
-                .email(userEntity.getEmail())
-                .nickname(userEntity.getNickname()) // 회원 닉네임
-                .image(imageDto)
-                .build();
-    }
-
-   //  UserImageEntity -> UserResponseDto로 변환 ( 프로필 사진 구현을 위함 )
-    private UserDto.UserResponseDto convertToUserResponseDtoWithImage(UserEntity user, UserImageEntity userImage) {
-        Base64Dto imageDto = null;
-        if (userImage != null) {
-            String base64Content = base64Service.encodeFileToBase64(userImage.getImagePath());
-            imageDto = new Base64Dto(userImage.getImageName(),base64Content);
-        }
-
-        return UserDto.UserResponseDto.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .image(imageDto)
-                .nickname(user.getNickname())
-                .email(user.getEmail())
-                .build();
+        return userResponseDto;
     }
 
 

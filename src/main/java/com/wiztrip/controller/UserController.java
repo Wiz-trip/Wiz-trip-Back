@@ -37,34 +37,15 @@ public class UserController {
         return ResponseEntity.ok().body(userService.updateUser(userPatchDto));
     }
 
+
     // 프로필 사진 업데이트
-//    @Operation(summary = "프로필 사진 업데이트", description =
-//            """
-//                    userId 를 이용하여 프로필 사진을 추가.
-//                    *  fileName : 테스트할 이미지파일 이름 -> "example.jpg"
-//                    *  content :   "example.jpg" 를 Base64 로 인코딩한 문자열  -> 예시 ) "/9j4AAQSkZ...."
-//
-//                    * 예시 )
-//                           {
-//                             "fileName": "test_image.jpg",
-//                             "content": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-//                           }
-//
-//                    """
-//                    )
-//    @PatchMapping("/{userId}/profileImageUpdate")
-//    public ResponseEntity<UserDto.UserResponseDto> updateProfilePicture
-//    (@PathVariable Long userId, @RequestBody Base64Dto base64Dto) {
-//        UserDto.UserResponseDto updatedUser = userService.updateProfilePicture(userId, base64Dto);
-//        return ResponseEntity.ok().body(updatedUser);
-//    }
-//
-//    // 프로필 사진 삭제
-//    @Operation(summary = "프로필 사진 삭제",description = "userId 를 사용하여 프로필 사진을 삭제")
-//    @DeleteMapping("/{userId}/profileImageDelete")
-//    public ResponseEntity<String> deleteProfilePicture(@PathVariable Long userId){
-//        return ResponseEntity.ok(userService.deleteProfilePicture(userId));
-//    }
+    @Operation(summary = "user 프로필 사진 생성",description =
+            """
+            * userid , image(file) 로 값 전달
+            * body -> 
+            file : 이미지 파일 이름
+            content : Base64 형식으로 인코딩된 실제 이미지 데이터
+            """)
     @PostMapping("/{userId}/uploadprofilePicture")
     public ResponseEntity<Base64Dto> uploadprofilePicture(@PathVariable Long userId,
                                                           @RequestParam("image")MultipartFile image) {
@@ -72,6 +53,12 @@ public class UserController {
         return ResponseEntity.ok(uploadImage);
     }
 
+    @Operation(summary = "프로필 사진 삭제",description = "userId 를 사용하여 프로필 사진을 삭제")
+    @DeleteMapping("/{userId}/profileImageDelete")
+    public ResponseEntity<?> deleteProfilePicture(@PathVariable Long userId) {
+        imageService.deleteProfilePicture(userId);
+        return ResponseEntity.ok().build();
+    }
 
 
     // 닉네임 중복
