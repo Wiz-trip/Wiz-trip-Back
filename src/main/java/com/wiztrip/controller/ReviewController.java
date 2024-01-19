@@ -99,7 +99,7 @@ public class ReviewController {
     // 후기글 삭제
     @DeleteMapping("trips/{tripId}/reviews")
     @Operation(summary = "Review 삭제",
-            description = "tripId와 reviewId를 사용해 해당 Review를 삭제합니다.")
+            description = "tripId와 reviewId를 사용해 해당 Review와 Review에 해당하는 Image를 삭제합니다.")
     public ResponseEntity<String> deleteReview(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("tripId") Long tripId,
