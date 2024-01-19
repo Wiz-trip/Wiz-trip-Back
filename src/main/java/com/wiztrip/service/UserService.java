@@ -58,62 +58,62 @@ public class UserService {
 
 
     // 프로필 사진 추가
-    @Transactional
-    public UserDto.UserResponseDto updateProfilePicture(Long userId, Base64Dto base64Dto) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User id 를 찾을 수 없습니다 : " + userId));
-
-        try {
-            // "profile-pictures" -> 파일 저장할 서버 디렉토리 이름 / 경로
-            String profileImagePath = base64Service.decodeBase64ToFileAndStore(base64Dto, "profile-path");
-            Optional<UserImageEntity> existingImage = userImageRepository.findByUserId(userId);
-
-            UserImageEntity userImage = existingImage.orElse(new UserImageEntity());
-            userImage.setImageName(base64Dto.getFileName());
-            userImage.setImagePath(profileImagePath);
-            userImage.setUser(user);
-            user.setImage(userImage);
-
-            userImageRepository.save(userImage);
-
-            // UserResponseDto로 변환하여 반환
-            return convertToUserResponseDtoWithImage(user, userImage);
-        } catch (IOException e) {
-            throw new RuntimeException("파일 업로드 실패 원인 : ", e);
-        }
-    }
-
-    // 프로필 사진 삭제
-    @Transactional
-    public String deleteProfilePicture(Long userId) {
-        UserImageEntity userImage = userImageRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User id 를 찾을 수 없습니다 : " + userId));
-
-        // 파일 시스템에서 이미지 삭제
-        String filePath = userImage.getImagePath();
-        if (filePath != null && !filePath.isEmpty()) {
-            try {
-                Path file = Paths.get(filePath);
-                if (Files.exists(file)) {
-                    Files.delete(file);
-                }
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to delete file", e);
-            }
-        }
-
-        // 데이터베이스에서 이미지 정보 업데이트
-        userImage.setImagePath(null);
-        userImage.setImageName(null);
-
-        UserEntity user = userImage.getUser();
-        user.setImage(null); // UserEntity에서도 이미지 정보 제거
-        userImageRepository.save(userImage);
-
-        userImageRepository.delete(userImage);
-
-        return "프로필 삭제 성공";
-    }
+//    @Transactional
+//    public UserDto.UserResponseDto updateProfilePicture(Long userId, Base64Dto base64Dto) {
+//        UserEntity user = userRepository.findById(userId)
+//                .orElseThrow(() -> new UsernameNotFoundException("User id 를 찾을 수 없습니다 : " + userId));
+//
+//        try {
+//            // "profile-pictures" -> 파일 저장할 서버 디렉토리 이름 / 경로
+//            String profileImagePath = base64Service.decodeBase64ToFileAndStore(base64Dto, "profile-path");
+//            Optional<UserImageEntity> existingImage = userImageRepository.findByUserId(userId);
+//
+//            UserImageEntity userImage = existingImage.orElse(new UserImageEntity());
+//            userImage.setImageName(base64Dto.getFileName());
+//            userImage.setImagePath(profileImagePath);
+//            userImage.setUser(user);
+//            user.setImage(userImage);
+//
+//            userImageRepository.save(userImage);
+//
+//            // UserResponseDto로 변환하여 반환
+//            return convertToUserResponseDtoWithImage(user, userImage);
+//        } catch (IOException e) {
+//            throw new RuntimeException("파일 업로드 실패 원인 : ", e);
+//        }
+//    }
+//
+//    // 프로필 사진 삭제
+//    @Transactional
+//    public String deleteProfilePicture(Long userId) {
+//        UserImageEntity userImage = userImageRepository.findByUserId(userId)
+//                .orElseThrow(() -> new UsernameNotFoundException("User id 를 찾을 수 없습니다 : " + userId));
+//
+//        // 파일 시스템에서 이미지 삭제
+//        String filePath = userImage.getImagePath();
+//        if (filePath != null && !filePath.isEmpty()) {
+//            try {
+//                Path file = Paths.get(filePath);
+//                if (Files.exists(file)) {
+//                    Files.delete(file);
+//                }
+//            } catch (IOException e) {
+//                throw new RuntimeException("Failed to delete file", e);
+//            }
+//        }
+//
+//        // 데이터베이스에서 이미지 정보 업데이트
+//        userImage.setImagePath(null);
+//        userImage.setImageName(null);
+//
+//        UserEntity user = userImage.getUser();
+//        user.setImage(null); // UserEntity에서도 이미지 정보 제거
+//        userImageRepository.save(userImage);
+//
+//        userImageRepository.delete(userImage);
+//
+//        return "프로필 삭제 성공";
+//    }
 
     // 사용자 삭제
     @Transactional

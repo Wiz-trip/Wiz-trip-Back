@@ -2,15 +2,18 @@ package com.wiztrip.controller;
 
 import com.wiztrip.dto.UserDto;
 import com.wiztrip.dto.UserRegisterDto;
+import com.wiztrip.service.ImageService;
 import com.wiztrip.service.UserService;
 import com.wiztrip.tool.file.Base64Dto;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final ImageService imageService;
 
     // 회원정보 조회
     @Operation(summary = "회원정보 조회",description = "userId 를 사용하여 회원정보를 조회합니다")
@@ -34,33 +38,40 @@ public class UserController {
     }
 
     // 프로필 사진 업데이트
-    @Operation(summary = "프로필 사진 업데이트", description =
-            """
-                    userId 를 이용하여 프로필 사진을 추가.
-                    *  fileName : 테스트할 이미지파일 이름 -> "example.jpg"
-                    *  content :   "example.jpg" 를 Base64 로 인코딩한 문자열  -> 예시 ) "/9j4AAQSkZ...."
-                                 
-                    * 예시 )
-                           {
-                             "fileName": "test_image.jpg",
-                             "content": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-                           }
-                                        
-                    """
-                    )
-    @PatchMapping("/{userId}/profileImageUpdate")
-    public ResponseEntity<UserDto.UserResponseDto> updateProfilePicture
-    (@PathVariable Long userId, @RequestBody Base64Dto base64Dto) {
-        UserDto.UserResponseDto updatedUser = userService.updateProfilePicture(userId, base64Dto);
-        return ResponseEntity.ok().body(updatedUser);
+//    @Operation(summary = "프로필 사진 업데이트", description =
+//            """
+//                    userId 를 이용하여 프로필 사진을 추가.
+//                    *  fileName : 테스트할 이미지파일 이름 -> "example.jpg"
+//                    *  content :   "example.jpg" 를 Base64 로 인코딩한 문자열  -> 예시 ) "/9j4AAQSkZ...."
+//
+//                    * 예시 )
+//                           {
+//                             "fileName": "test_image.jpg",
+//                             "content": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+//                           }
+//
+//                    """
+//                    )
+//    @PatchMapping("/{userId}/profileImageUpdate")
+//    public ResponseEntity<UserDto.UserResponseDto> updateProfilePicture
+//    (@PathVariable Long userId, @RequestBody Base64Dto base64Dto) {
+//        UserDto.UserResponseDto updatedUser = userService.updateProfilePicture(userId, base64Dto);
+//        return ResponseEntity.ok().body(updatedUser);
+//    }
+//
+//    // 프로필 사진 삭제
+//    @Operation(summary = "프로필 사진 삭제",description = "userId 를 사용하여 프로필 사진을 삭제")
+//    @DeleteMapping("/{userId}/profileImageDelete")
+//    public ResponseEntity<String> deleteProfilePicture(@PathVariable Long userId){
+//        return ResponseEntity.ok(userService.deleteProfilePicture(userId));
+//    }
+    @PostMapping("/{userId}/uploadprofilePicture")
+    public ResponseEntity<Base64Dto> uploadprofilePicture(@PathVariable Long userId,
+                                                          @RequestParam("image")MultipartFile image) {
+        Base64Dto uploadImage = imageService.uploadProfilePicture(userId,image);
+        return ResponseEntity.ok(uploadImage);
     }
 
-    // 프로필 사진 삭제
-    @Operation(summary = "프로필 사진 삭제",description = "userId 를 사용하여 프로필 사진을 삭제")
-    @DeleteMapping("/{userId}/profileImageDelete")
-    public ResponseEntity<String> deleteProfilePicture(@PathVariable Long userId){
-        return ResponseEntity.ok(userService.deleteProfilePicture(userId));
-    }
 
 
     // 닉네임 중복
