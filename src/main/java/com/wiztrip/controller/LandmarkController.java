@@ -45,6 +45,37 @@ public class LandmarkController {
         }
     }
 
+    // 지역기반 검색
+    @Operation(summary = "지역기반 관광지 조회", description =
+                         """
+                             * areaCode
+                             서울 : 1
+                             인천 : 2
+                             대전 : 3
+                             대구 : 4
+                             광주 : 5
+                             부산 : 6
+                             울산 : 7
+                             세종 : 8
+                             경기 : 31
+                             강원 : 32
+                             충북 : 33
+                             충남 : 34
+                             경북 : 35
+                             경남 : 36
+                             전북 : 37
+                             전남 : 38
+                             제주 : 39
+                     """
+    )
+    @GetMapping("/landmarksAreaCode")
+    public ResponseEntity<List<LandmarkDto.LandmarkApiResponseDto>> getLandmarksByAreaCode(
+            @RequestParam String areaCode)
+            throws URISyntaxException, JsonProcessingException {
+        List<LandmarkDto.LandmarkApiResponseDto> landmarks = landmarkService.getLandmarksByAreaCode(areaCode);
+        return ResponseEntity.ok(landmarks);
+    }
+
 
     @Operation(summary = "상세 관광지 조회",
             description = """
@@ -71,7 +102,6 @@ public class LandmarkController {
 
 
     // 페이징
-
     @Operation(summary = "여행지 페이징",description = "numOfRows : 보여질 데이터 개수, pageNo : 페이지 number")
     @GetMapping("/landmarks/paging")
     public Page<Map<String, Object>> getLandmarks(

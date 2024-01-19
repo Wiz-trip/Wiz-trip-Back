@@ -63,6 +63,8 @@ public class LandmarkDto {
         private Long contentTypeId;
 
         private String title;
+
+        private String areaCode;
     }
 
     @Getter

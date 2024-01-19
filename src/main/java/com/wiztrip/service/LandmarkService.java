@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wiztrip.domain.LandmarkEntity;
 import com.wiztrip.domain.LandmarkImageEntity;
 import com.wiztrip.dto.LandmarkDto;
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.mapstruct.LandmarkMapper;
 import com.wiztrip.repository.LandmarkImageRepository;
 import com.wiztrip.repository.LandmarkRepository;
@@ -65,6 +67,7 @@ public class LandmarkService {
                 .imagePath((String) apiData.get("firstimage")) // 'firstimage'를 imagePath로 매핑
                 .contentTypeId(Long.parseLong(apiData.getOrDefault("contenttypeid", "0").toString())) // 'contenttypeid'를 contentTypeId로 매핑
                 .title((String) apiData.get("title")) // 'title'을 title로 매핑
+                .areaCode((String) apiData.get("areacode"))
                 .build();
     }
 
@@ -75,6 +78,7 @@ public class LandmarkService {
         // DTO 필드를 엔터티 필드에 매핑
         landmark.setContentId(dto.getContentId());      // 세부 여행지 확인을 위한 랜드마크의 ID
         landmark.setContentTypeId(dto.getContentTypeId());  // 관광지 타입
+        landmark.setAreaCode(dto.getAreaCode());
         landmark.setName(dto.getTitle());       // 여행지 이름
 
         landmarkRepository.save(landmark);
@@ -119,5 +123,17 @@ public class LandmarkService {
                 .checkCreditCard((String) detailapiData.get("chkcreditcard"))
                 .build();
     }
-    
+
+    // 지역기반
+    public List<LandmarkDto.LandmarkApiResponseDto> getLandmarksByAreaCode(String areaCode)
+            throws URISyntaxException, JsonProcessingException {
+
+        // API 에서 데이터 가져옴
+        List<Map<String, Object>> arealapiData = apiController.getAreaData(areaCode); // 필요한 파라미터 제공
+
+        return arealapiData.stream()
+                .map(this::convertToAllLandmarkDto)
+                .collect(Collectors.toList());
+    }
+
 }

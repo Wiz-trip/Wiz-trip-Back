@@ -35,4 +35,6 @@ public class LandmarkEntity {
     @OneToMany(mappedBy = "landmark", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LandmarkImageEntity> imageList = new ArrayList<>();
 
+    private String areaCode;
+
 }
