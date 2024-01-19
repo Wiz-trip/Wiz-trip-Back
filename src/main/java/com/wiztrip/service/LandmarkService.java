@@ -2,8 +2,12 @@ package com.wiztrip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wiztrip.domain.LandmarkEntity;
+import com.wiztrip.domain.LandmarkImageEntity;
 import com.wiztrip.dto.LandmarkDto;
+import com.wiztrip.exception.CustomException;
+import com.wiztrip.exception.ErrorCode;
 import com.wiztrip.mapstruct.LandmarkMapper;
+import com.wiztrip.repository.LandmarkImageRepository;
 import com.wiztrip.repository.LandmarkRepository;
 import com.wiztrip.tourapi.ApiController;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,11 +26,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class LandmarkService {
 
     private final LandmarkRepository landmarkRepository;
     private final ApiController apiController;
+    private final LandmarkImageRepository landmarkImageRepository;
 
 
 
@@ -46,9 +50,11 @@ public class LandmarkService {
                 .collect(Collectors.toList());
         landmarkRepository.saveAll(landmarks);
 
-//        return apiData.stream()
-//                .map(this::convertToAllLandmarkDto)
-//                .collect(Collectors.toList());
+        List<LandmarkImageEntity> imageEntities = landmarks.stream()
+                .map(landmark -> convertToImageEntity(landmarksDto.get(landmarks.indexOf(landmark)), landmark))
+                .collect(Collectors.toList());
+        landmarkImageRepository.saveAll(imageEntities);
+
         return landmarksDto;
     }
 
@@ -56,11 +62,12 @@ public class LandmarkService {
     private LandmarkDto.LandmarkApiResponseDto convertToAllLandmarkDto(Map<String, Object> apiData) {
         // API 응답 필드를 LandmarkDto 필드에 매핑
         return LandmarkDto.LandmarkApiResponseDto.builder()
-                .contentId(Long.parseLong(apiData.getOrDefault("contentid", "0").toString())) // 'contentid'를 imageId로 매핑
+                .contentId(Long.parseLong(apiData.getOrDefault("contentid", "0").toString()))
                 .address((String) apiData.get("addr1")) // 'addr1'을 imageName으로 매핑
                 .imagePath((String) apiData.get("firstimage")) // 'firstimage'를 imagePath로 매핑
                 .contentTypeId(Long.parseLong(apiData.getOrDefault("contenttypeid", "0").toString())) // 'contenttypeid'를 contentTypeId로 매핑
                 .title((String) apiData.get("title")) // 'title'을 title로 매핑
+                .areaCode((String) apiData.get("areacode"))
                 .build();
     }
 
@@ -70,11 +77,22 @@ public class LandmarkService {
 
         // DTO 필드를 엔터티 필드에 매핑
         landmark.setContentId(dto.getContentId());      // 세부 여행지 확인을 위한 랜드마크의 ID
-        //landmark.setAdrress(dto.getAddress());      // 주소
         landmark.setContentTypeId(dto.getContentTypeId());  // 관광지 타입
+        landmark.setAreaCode(dto.getAreaCode());
         landmark.setName(dto.getTitle());       // 여행지 이름
 
+        landmarkRepository.save(landmark);
         return landmark;
+    }
+
+    // api 의 이미지를 db에 저장하기 위한 로직
+    public LandmarkImageEntity convertToImageEntity(LandmarkDto.LandmarkApiResponseDto dto, LandmarkEntity landmark) {
+        LandmarkImageEntity imageEntity = new LandmarkImageEntity();
+        imageEntity.setImagePath(dto.getImagePath());
+        imageEntity.setImageName(dto.getTitle());
+        imageEntity.setContentId(dto.getContentId());
+        imageEntity.setLandmark(landmark);
+        return imageEntity;
     }
 
 
@@ -106,24 +124,16 @@ public class LandmarkService {
                 .build();
     }
 
-    // 여행지 페이징 처리
-    public Page<LandmarkDto.LandmarkApiResponseDto> getLandmarksPagingApi(Pageable pageable)
+    // 지역기반
+    public List<LandmarkDto.LandmarkApiResponseDto> getLandmarksByAreaCode(String areaCode)
             throws URISyntaxException, JsonProcessingException {
 
-        // ApiController를 사용하여 페이징 처리된 데이터 가져오기
-        List<Map<String, Object>> apiData = apiController.pagingData(pageable.getPageNumber(), pageable.getPageSize());
+        // API 에서 데이터 가져옴
+        List<Map<String, Object>> arealapiData = apiController.getAreaData(areaCode); // 필요한 파라미터 제공
 
-        // Stream을 사용하여 DTO 변환
-        List<LandmarkDto.LandmarkApiResponseDto> content = apiData.stream()
+        return arealapiData.stream()
                 .map(this::convertToAllLandmarkDto)
                 .collect(Collectors.toList());
-
-        long totalElements = 100; // 총 요소 수 계산
-        int totalPages = (int) Math.ceil((double) totalElements / (double) pageable.getPageSize());
-
-        // PageImpl 객체를 사용하여 Page 반환
-        return new PageImpl<>(content, pageable, totalElements);
     }
-
 
 }

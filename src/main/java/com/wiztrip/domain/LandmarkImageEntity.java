@@ -16,6 +16,8 @@ public class LandmarkImageEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private Long contentId;
+
     private String imageName;
 
     private String imagePath;
