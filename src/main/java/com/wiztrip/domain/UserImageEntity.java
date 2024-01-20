@@ -24,4 +24,8 @@ public class UserImageEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    private String email;
+
+    private String nickname;
+
 }

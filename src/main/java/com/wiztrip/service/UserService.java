@@ -1,12 +1,17 @@
 package com.wiztrip.service;
 
+import com.wiztrip.domain.UserImageEntity;
 import com.wiztrip.dto.UserDto;
 import com.wiztrip.domain.UserEntity;
 import com.wiztrip.dto.UserRegisterDto;
+import com.wiztrip.repository.UserImageRepository;
 import com.wiztrip.repository.UserRepository;
+import com.wiztrip.tool.file.Base64Dto;
+import com.wiztrip.tool.file.Base64Service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,7 +30,9 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserImageRepository userImageRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Base64Service base64Service;
 
 
     // 사용자 조회
@@ -48,7 +56,6 @@ public class UserService {
         return convertToUserResponseDto(userRepository.save(userEntity));
     }
 
-
     // 사용자 삭제
     @Transactional
     public String deleteUser(Long userId) {
@@ -56,15 +63,28 @@ public class UserService {
         return "User deleted successfully";
     }
 
+
+
     // UserEntity를 UserResponseDto로 변환
     private UserDto.UserResponseDto convertToUserResponseDto(UserEntity userEntity) {
-        return UserDto.UserResponseDto.builder()
-                .id(userEntity.getId())
-                .username(userEntity.getUsername())
-                .email(userEntity.getEmail())
-              //.image(userEntity.getImage()) // 프로필 사진
-                .nickname(userEntity.getNickname()) // 회원 닉네임
-                .build();
+
+        UserDto.UserResponseDto userResponseDto = new UserDto.UserResponseDto();
+        userResponseDto.setId(userEntity.getId());
+        userResponseDto.setUsername(userEntity.getUsername());
+        userResponseDto.setEmail(userEntity.getEmail());
+        userResponseDto.setNickname(userEntity.getNickname());
+
+        UserImageEntity imageEntity = userEntity.getImage();
+        if(imageEntity != null) {
+            Base64Dto imageDto = new Base64Dto();
+            imageDto.setFileName(imageEntity.getImageName());
+            imageDto.setContent(imageEntity.getImagePath());
+            userResponseDto.setImage(imageDto);
+        } else {
+            userResponseDto.setImage(null);
+        }
+
+        return userResponseDto;
     }
 
 
@@ -77,22 +97,24 @@ public class UserService {
     @Transactional
     public UserEntity createUser(UserRegisterDto registrationDto) {
 
+
+        // check PWD
         if (!registrationDto.getPassword().equals(registrationDto.getConfirmPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        // 닉네임 중복 처리
+        // nickname 중복 처리
         if(isNicknameExist(registrationDto.getNickname())) {
             throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
         }
 
-        // 이메일 중복 처리
+        // email 중복 처리
         userRepository.findByEmail(registrationDto.getEmail())
                 .ifPresent(u -> {
                     throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
                 });
 
-        // 유저네임 중복 처리
+        // username 중복 처리
         userRepository.findByUsername(registrationDto.getUsername())
                 .ifPresent(u -> {
                     throw new IllegalArgumentException("이미 존재하는 유저네임입니다.");
