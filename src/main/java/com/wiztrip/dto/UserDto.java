@@ -40,8 +40,6 @@ public class UserDto {
 
         private String email;
 
-        private String fileName; // 프로필 사진
-
         private String nickname; // 회원 닉네임
 
         private LikeboxDto like;
