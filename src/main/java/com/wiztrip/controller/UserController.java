@@ -2,6 +2,7 @@ package com.wiztrip.controller;
 
 import com.wiztrip.dto.UserDto;
 import com.wiztrip.dto.UserRegisterDto;
+import com.wiztrip.exception.CustomException;
 import com.wiztrip.service.ImageService;
 import com.wiztrip.service.UserService;
 import com.wiztrip.tool.file.Base64Dto;
@@ -53,12 +54,29 @@ public class UserController {
         return ResponseEntity.ok(uploadImage);
     }
 
+
+    // 프로필 사진 삭제
     @Operation(summary = "프로필 사진 삭제",description = "userId 를 사용하여 프로필 사진을 삭제")
     @DeleteMapping("/{userId}/profileImageDelete")
     public ResponseEntity<?> deleteProfilePicture(@PathVariable Long userId) {
         imageService.deleteProfilePicture(userId);
         return ResponseEntity.ok().build();
     }
+
+    // 프로필 사진 수정
+     @PatchMapping("/{userId}/editprofileImage")
+     public ResponseEntity<?> editProfilePicture(@PathVariable Long userId,
+                                                 @RequestParam("newimage")MultipartFile newimage) {
+         try {
+             Base64Dto updatedImage = imageService.editProfilePicture(userId, newimage);
+             return ResponseEntity.ok(updatedImage);
+         } catch (CustomException e) {
+             // Handle the specific custom exceptions as per your application's need
+             return ResponseEntity
+                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                     .body(e.getMessage());
+         }
+     }
 
 
     // 닉네임 중복
