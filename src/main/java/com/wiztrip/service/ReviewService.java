@@ -45,18 +45,29 @@ public class ReviewService {
     private final FtpTool ftpTool;
 
     @Transactional
-    public ReviewDto.ReviewResponseDto createReview(UserEntity user, Long tripId, ReviewDto.ReviewPostDto reviewPostDto, List<MultipartFile> multipartFileList) {
+    public ReviewDto.ReviewResponseDto createReview(UserEntity user, Long tripId, ReviewDto.ReviewPostDto reviewPostDto) {
         checkValidByUser(user.getId(), tripId);
-        checkTripIsFinshied(tripId);
         checkValidByTripAndUser(tripId, user);
+        checkTripIsFinshied(tripId);
         ReviewEntity review = reviewMapper.toEntity(user, tripId, reviewPostDto);
         reviewRepository.save(review);
+        checkValidByTrip(review, tripId);
+        return reviewMapper.toResponseDto(review);
+    }
+
+    @Transactional
+    public ReviewDto.ReviewResponseDto createReviewImage(UserEntity user, Long tripId, Long reviewId, List<MultipartFile> multipartFileList) {
+        ReviewEntity review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+        checkWriteByUser(review, user);
+        checkValidByUser(user.getId(), tripId);
+        checkValidByTrip(review, tripId);
+        checkTripIsFinshied(tripId);
         uploadImage(review, multipartFileList);
         return reviewMapper.toResponseDto(review);
     }
 
     public ReviewDto.ReviewResponseDto getReview(UserEntity user, Long tripId, Long reviewId) {
-        checkValidByUser(user.getId(), tripId);
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
         checkWriteByUser(review, user);
@@ -84,23 +95,35 @@ public class ReviewService {
 
     @Transactional
     public ReviewDto.ReviewResponseDto updateReview(UserEntity user, Long tripId, ReviewDto.ReviewPatchDto reviewPatchDto) {
-        checkValidByUser(user.getId(), tripId);
         ReviewEntity review = reviewRepository.findById(reviewPatchDto.getReviewId())
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
         checkWriteByUser(review, user);
+        checkValidByUser(user.getId(), tripId);
         checkValidByTrip(review, tripId);
+        checkTripIsFinshied(tripId);
         reviewMapper.updateFromPatchDto(reviewPatchDto, review);
         return reviewMapper.toResponseDto(review);
     }
 
     @Transactional
     public String deleteReview(UserEntity user, Long tripId, Long reviewId) {
-        checkValidByUser(user.getId(), tripId);
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+        List<ReviewImageEntity> reviewImage = reviewImageRepository.findByReviewId(reviewId);
+
         checkWriteByUser(review, user);
-        checkValidByTrip(review,tripId);
+        checkValidByUser(user.getId(), tripId);
+        checkValidByTrip(review, tripId);
+        checkTripIsFinshied(tripId);
+
         reviewRepository.deleteById(reviewId);
+
+        for (ReviewImageEntity image : reviewImage) {
+            reviewImageRepository.deleteById(image.getId());
+            ftpTool.deleteFile(image.getImageName());
+        }
+
         return "reviewId: " + reviewId + " 삭제 완료";
     }
 
