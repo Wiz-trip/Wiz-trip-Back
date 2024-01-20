@@ -64,6 +64,7 @@ public class UserController {
     }
 
     // 프로필 사진 수정
+     @Operation(summary = "프로필 사진 수정",description = "userId 와 newfile(file)을 사용하여 프로필 사진을 수정(생성과 방법 같음)")
      @PatchMapping("/{userId}/editprofileImage")
      public ResponseEntity<?> editProfilePicture(@PathVariable Long userId,
                                                  @RequestParam("newimage")MultipartFile newimage) {
