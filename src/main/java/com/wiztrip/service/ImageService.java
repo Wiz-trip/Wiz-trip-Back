@@ -97,4 +97,23 @@ public class ImageService {
         }
     }
 
+
+    @Transactional
+    public Base64Dto editProfilePicture(Long userId, MultipartFile newImage) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 기존 이미지 삭제
+        UserImageEntity existingImage = user.getImage();
+        if (existingImage != null) {
+            ftpTool.deleteFile(existingImage.getImageName());
+        }
+
+        // 새 이미지 업로드
+        return uploadProfilePicture(userId, newImage);
+    }
+
+
+
+
 }
