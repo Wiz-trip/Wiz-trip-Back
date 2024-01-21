@@ -76,11 +76,16 @@ public class UserService {
 
         UserImageEntity imageEntity = userEntity.getImage();
         if(imageEntity != null) {
-            String imageUrl = constructImageUrl(imageEntity.getImagePath());
-            Base64Dto imageDto = new Base64Dto();
-            imageDto.setFileName(imageEntity.getImageName());
-            imageDto.setContent(imageUrl);
-         //   imageDto.setContent(imageEntity.getImagePath());
+            String base64Content = ftpTool.downloadFileAndConvertToBase64String(imageEntity.getImageName());
+            Base64Dto imageDto = new Base64Dto(imageEntity.getImageName(), base64Content);
+
+        //    String imageUrl = constructImageUrl(imageEntity.getImagePath());
+         //   Base64Dto imageDto = new Base64Dto();
+          //  imageDto.setFileName(imageEntity.getImageName());
+           // imageDto.setContent(imageUrl);
+        //    userResponseDto.setImage(imageDto);
+
+            //   imageDto.setContent(imageEntity.getImagePath());
             userResponseDto.setImage(imageDto);
         } else {
             userResponseDto.setImage(null);
