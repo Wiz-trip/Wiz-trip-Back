@@ -6,22 +6,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 
-@Component
+@Service
 @Slf4j
-public class ApiController {
+public class TourApiTool {
 
     @Value("${service.key}")
     private String serviceKey;
+
+
 
     public List<Map<String, Object>> getData(int numOfRows)
             throws URISyntaxException, JsonProcessingException {
@@ -119,7 +121,7 @@ public class ApiController {
 
 
     // 세부 여행지 메서드
-    public List<Map<String, Object>> getLandmarkData(String contentId)
+    public Map<String, Object> getLandmarkData(String contentId)
             throws URISyntaxException, JsonProcessingException {
 
         // Base URL + API 호출 주소
@@ -161,47 +163,45 @@ public class ApiController {
         Map<String, Object> responseMap = (Map<String, Object>) map.get("response");
         Map<String, Object> bodyMap = (Map<String, Object>) responseMap.get("body");
         Map<String, Object> itemsMap = (Map<String, Object>) bodyMap.get("items");
-        List<Map<String, Object>> itemMap = (List<Map<String, Object>>) itemsMap.get("item");
+        List<Map<String,Object>> itemMap = (List<Map<String, Object>>) itemsMap.get("item");
 
         //state에 있는 정보만 들고오기
-        List<Map<String, Object>> testItemMap = itemMap.stream()
-                .collect(Collectors.toList());
-        return testItemMap;
+        return itemMap.get(0);
     }
 
     // 페이징
-    public List<Map<String, Object>> pagingData(int numOfRows,int pageNo)
-            throws Exception {
-
-        // API 호출을 위한 기본 설정
-        String link = "https://apis.data.go.kr/B551011/KorService1/areaBasedList1";
-        String mobileOS = "ETC";
-        String mobileApp = "Test";
-        String _type = "json";
-        String contentTypeId = "12"; // 관광지 타입
-
-        // URL 생성
-        String url = link + "?serviceKey=" + serviceKey +
-                "&MobileOS=" + mobileOS +
-                "&MobileApp=" + mobileApp +
-                "&_type=" + _type +
-                "&contentTypeId=" + contentTypeId +
-                "&pageNo=" +pageNo +
-                "&numOfRows=" + numOfRows;
-
-        // HTTP 요청 수행
-        RestTemplate restTemplate = new RestTemplate();
-        URI uri = new URI(url);
-        String response = restTemplate.getForObject(uri, String.class);
-
-        Map<String, Object> map = new ObjectMapper().readValue(response.toString(), Map.class);
-        Map<String, Object> responseMap = (Map<String, Object>) map.get("response");
-        Map<String, Object> bodyMap = (Map<String, Object>) responseMap.get("body");
-        Map<String, Object> itemsMap = (Map<String, Object>) bodyMap.get("items");
-        List<Map<String, Object>> itemMap = (List<Map<String, Object>>) itemsMap.get("item");
-
-        return itemMap.stream()
-                .collect(Collectors.toList());
-    }
+//    public List<Map<String, Object>> pagingData(int numOfRows,int pageNo)
+//            throws Exception {
+//
+//        // API 호출을 위한 기본 설정
+//        String link = "https://apis.data.go.kr/B551011/KorService1/areaBasedList1";
+//        String mobileOS = "ETC";
+//        String mobileApp = "Test";
+//        String _type = "json";
+//        String contentTypeId = "12"; // 관광지 타입
+//
+//        // URL 생성
+//        String url = link + "?serviceKey=" + serviceKey +
+//                "&MobileOS=" + mobileOS +
+//                "&MobileApp=" + mobileApp +
+//                "&_type=" + _type +
+//                "&contentTypeId=" + contentTypeId +
+//                "&pageNo=" +pageNo +
+//                "&numOfRows=" + numOfRows;
+//
+//        // HTTP 요청 수행
+//        RestTemplate restTemplate = new RestTemplate();
+//        URI uri = new URI(url);
+//        String response = restTemplate.getForObject(uri, String.class);
+//
+//        Map<String, Object> map = new ObjectMapper().readValue(response.toString(), Map.class);
+//        Map<String, Object> responseMap = (Map<String, Object>) map.get("response");
+//        Map<String, Object> bodyMap = (Map<String, Object>) responseMap.get("body");
+//        Map<String, Object> itemsMap = (Map<String, Object>) bodyMap.get("items");
+//        List<Map<String, Object>> itemMap = (List<Map<String, Object>>) itemsMap.get("item");
+//
+//        return itemMap.stream()
+//                .collect(Collectors.toList());
+//    }
 
 }

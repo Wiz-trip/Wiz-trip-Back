@@ -43,6 +43,22 @@ public abstract class LandmarkMapper {
     })
     public abstract LandmarkDto.LandmarkDetailResponseDto entityToDetailResponseDto(LandmarkEntity entity);
 
+    @Mappings({
+        @Mapping(target = "address", expression = "java(entity.getAddress().getRoadNameAddress())"),
+        @Mapping(target = "imagePath", source = "imageList", qualifiedByName = "imageEntityToImagePath"),
+        @Mapping(target = "title", source = "name"),
+        @Mapping(target = "landmarkId",source = "id")
+    })
+    public abstract LandmarkDto.LandmarkApiResponseDto entityToApiResponseDto(LandmarkEntity entity);
+
+    @Named("imageEntityToImagePath")
+    public String imageEntityToImagePath(List<LandmarkImageEntity> landmarkImageEntityList) {
+        if(landmarkImageEntityList.isEmpty()) return null;
+        LandmarkImageEntity landmarkImageEntity = landmarkImageEntityList.get(0);
+        return landmarkImageEntity.getImagePath();
+    }
+
+    public abstract LandmarkDto.LandmarkApiDetailResponseDto entityToApiDetailResponseDto(LandmarkEntity entity);
     /*
     // Image 객체 리스트 -> String 리스트 변환
     @Named("imagesToStrings")

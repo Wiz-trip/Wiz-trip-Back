@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LandmarkRepository extends JpaRepository<LandmarkEntity,Long> {
@@ -23,4 +24,14 @@ public interface LandmarkRepository extends JpaRepository<LandmarkEntity,Long> {
 
     @Query("select l from LandmarkLikeboxEntity llb join llb.landmark l where llb.likebox.id = :likeboxId")
     Page<LandmarkEntity> findAllByLikeboxId(Long likeboxId, Pageable pageable);
+
+    List<LandmarkEntity> findAllByAreaCode(String areaCode);
+
+    Optional<LandmarkEntity> findByContentId(Long contentId);
+
+    @Query("select l from LandmarkEntity l")
+    Page<LandmarkEntity> findAllByPage(Pageable pageable);
+
+    @Query("select l from LandmarkEntity l where l.areaCode=:areaCode")
+    Page<LandmarkEntity> findAllByAreaCodeAndPage(String areaCode, Pageable pageable);
 }

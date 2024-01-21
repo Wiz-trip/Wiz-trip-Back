@@ -9,8 +9,6 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Set;
-
 /**
  * Swagger springdoc-ui 구성 파일
  */
@@ -22,7 +20,7 @@ public class OpenApiConfig {
         return GroupedOpenApi.builder()
                 .group("API")
 //                .pathsToMatch()
-                .pathsToExclude("/jwt-test/**","/webp-test/**","/ftp-test/**")
+                .pathsToExclude("/jwt-test/**","/webp-test/**","/ftp-test/**","/tourapi/**")
                 // .packagesToScan("com.example.swagger") // package 필터 설정
                 .build();
     }
@@ -35,6 +33,16 @@ public class OpenApiConfig {
                 // .packagesToScan("com.example.swagger") // package 필터 설정
                 .build();
     }
+
+    @Bean
+    public GroupedOpenApi group3() {
+        return GroupedOpenApi.builder()
+            .group("TOURAPI")
+            .pathsToMatch("/tourapi/save-to-repository")
+            // .packagesToScan("com.example.swagger") // package 필터 설정
+            .build();
+    }
+
 
     @Bean
     public OpenAPI openAPI() {

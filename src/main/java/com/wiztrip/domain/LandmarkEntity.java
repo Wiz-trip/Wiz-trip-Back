@@ -37,4 +37,18 @@ public class LandmarkEntity {
 
     private String areaCode;
 
+    private String infocenter;  // Tel number
+
+    private String restDate;    // 쉬는 날
+
+    private String accomcount;  // 수용 인원
+
+    private String useTime;    // 영업 시간
+
+    private String parking;     // 주차 가능 여부
+
+    private String checkPet;    // 애완동물 출입 가능 여부
+
+    private String checkCreditCard; // 신용카드 가능 여부
+
 }

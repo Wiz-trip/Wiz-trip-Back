@@ -54,6 +54,8 @@ public class LandmarkDto {
     @Builder
     public static class LandmarkApiResponseDto {
 
+        private Long landmarkId;
+
         private Long contentId;
 
         private String address;
