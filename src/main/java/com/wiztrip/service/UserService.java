@@ -8,6 +8,7 @@ import com.wiztrip.repository.UserImageRepository;
 import com.wiztrip.repository.UserRepository;
 import com.wiztrip.tool.file.Base64Dto;
 import com.wiztrip.tool.file.Base64Service;
+import com.wiztrip.tool.file.FtpTool;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.parameters.P;
@@ -30,9 +31,8 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserImageRepository userImageRepository;
     private final PasswordEncoder passwordEncoder;
-    private final Base64Service base64Service;
+    private final FtpTool ftpTool;
 
 
     // 사용자 조회
@@ -76,15 +76,21 @@ public class UserService {
 
         UserImageEntity imageEntity = userEntity.getImage();
         if(imageEntity != null) {
+            String imageUrl = constructImageUrl(imageEntity.getImagePath());
             Base64Dto imageDto = new Base64Dto();
             imageDto.setFileName(imageEntity.getImageName());
-            imageDto.setContent(imageEntity.getImagePath());
+            imageDto.setContent(imageUrl);
+         //   imageDto.setContent(imageEntity.getImagePath());
             userResponseDto.setImage(imageDto);
         } else {
             userResponseDto.setImage(null);
         }
 
         return userResponseDto;
+    }
+    private String constructImageUrl(String imagePath) {
+        String baseImageUrl = "https://wiztrip.o-r.kr/";
+        return baseImageUrl + imagePath;
     }
 
 
