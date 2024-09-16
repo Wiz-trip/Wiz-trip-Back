@@ -1,0 +1,25 @@
+1. docker 를 설치한다. (docker desktop 설치하는걸 추천)
+2. 해당 디렉토리에서 터미널을 연다.
+3. docker load -i wiz-trip-backend.tar 실행 (docker에 이미지 등록)
+4. .env 파일에서 환경변수를 설정한다.
+5. 맥북이라면, docker-compose.yml에서 services - ftp - platform 의 주석을 해제한다.
+6. docker-compose up -d 명령어를 실행한다. (docker-compose 실행)
+
+.env 파일에서 설정할 수 있는 값은 다음과 같다.
+MYSQL_ROOT_PASSWORD : wiz-trip 프로젝트에서만 사용할 mysql root 비밀번호
+MYSQL_USER : wiz-trip 프로젝트에서만 사용할 mysql 계정
+MYSQL_PASSWORD : wiz-trip 프로젝트에서만 사용할 mysql 계정 비밀번호
+FTP_PATH : FTP로 전송한 파일이 저장될 경로. 해당 경로는 만들어야함
+FTP_USER : FTP 계정
+FTP_PASS : FTP 계정 비밀번호
+MAIL_USERNAME : 메일을 보낼 계정의 이메일 (gmail 이어야 함)
+MAIL_PASSWORD : 메일을 보낼 계정의 이메일 전송용 비밀번호 (참고자료 : https://velog.io/@tjddus0302/Spring-Boot-%EB%A9%94%EC%9D%BC-%EB%B0%9C%EC%86%A1-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-Gmail)
+TOUR_API_SERVICE_KEY : TOUR API 인증 키
+JWT_SECRET : JWT 토큰 생성용 비밀키
+JWT_REFRESH_SECRET : JWT 리프레시 토큰 생성용 비밀키
+JWT_EXPIRATION_TIME : JWT 토큰 만료 시간
+JWT_REFRESH_EXPIRATION_TIME : JWT 리프레시 토큰 만료 시간
+
+docker-compose.yml 파일을 통해 생성한 컨테이너를 지우려면, docker-compose.yml이 있는 경로에서
+docker-compose down 명령어를 실행한다.
+
