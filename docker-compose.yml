@@ -1,0 +1,58 @@
+services:
+  mysql:
+    image: mysql:latest
+#    restart: always
+    environment:
+      MYSQL_DATABASE: wiztrip
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - wiz_trip_backend_network
+
+  redis:
+    image: redis:latest
+#    restart: always
+    networks:
+      - wiz_trip_backend_network
+
+  ftp:
+    image: fauria/vsftpd:latest
+    platform: linux/amd64 # for M1 Mac
+#    restart: always
+    volumes:
+      - ${FTP_PATH}:/home/vsftpd
+    environment:
+      FTP_USER: ${FTP_USER}
+      FTP_PASS: ${FTP_PASS}
+    networks:
+        - wiz_trip_backend_network
+
+  app:
+    image: wiz-trip-backend:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - redis
+      - ftp
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/wiztrip?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      FTP_SERVER: ftp
+      FTP_PORT: 21
+      FTP_USERNAME: ${FTP_USER}
+      FTP_PASSWORD: ${FTP_PASS}
+      FTP_DIRECTORY: ${FTP_USER}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      TOUR_API_SERVICE_KEY: ${TOUR_API_SERVICE_KEY}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+    networks:
+      - wiz_trip_backend_network
+
+networks:
+  wiz_trip_backend_network:
+    driver: bridge
